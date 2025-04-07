@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Futuristic Visa App</title>
+  <style>
+    body {
+      margin: 0;
+      font-family: 'Segoe UI', sans-serif;
+      height: 100vh;
+      background: linear-gradient(120deg, #0f0c29, #302b63, #24243e);
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      color: white;
+      overflow: hidden;
+    }
+
+    .card {
+      backdrop-filter: blur(15px);
+      background: rgba(255, 255, 255, 0.1);
+      border-radius: 20px;
+      padding: 40px;
+      box-shadow: 0 0 30px rgba(0, 255, 255, 0.3);
+      text-align: center;
+    }
+
+    input {
+      padding: 15px;
+      width: 80%;
+      border: none;
+      border-radius: 10px;
+      margin-bottom: 20px;
+      outline: none;
+      font-size: 16px;
+      box-shadow: 0 0 10px cyan;
+    }
+
+    button {
+      padding: 15px 30px;
+      border: none;
+      border-radius: 10px;
+      background-color: cyan;
+      color: black;
+      font-weight: bold;
+      font-size: 16px;
+      cursor: pointer;
+      transition: 0.3s;
+    }
+
+    button:hover {
+      background-color: #00ffff;
+      box-shadow: 0 0 15px cyan;
+    }
+  </style>
+</head>
+<body>
+  <div class="card">
+    <h1>Enter Country Name</h1>
+    <input type="text" id="countryInput" placeholder="Type a country..." />
+    <br />
+    <button onclick="goToVisaSection()">Proceed to Visa</button>
+  </div>
+
+  <script>
+    const countries = [
+      "India", "United States", "Canada", "United Kingdom", "Australia",
+      "Germany", "France", "Japan", "China", "Brazil", "Russia", "UAE"
+    ];
+
+    function autocorrect(input) {
+      input = input.toLowerCase();
+      let bestMatch = countries[0];
+      let bestScore = Infinity;
+
+      for (let country of countries) {
+        let score = levenshtein(input, country.toLowerCase());
+        if (score < bestScore) {
+          bestScore = score;
+          bestMatch = country;
+        }
+      }
+
+      return bestMatch;
+    }
+
+    function levenshtein(a, b) {
+      const matrix = Array.from({ length: a.length + 1 }, () => []);
+      for (let i = 0; i <= a.length; i++) matrix[i][0] = i;
+      for (let j = 0; j <= b.length; j++) matrix[0][j] = j;
+
+      for (let i = 1; i <= a.length; i++) {
+        for (let j = 1; j <= b.length; j++) {
+          const cost = a[i - 1] === b[j - 1] ? 0 : 1;
+          matrix[i][j] = Math.min(
+            matrix[i - 1][j] + 1,
+            matrix[i][j - 1] + 1,
+            matrix[i - 1][j - 1] + cost
+          );
+        }
+      }
+
+      return matrix[a.length][b.length];
+    }
+
+    function goToVisaSection() {
+      const input = document.getElementById("countryInput").value;
+      if (!input.trim()) {
+        alert("Please enter a country.");
+        return;
+      }
+
+      const corrected = autocorrect(input);
+      alert(`Redirecting to visa section for: ${corrected}`);
+      // Here, you can add actual navigation logic
+    }
+  </script>
+</body>
+</html>

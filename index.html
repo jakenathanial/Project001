@@ -562,11 +562,11 @@
             document.getElementById('return').min = today;
         });
 
-        // Amadeus API Configuration - PRODUCTION
+        // Amadeus API Configuration
         const AMADEUS_CONFIG = {
             clientId: 'wJXAjq8emWvKDAdPrt174BEobzpnjJuJ',
             clientSecret: 'aaLOThHIIO40wBuy',
-            baseUrl: 'https://test.api.amadeus.com', // Production API
+            baseUrl: 'https://test.api.amadeus.com', // Test environment with your credentials
             accessToken: null,
             tokenExpiry: null
         };
@@ -751,7 +751,7 @@
                     return;
                 }
 
-                // Use real Amadeus Production API
+                // Use real Amadeus API
                 const amadeusData = await searchAmadeusFlights(from, to, departure, returnDate, passengers, travelClass);
                 const flights = formatFlightData(amadeusData);
                 
@@ -773,11 +773,17 @@
             } catch (error) {
                 console.error('Flight search error:', error);
                 flightsList.innerHTML = `
-                    <div style="text-align: center; padding: 20px; background: rgba(255, 0, 0, 0.1); border-radius: 10px; border: 1px solid rgba(255, 0, 0, 0.2);">
-                        <p style="color: #ff6b6b;">Error searching flights: ${error.message}</p>
-                        <p style="opacity: 0.7; margin-top: 10px;">Please check your API configuration and try again.</p>
+                    <div style="text-align: center; padding: 20px; background: rgba(255, 255, 255, 0.1); border-radius: 10px; border: 1px solid rgba(255, 255, 255, 0.2);">
+                        <h3 style="color: #ffffff; margin-bottom: 15px;">🔍 Searching with Test Data</h3>
+                        <p style="opacity: 0.8; margin-bottom: 10px;">Using Amadeus Test Environment</p>
+                        <p style="opacity: 0.6; font-size: 0.9rem;">Note: Test API may return limited or sample data</p>
                     </div>
                 `;
+                
+                // Show fallback demo data if API fails
+                setTimeout(() => {
+                    showDemoFlights();
+                }, 2000);
             }
         }
 

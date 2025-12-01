@@ -1,13 +1,750 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <link rel="icon" type="image/svg+xml" href="/vite.svg" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Dubai USA Flight Search</title>
-  </head>
-  <body>
-    <div id="root"></div>
-    <script type="module" src="/src/main.tsx"></script>
-  </body>
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>TrendSpotter - Real-Time Google Trends Analysis</title>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .header {
+            text-align: center;
+            color: white;
+            margin-bottom: 40px;
+            animation: fadeInDown 0.6s ease-out;
+        }
+
+        .header h1 {
+            font-size: 3rem;
+            margin-bottom: 10px;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.2);
+        }
+
+        .header p {
+            font-size: 1.2rem;
+            opacity: 0.9;
+        }
+
+        .search-card {
+            background: white;
+            border-radius: 20px;
+            padding: 30px;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+            margin-bottom: 30px;
+            animation: fadeInUp 0.6s ease-out;
+        }
+
+        .search-container {
+            display: flex;
+            gap: 15px;
+            margin-bottom: 20px;
+        }
+
+        .search-input {
+            flex: 1;
+            padding: 15px 20px;
+            font-size: 1.1rem;
+            border: 2px solid #e0e0e0;
+            border-radius: 12px;
+            outline: none;
+            transition: all 0.3s;
+        }
+
+        .search-input:focus {
+            border-color: #667eea;
+            box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+        }
+
+        .search-button {
+            padding: 15px 40px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            border-radius: 12px;
+            font-size: 1.1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: transform 0.2s, box-shadow 0.2s;
+        }
+
+        .search-button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 25px rgba(102, 126, 234, 0.4);
+        }
+
+        .search-button:active {
+            transform: translateY(0);
+        }
+
+        .search-button:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+        }
+
+        .options-container {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 15px;
+        }
+
+        .option-group {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .option-group label {
+            font-size: 0.9rem;
+            color: #666;
+            margin-bottom: 5px;
+            font-weight: 600;
+        }
+
+        .option-group select {
+            padding: 10px;
+            border: 2px solid #e0e0e0;
+            border-radius: 8px;
+            font-size: 1rem;
+            outline: none;
+            cursor: pointer;
+            transition: border-color 0.3s;
+        }
+
+        .option-group select:focus {
+            border-color: #667eea;
+        }
+
+        .loading {
+            text-align: center;
+            padding: 40px;
+            display: none;
+        }
+
+        .loading.active {
+            display: block;
+        }
+
+        .spinner {
+            border: 4px solid #f3f3f3;
+            border-top: 4px solid #667eea;
+            border-radius: 50%;
+            width: 50px;
+            height: 50px;
+            animation: spin 1s linear infinite;
+            margin: 0 auto 20px;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        .results-card {
+            background: white;
+            border-radius: 20px;
+            padding: 30px;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+            display: none;
+            animation: fadeInUp 0.6s ease-out;
+        }
+
+        .results-card.active {
+            display: block;
+        }
+
+        .trend-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 30px;
+            flex-wrap: wrap;
+            gap: 15px;
+        }
+
+        .trend-title {
+            font-size: 1.8rem;
+            color: #333;
+        }
+
+        .trend-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            padding: 10px 20px;
+            border-radius: 25px;
+            font-weight: 600;
+            font-size: 0.9rem;
+        }
+
+        .trend-badge.hot {
+            background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+            color: white;
+        }
+
+        .trend-badge.rising {
+            background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
+            color: white;
+        }
+
+        .trend-badge.stable {
+            background: linear-gradient(135deg, #43e97b 0%, #38f9d7 100%);
+            color: white;
+        }
+
+        .trend-badge.declining {
+            background: linear-gradient(135deg, #fa709a 0%, #fee140 100%);
+            color: white;
+        }
+
+        .chart-container {
+            position: relative;
+            height: 400px;
+            margin-bottom: 30px;
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 20px;
+            margin-top: 30px;
+        }
+
+        .stat-card {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            padding: 20px;
+            border-radius: 15px;
+            color: white;
+            text-align: center;
+        }
+
+        .stat-value {
+            font-size: 2rem;
+            font-weight: bold;
+            margin-bottom: 5px;
+        }
+
+        .stat-label {
+            font-size: 0.9rem;
+            opacity: 0.9;
+        }
+
+        .error-message {
+            background: #fee;
+            border-left: 4px solid #f44336;
+            padding: 15px 20px;
+            border-radius: 8px;
+            color: #c62828;
+            margin-top: 20px;
+            display: none;
+        }
+
+        .error-message.active {
+            display: block;
+        }
+
+        .related-queries {
+            margin-top: 30px;
+        }
+
+        .related-queries h3 {
+            font-size: 1.3rem;
+            color: #333;
+            margin-bottom: 15px;
+        }
+
+        .query-list {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+        }
+
+        .query-chip {
+            background: #f5f5f5;
+            padding: 8px 16px;
+            border-radius: 20px;
+            font-size: 0.9rem;
+            color: #555;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .query-chip:hover {
+            background: #667eea;
+            color: white;
+            transform: translateY(-2px);
+        }
+
+        @keyframes fadeInDown {
+            from {
+                opacity: 0;
+                transform: translateY(-30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @media (max-width: 768px) {
+            .header h1 {
+                font-size: 2rem;
+            }
+
+            .search-container {
+                flex-direction: column;
+            }
+
+            .chart-container {
+                height: 300px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>🔥 TrendSpotter</h1>
+            <p>Real-Time Google Trends Analysis & Insights</p>
+        </div>
+
+        <div class="search-card">
+            <div class="search-container">
+                <input 
+                    type="text" 
+                    class="search-input" 
+                    id="searchInput" 
+                    placeholder="Search for products, topics, keywords..."
+                    autocomplete="off"
+                >
+                <button class="search-button" id="searchButton">
+                    🔍 Analyze Trends
+                </button>
+            </div>
+
+            <div class="options-container">
+                <div class="option-group">
+                    <label>Time Range</label>
+                    <select id="timeRange">
+                        <option value="now 1-H">Past Hour</option>
+                        <option value="now 4-H">Past 4 Hours</option>
+                        <option value="now 1-d">Past Day</option>
+                        <option value="now 7-d" selected>Past Week</option>
+                        <option value="today 1-m">Past Month</option>
+                        <option value="today 3-m">Past 3 Months</option>
+                        <option value="today 12-m">Past Year</option>
+                        <option value="today 5-y">Past 5 Years</option>
+                    </select>
+                </div>
+
+                <div class="option-group">
+                    <label>Region</label>
+                    <select id="region">
+                        <option value="">Worldwide</option>
+                        <option value="IN" selected>India</option>
+                        <option value="US">United States</option>
+                        <option value="GB">United Kingdom</option>
+                        <option value="CA">Canada</option>
+                        <option value="AU">Australia</option>
+                        <option value="SG">Singapore</option>
+                    </select>
+                </div>
+
+                <div class="option-group">
+                    <label>Category</label>
+                    <select id="category">
+                        <option value="0">All Categories</option>
+                        <option value="3">Arts & Entertainment</option>
+                        <option value="5">Autos & Vehicles</option>
+                        <option value="16">Business & Industrial</option>
+                        <option value="47">Computers & Electronics</option>
+                        <option value="184">Shopping</option>
+                        <option value="66">Sports</option>
+                    </select>
+                </div>
+            </div>
+
+            <div class="loading" id="loading">
+                <div class="spinner"></div>
+                <p>Fetching real-time trend data...</p>
+            </div>
+
+            <div class="error-message" id="errorMessage"></div>
+        </div>
+
+        <div class="results-card" id="resultsCard">
+            <div class="trend-header">
+                <h2 class="trend-title" id="trendTitle">Loading...</h2>
+                <span class="trend-badge" id="trendBadge">
+                    <span id="badgeIcon">📊</span>
+                    <span id="badgeText">Analyzing</span>
+                </span>
+            </div>
+
+            <div class="chart-container">
+                <canvas id="trendChart"></canvas>
+            </div>
+
+            <div class="stats-grid" id="statsGrid">
+                <div class="stat-card">
+                    <div class="stat-value" id="avgInterest">-</div>
+                    <div class="stat-label">Average Interest</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-value" id="peakInterest">-</div>
+                    <div class="stat-label">Peak Interest</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-value" id="trendDirection">-</div>
+                    <div class="stat-label">Trend Direction</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-value" id="volatility">-</div>
+                    <div class="stat-label">Volatility</div>
+                </div>
+            </div>
+
+            <div class="related-queries">
+                <h3>🔗 Related Searches</h3>
+                <div class="query-list" id="relatedQueries">
+                    <!-- Related queries will be added here -->
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Global variables
+        let trendChart = null;
+        const searchInput = document.getElementById('searchInput');
+        const searchButton = document.getElementById('searchButton');
+        const loading = document.getElementById('loading');
+        const resultsCard = document.getElementById('resultsCard');
+        const errorMessage = document.getElementById('errorMessage');
+
+        // Event listeners
+        searchButton.addEventListener('click', performSearch);
+        searchInput.addEventListener('keypress', (e) => {
+            if (e.key === 'Enter') performSearch();
+        });
+
+        // Simulate Google Trends API (in production, use actual API)
+        async function fetchGoogleTrends(keyword, timeRange, region, category) {
+            // Simulate API delay
+            await new Promise(resolve => setTimeout(resolve, 1500));
+
+            // Generate realistic trend data
+            const dataPoints = timeRange.includes('1-H') ? 12 : 
+                              timeRange.includes('4-H') ? 16 :
+                              timeRange.includes('1-d') ? 24 :
+                              timeRange.includes('7-d') ? 30 :
+                              timeRange.includes('1-m') ? 30 :
+                              timeRange.includes('3-m') ? 90 : 
+                              timeRange.includes('12-m') ? 52 : 365;
+
+            const data = [];
+            const labels = [];
+            let baseValue = Math.random() * 50 + 25;
+            const trend = Math.random() > 0.5 ? 1 : -1;
+            const volatility = Math.random() * 15 + 5;
+
+            for (let i = 0; i < dataPoints; i++) {
+                const variation = (Math.random() - 0.5) * volatility;
+                const trendEffect = (i / dataPoints) * trend * 30;
+                let value = Math.max(0, Math.min(100, baseValue + variation + trendEffect));
+                
+                data.push(Math.round(value));
+                
+                // Generate labels based on time range
+                if (timeRange.includes('H')) {
+                    labels.push(`${i * 5} min ago`);
+                } else if (timeRange.includes('1-d')) {
+                    labels.push(`${i}:00`);
+                } else if (timeRange.includes('7-d')) {
+                    const days = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
+                    labels.push(days[i % 7]);
+                } else if (timeRange.includes('1-m') || timeRange.includes('3-m')) {
+                    labels.push(`Day ${i + 1}`);
+                } else {
+                    labels.push(`Week ${i + 1}`);
+                }
+            }
+
+            // Generate related queries
+            const relatedQueries = generateRelatedQueries(keyword);
+
+            return {
+                success: true,
+                data: {
+                    timeline: {
+                        labels: labels,
+                        values: data
+                    },
+                    relatedQueries: relatedQueries,
+                    keyword: keyword,
+                    region: region,
+                    timeRange: timeRange
+                }
+            };
+        }
+
+        function generateRelatedQueries(keyword) {
+            const prefixes = ['best', 'buy', 'cheap', 'online', 'review', 'price', 'top'];
+            const suffixes = ['2024', 'india', 'online', 'near me', 'price', 'review'];
+            
+            const queries = [];
+            for (let i = 0; i < 8; i++) {
+                if (Math.random() > 0.5) {
+                    queries.push(`${prefixes[i % prefixes.length]} ${keyword}`);
+                } else {
+                    queries.push(`${keyword} ${suffixes[i % suffixes.length]}`);
+                }
+            }
+            return queries;
+        }
+
+        async function performSearch() {
+            const keyword = searchInput.value.trim();
+            
+            if (!keyword) {
+                showError('Please enter a search term');
+                return;
+            }
+
+            // Show loading
+            loading.classList.add('active');
+            resultsCard.classList.remove('active');
+            errorMessage.classList.remove('active');
+            searchButton.disabled = true;
+
+            try {
+                const timeRange = document.getElementById('timeRange').value;
+                const region = document.getElementById('region').value;
+                const category = document.getElementById('category').value;
+
+                const response = await fetchGoogleTrends(keyword, timeRange, region, category);
+
+                if (response.success) {
+                    displayResults(response.data);
+                } else {
+                    showError('Failed to fetch trend data. Please try again.');
+                }
+            } catch (error) {
+                console.error('Error:', error);
+                showError('An error occurred while fetching data.');
+            } finally {
+                loading.classList.remove('active');
+                searchButton.disabled = false;
+            }
+        }
+
+        function displayResults(data) {
+            // Update title
+            document.getElementById('trendTitle').textContent = `"${data.keyword}" Trends`;
+
+            // Calculate statistics
+            const values = data.timeline.values;
+            const avgInterest = Math.round(values.reduce((a, b) => a + b, 0) / values.length);
+            const peakInterest = Math.max(...values);
+            const firstHalf = values.slice(0, Math.floor(values.length / 2));
+            const secondHalf = values.slice(Math.floor(values.length / 2));
+            const firstAvg = firstHalf.reduce((a, b) => a + b, 0) / firstHalf.length;
+            const secondAvg = secondHalf.reduce((a, b) => a + b, 0) / secondHalf.length;
+            const trendDirection = secondAvg > firstAvg ? 'Rising' : secondAvg < firstAvg ? 'Falling' : 'Stable';
+            
+            // Calculate volatility
+            const mean = avgInterest;
+            const variance = values.reduce((sum, val) => sum + Math.pow(val - mean, 2), 0) / values.length;
+            const volatility = Math.sqrt(variance).toFixed(1);
+
+            // Update stats
+            document.getElementById('avgInterest').textContent = avgInterest;
+            document.getElementById('peakInterest').textContent = peakInterest;
+            document.getElementById('trendDirection').textContent = trendDirection;
+            document.getElementById('volatility').textContent = volatility;
+
+            // Update badge
+            updateTrendBadge(trendDirection, avgInterest);
+
+            // Create chart
+            createTrendChart(data.timeline.labels, data.timeline.values, data.keyword);
+
+            // Display related queries
+            displayRelatedQueries(data.relatedQueries);
+
+            // Show results
+            resultsCard.classList.add('active');
+        }
+
+        function updateTrendBadge(direction, avgInterest) {
+            const badge = document.getElementById('trendBadge');
+            const icon = document.getElementById('badgeIcon');
+            const text = document.getElementById('badgeText');
+
+            badge.className = 'trend-badge';
+
+            if (avgInterest >= 70 && direction === 'Rising') {
+                badge.classList.add('hot');
+                icon.textContent = '🔥';
+                text.textContent = 'Hot Trend';
+            } else if (direction === 'Rising') {
+                badge.classList.add('rising');
+                icon.textContent = '📈';
+                text.textContent = 'Rising';
+            } else if (direction === 'Falling') {
+                badge.classList.add('declining');
+                icon.textContent = '📉';
+                text.textContent = 'Declining';
+            } else {
+                badge.classList.add('stable');
+                icon.textContent = '➡️';
+                text.textContent = 'Stable';
+            }
+        }
+
+        function createTrendChart(labels, values, keyword) {
+            const ctx = document.getElementById('trendChart').getContext('2d');
+
+            // Destroy existing chart
+            if (trendChart) {
+                trendChart.destroy();
+            }
+
+            // Create gradient
+            const gradient = ctx.createLinearGradient(0, 0, 0, 400);
+            gradient.addColorStop(0, 'rgba(102, 126, 234, 0.8)');
+            gradient.addColorStop(1, 'rgba(118, 75, 162, 0.1)');
+
+            trendChart = new Chart(ctx, {
+                type: 'line',
+                data: {
+                    labels: labels,
+                    datasets: [{
+                        label: 'Interest Over Time',
+                        data: values,
+                        backgroundColor: gradient,
+                        borderColor: '#667eea',
+                        borderWidth: 3,
+                        fill: true,
+                        tension: 0.4,
+                        pointRadius: 4,
+                        pointHoverRadius: 6,
+                        pointBackgroundColor: '#667eea',
+                        pointBorderColor: '#fff',
+                        pointBorderWidth: 2
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: {
+                            display: false
+                        },
+                        tooltip: {
+                            backgroundColor: 'rgba(0, 0, 0, 0.8)',
+                            padding: 12,
+                            titleFont: {
+                                size: 14,
+                                weight: 'bold'
+                            },
+                            bodyFont: {
+                                size: 13
+                            },
+                            callbacks: {
+                                label: function(context) {
+                                    return `Interest: ${context.parsed.y}/100`;
+                                }
+                            }
+                        }
+                    },
+                    scales: {
+                        y: {
+                            beginAtZero: true,
+                            max: 100,
+                            ticks: {
+                                callback: function(value) {
+                                    return value;
+                                }
+                            },
+                            grid: {
+                                color: 'rgba(0, 0, 0, 0.05)'
+                            }
+                        },
+                        x: {
+                            grid: {
+                                display: false
+                            },
+                            ticks: {
+                                maxRotation: 45,
+                                minRotation: 0
+                            }
+                        }
+                    },
+                    interaction: {
+                        intersect: false,
+                        mode: 'index'
+                    }
+                }
+            });
+        }
+
+        function displayRelatedQueries(queries) {
+            const container = document.getElementById('relatedQueries');
+            container.innerHTML = '';
+
+            queries.forEach(query => {
+                const chip = document.createElement('div');
+                chip.className = 'query-chip';
+                chip.textContent = query;
+                chip.addEventListener('click', () => {
+                    searchInput.value = query;
+                    performSearch();
+                });
+                container.appendChild(chip);
+            });
+        }
+
+        function showError(message) {
+            errorMessage.textContent = message;
+            errorMessage.classList.add('active');
+            setTimeout(() => {
+                errorMessage.classList.remove('active');
+            }, 5000);
+        }
+
+        // Initial example searches on page load
+        window.addEventListener('load', () => {
+            // Optional: Auto-search for a demo keyword
+            // searchInput.value = 'wireless earbuds';
+            // performSearch();
+        });
+    </script>
+</body>
 </html>

@@ -110,7 +110,7 @@
     const UAE_AIRPORTS = ['DXB', 'AUH', 'SHJ', 'RKT', 'AAN', 'DWC', 'AJM'];
     const USA_AIRPORTS = ['JFK', 'LAX', 'ORD', 'DFW', 'DEN', 'ATL', 'SFO', 'SEA', 'LAS', 'MCO', 'EWR', 'CLT', 'PHX', 'IAH', 'MIA', 'BOS', 'MSP', 'DTW', 'PHL', 'LGA', 'FLL', 'BWI', 'DCA', 'MDW', 'SLC', 'SAN', 'IAD', 'TPA', 'PDX', 'STL'];
 
-    const SkyScout = () => {
+    const dubai2usa = () => {
       const [activeTab, setActiveTab] = useState('search');
       const [tripType, setTripType] = useState('round-trip');
       const [searchParams, setSearchParams] = useState({
@@ -308,7 +308,7 @@
           setEmailVerified(true);
           setShowVerificationModal(false);
 
-          alert('Email verified successfully! Welcome to SkyScout.');
+          alert('Email verified successfully! Welcome to dubai2usa.');
         } else {
           setError('Invalid verification code');
         }
@@ -606,7 +606,7 @@
                   </div>
                   <div>
                     <h1 className="text-2xl font-bold bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent">
-                      SkyScout
+                      dubai2usa
                     </h1>
                     <p className="text-xs text-gray-500">Find Your Perfect Flight</p>
                   </div>
@@ -1585,7 +1585,7 @@
                     {bookingPartners.map((partner, index) => (
                       <a
                         key={index}
-                        href={`${partner.url}?utm_source=skyscout&from=${searchParams.from}&to=${searchParams.to}`}
+                        href={`${partner.url}?utm_source=dubai2usa&from=${searchParams.from}&to=${searchParams.to}`}
                         target="_blank"
                         rel="noopener noreferrer"
                         className="bg-gradient-to-br from-blue-50 to-purple-50 border-2 border-blue-200 rounded-xl p-6 hover:border-blue-400 transition flex items-center justify-between group"
@@ -1622,7 +1622,7 @@
                     <div className="bg-gradient-to-br from-blue-600 to-purple-600 p-2 rounded-lg">
                       <Icon name="Plane" size={20} className="text-white" />
                     </div>
-                    <h3 className="text-xl font-bold">SkyScout</h3>
+                    <h3 className="text-xl font-bold">dubai2usa</h3>
                   </div>
                   <p className="text-gray-400 text-sm">Your trusted companion for finding the best flight deals worldwide.</p>
                 </div>
@@ -1661,7 +1661,7 @@
               </div>
               
               <div className="border-t border-gray-800 pt-8 text-center text-sm text-gray-400">
-                <p>© 2024 SkyScout. All rights reserved. Powered by Amadeus API.</p>
+                <p>© 2024 dubai2usa. All rights reserved. Powered by Amadeus API.</p>
                 <p className="mt-2">Not affiliated with airlines. Prices shown are indicative and may vary.</p>
               </div>
             </div>
@@ -1670,7 +1670,7 @@
       );
     };
 
-    ReactDOM.render(<SkyScout />, document.getElementById('root'));
+    ReactDOM.render(<dubai2usa />, document.getElementById('root'));
   </script>
 </body>
 </html>

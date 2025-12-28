@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>SkyScout - Professional Flight Search & Booking</title>
+  <title>dubai2usa - Professional Flight Search & Booking</title>
   
   <!-- React -->
   <script crossorigin src="https://unpkg.com/react@18/umd/react.production.min.js"></script>
@@ -162,7 +162,7 @@
     // MAIN APP COMPONENT
     // ============================================
 
-    const SkyScout = () => {
+    const dubai2usa = () => {
       // State Management
       const [activeTab, setActiveTab] = useState('search');
       const [tripType, setTripType] = useState('round-trip');
@@ -454,7 +454,7 @@
               {
                 to_email: userData.email,
                 to_name: userData.name,
-                message: 'Welcome to SkyScout! Start searching for the best flight deals.'
+                message: 'Welcome to dubai2usa! Start searching for the best flight deals.'
               }
             );
           }
@@ -768,7 +768,7 @@
           airline: flight.validatingAirlineCodes?.[0] || '',
           price: flight.price.total,
           currency: flight.price.currency,
-          utm_source: 'skyscout',
+          utm_source: 'dubai2usa',
           utm_medium: 'referral'
         });
         
@@ -797,7 +797,7 @@
                   </div>
                   <div>
                     <h1 className="text-2xl font-black gradient-text">
-                      SkyScout
+                      dubai2usa
                     </h1>
                     <p className="text-xs text-gray-500 font-medium">Professional Flight Search</p>
                   </div>
@@ -1633,7 +1633,7 @@
                           <li>You'll be redirected to complete your booking securely</li>
                           <li>Prices and availability confirmed in real-time</li>
                           <li>All bookings handled by certified travel partners</li>
-                          <li>SkyScout earns a small commission at no extra cost to you</li>
+                          <li>dubai2usa earns a small commission at no extra cost to you</li>
                         </ul>
                       </div>
                     </div>
@@ -1788,7 +1788,7 @@
                     <div className="bg-gradient-to-br from-blue-600 to-purple-600 p-2.5 rounded-xl">
                       <Icon name="Plane" size={24} className="text-white" />
                     </div>
-                    <h3 className="text-2xl font-black">SkyScout</h3>
+                    <h3 className="text-2xl font-black">dubai2usa</h3>
                   </div>
                   <p className="text-gray-400 text-sm font-medium">
                     Professional flight search powered by real-time data from Amadeus API
@@ -1826,7 +1826,7 @@
               </div>
               
               <div className="border-t border-gray-800 pt-8 text-center text-sm text-gray-400">
-                <p className="font-semibold">© 2024 SkyScout. All rights reserved.</p>
+                <p className="font-semibold">© 2024 dubai2usa. All rights reserved.</p>
                 <p className="mt-2">Real flight data • Secure payments • Trusted partners</p>
               </div>
             </div>
@@ -1835,7 +1835,7 @@
       );
     };
 
-    ReactDOM.render(<SkyScout />, document.getElementById('root'));
+    ReactDOM.render(<dubai2usa />, document.getElementById('root'));
   </script>
 </body>
 </html>

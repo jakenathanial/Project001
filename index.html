@@ -1,798 +1,1841 @@
-import React, { useState, useEffect, useMemo } from 'react';
-import { Search, TrendingDown, Bell, Calendar, Users, Plane, Clock, DollarSign, MapPin, Menu, X, Star, ChevronDown, Filter, ArrowRight, Sparkles, BarChart3, Globe, Sun, Info } from 'lucide-react';
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>SkyScout - Professional Flight Search & Booking</title>
+  
+  <!-- React -->
+  <script crossorigin src="https://unpkg.com/react@18/umd/react.production.min.js"></script>
+  <script crossorigin src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"></script>
+  <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+  
+  <!-- Tailwind CSS -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  
+  <!-- Google Sign-In -->
+  <script src="https://accounts.google.com/gsi/client" async defer></script>
+  
+  <!-- Stripe Payment Gateway -->
+  <script src="https://js.stripe.com/v3/"></script>
+  
+  <!-- EmailJS for real email sending -->
+  <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/@emailjs/browser@3/dist/email.min.js"></script>
+  
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap');
+    
+    * {
+      font-family: 'Inter', sans-serif;
+    }
+    
+    .flight-card {
+      transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+    
+    .flight-card:hover {
+      transform: translateY(-4px);
+      box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+    }
+    
+    @keyframes pulse {
+      0%, 100% { opacity: 1; }
+      50% { opacity: 0.5; }
+    }
+    
+    .animate-pulse {
+      animation: pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+    }
+    
+    .scrollbar-hide::-webkit-scrollbar {
+      display: none;
+    }
+    
+    .scrollbar-hide {
+      -ms-overflow-style: none;
+      scrollbar-width: none;
+    }
 
-const SkyScout = () => {
-  const [activeTab, setActiveTab] = useState('search');
-  const [tripType, setTripType] = useState('round-trip');
-  const [searchParams, setSearchParams] = useState({
-    from: '',
-    to: '',
-    departDate: '',
-    returnDate: '',
-    passengers: 1,
-    class: 'ECONOMY'
-  });
-  const [flights, setFlights] = useState([]);
-  const [loading, setLoading] = useState(false);
-  const [error, setError] = useState('');
-  const [accessToken, setAccessToken] = useState('');
-  const [sortBy, setSortBy] = useState('price');
-  const [priceAlerts, setPriceAlerts] = useState([]);
-  const [savedSearches, setSavedSearches] = useState([]);
-  const [favoriteRoutes, setFavoriteRoutes] = useState([]);
-  const [userLocation, setUserLocation] = useState(null);
-  const [airportSuggestions, setAirportSuggestions] = useState([]);
-  const [showSuggestions, setShowSuggestions] = useState({ from: false, to: false });
-  const [flexibleDates, setFlexibleDates] = useState([]);
-  const [showMobileMenu, setShowMobileMenu] = useState(false);
-  const [isLoggedIn, setIsLoggedIn] = useState(false);
-  const [username, setUsername] = useState('');
+    .modal-overlay {
+      backdrop-filter: blur(8px);
+    }
 
-  const API_KEY = '5VMWyRgkMAmC6zlTYDcYYyU1wAg8Xz7T';
-  const API_SECRET = 'IzGkoG0NaYJum5iU';
+    .gradient-text {
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
 
-  const getAccessToken = async () => {
-    try {
-      const response = await fetch('https://test.api.amadeus.com/v1/security/oauth2/token', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/x-www-form-urlencoded',
-        },
-        body: `grant_type=client_credentials&client_id=${API_KEY}&client_secret=${API_SECRET}`
+    .stripe-card-element {
+      padding: 12px;
+      border: 1px solid #e5e7eb;
+      border-radius: 8px;
+      background: white;
+    }
+
+    .airline-logo {
+      width: 40px;
+      height: 40px;
+      object-fit: contain;
+    }
+
+    /* Chart styles */
+    .price-chart {
+      height: 200px;
+    }
+  </style>
+</head>
+<body class="bg-gray-50">
+  <div id="root"></div>
+
+  <script type="text/babel">
+    const { useState, useEffect, useMemo, useRef } = React;
+
+    // ============================================
+    // CONFIGURATION - REPLACE WITH YOUR REAL KEYS
+    // ============================================
+    
+    const CONFIG = {
+      // Amadeus API (already provided)
+      AMADEUS_API_KEY: '5VMWyRgkMAmC6zlTYDcYYyU1wAg8Xz7T',
+      AMADEUS_API_SECRET: 'IzGkoG0NaYJum5iU',
+      
+      // Google OAuth - Get from: https://console.cloud.google.com/
+      GOOGLE_CLIENT_ID: 'YOUR_GOOGLE_CLIENT_ID.apps.googleusercontent.com',
+      
+      // Stripe - Get from: https://dashboard.stripe.com/apikeys
+      STRIPE_PUBLISHABLE_KEY: 'pk_test_YOUR_STRIPE_PUBLISHABLE_KEY',
+      
+      // EmailJS - Get from: https://www.emailjs.com/
+      EMAILJS_PUBLIC_KEY: 'YOUR_EMAILJS_PUBLIC_KEY',
+      EMAILJS_SERVICE_ID: 'YOUR_SERVICE_ID',
+      EMAILJS_TEMPLATE_ID: 'YOUR_TEMPLATE_ID',
+      
+      // Subscription Price
+      PREMIUM_PRICE: 9.99,
+      PREMIUM_CURRENCY: 'usd'
+    };
+
+    // ============================================
+    // ICON COMPONENTS
+    // ============================================
+    
+    const Icon = ({ name, size = 24, className = "", fill = false }) => {
+      const icons = {
+        Search: <svg xmlns="http://www.w3.org/2000/svg" width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={className}><circle cx="11" cy="11" r="8"></circle><path d="m21 21-4.3-4.3"></path></svg>,
+        TrendingDown: <svg xmlns="http://www.w3.org/2000/svg" width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={className}><polyline points="23 18 13.5 8.5 8.5 13.5 1 6"></polyline><polyline points="17 18 23 18 23 12"></polyline></svg>,
+        Bell: <svg xmlns="http://www.w3.org/2000/svg" width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={className}><path d="M6 8a6 6 0 0 1 12 0c0 7 3 9 3 9H3s3-2 3-9"></path><path d="M10.3 21a1.94 1.94 0 0 0 3.4 0"></path></svg>,
+        Calendar: <svg xmlns="http://www.w3.org/2000/svg" width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={className}><rect width="18" height="18" x="3" y="4" rx="2" ry="2"></rect><line x1="16" x2="16" y1="2" y2="6"></line><line x1="8" x2="8" y1="2" y2="6"></line><line x1="3" x2="21" y1="10" y2="10"></line></svg>,
+        Users: <svg xmlns="http://www.w3.org/2000/svg" width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={className}><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"></path><circle cx="9" cy="7" r="4"></circle><path d="M22 21v-2a4 4 0 0 0-3-3.87"></path><path d="M16 3.13a4 4 0 0 1 0 7.75"></path></svg>,
+        Plane: <svg xmlns="http://www.w3.org/2000/svg" width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={className}><path d="M17.8 19.2 16 11l3.5-3.5C21 6 21.5 4 21 3c-1-.5-3 0-4.5 1.5L13 8 4.8 6.2c-.5-.1-.9.1-1.1.5l-.3.5c-.2.5-.1 1 .3 1.3L9 12l-2 3H4l-1 1 3 2 2 3 1-1v-3l3-2 3.5 5.3c.3.4.8.5 1.3.3l.5-.2c.4-.3.6-.7.5-1.2z"></path></svg>,
+        Clock: <svg xmlns="http://www.w3.org/2000/svg" width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={className}><circle cx="12" cy="12" r="10"></circle><polyline points="12 6 12 12 16 14"></polyline></svg>,
+        DollarSign: <svg xmlns="http://www.w3.org/2000/svg" width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={className}><line x1="12" x2="12" y1="2" y2="22"></line><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"></path></svg>,
+        MapPin: <svg xmlns="http://www.w3.org/2000/svg" width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={className}><path d="M20 10c0 6-8 12-8 12s-8-6-8-12a8 8 0 0 1 16 0Z"></path><circle cx="12" cy="10" r="3"></circle></svg>,
+        Menu: <svg xmlns="http://www.w3.org/2000/svg" width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={className}><line x1="4" x2="20" y1="12" y2="12"></line><line x1="4" x2="20" y1="6" y2="6"></line><line x1="4" x2="20" y1="18" y2="18"></line></svg>,
+        X: <svg xmlns="http://www.w3.org/2000/svg" width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={className}><path d="M18 6 6 18"></path><path d="m6 6 12 12"></path></svg>,
+        Star: <svg xmlns="http://www.w3.org/2000/svg" width={size} height={size} viewBox="0 0 24 24" fill={fill ? "currentColor" : "none"} stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={className}><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon></svg>,
+        Filter: <svg xmlns="http://www.w3.org/2000/svg" width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={className}><polygon points="22 3 2 3 10 12.46 10 19 14 21 14 12.46 22 3"></polygon></svg>,
+        ArrowRight: <svg xmlns="http://www.w3.org/2000/svg" width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={className}><path d="M5 12h14"></path><path d="m12 5 7 7-7 7"></path></svg>,
+        Sparkles: <svg xmlns="http://www.w3.org/2000/svg" width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={className}><path d="m12 3-1.912 5.813a2 2 0 0 1-1.275 1.275L3 12l5.813 1.912a2 2 0 0 1 1.275 1.275L12 21l1.912-5.813a2 2 0 0 1 1.275-1.275L21 12l-5.813-1.912a2 2 0 0 1-1.275-1.275L12 3Z"></path><path d="M5 3v4"></path><path d="M19 17v4"></path><path d="M3 5h4"></path><path d="M17 19h4"></path></svg>,
+        BarChart3: <svg xmlns="http://www.w3.org/2000/svg" width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={className}><path d="M3 3v18h18"></path><path d="M18 17V9"></path><path d="M13 17V5"></path><path d="M8 17v-3"></path></svg>,
+        Globe: <svg xmlns="http://www.w3.org/2000/svg" width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={className}><circle cx="12" cy="12" r="10"></circle><line x1="2" x2="22" y1="12" y2="12"></line><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"></path></svg>,
+        Sun: <svg xmlns="http://www.w3.org/2000/svg" width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={className}><circle cx="12" cy="12" r="4"></circle><path d="M12 2v2"></path><path d="M12 20v2"></path><path d="m4.93 4.93 1.41 1.41"></path><path d="m17.66 17.66 1.41 1.41"></path><path d="M2 12h2"></path><path d="M20 12h2"></path><path d="m6.34 17.66-1.41 1.41"></path><path d="m19.07 4.93-1.41 1.41"></path></svg>,
+        Info: <svg xmlns="http://www.w3.org/2000/svg" width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={className}><circle cx="12" cy="12" r="10"></circle><path d="M12 16v-4"></path><path d="M12 8h.01"></path></svg>,
+        ExternalLink: <svg xmlns="http://www.w3.org/2000/svg" width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={className}><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"></path><polyline points="15 3 21 3 21 9"></polyline><line x1="10" x2="21" y1="14" y2="3"></line></svg>,
+        Zap: <svg xmlns="http://www.w3.org/2000/svg" width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={className}><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"></polygon></svg>,
+        TrendingUp: <svg xmlns="http://www.w3.org/2000/svg" width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={className}><polyline points="23 6 13.5 15.5 8.5 10.5 1 18"></polyline><polyline points="17 6 23 6 23 12"></polyline></svg>,
+        AlertCircle: <svg xmlns="http://www.w3.org/2000/svg" width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={className}><circle cx="12" cy="12" r="10"></circle><line x1="12" x2="12" y1="8" y2="12"></line><line x1="12" x2="12.01" y1="16" y2="16"></line></svg>,
+        Check: <svg xmlns="http://www.w3.org/2000/svg" width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={className}><polyline points="20 6 9 17 4 12"></polyline></svg>,
+        CreditCard: <svg xmlns="http://www.w3.org/2000/svg" width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={className}><rect width="20" height="14" x="2" y="5" rx="2"></rect><line x1="2" x2="22" y1="10" y2="10"></line></svg>,
+        Loader: <svg xmlns="http://www.w3.org/2000/svg" width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={`${className} animate-spin`}><line x1="12" x2="12" y1="2" y2="6"></line><line x1="12" x2="12" y1="18" y2="22"></line><line x1="4.93" x2="7.76" y1="4.93" y2="7.76"></line><line x1="16.24" x2="19.07" y1="16.24" y2="19.07"></line><line x1="2" x2="6" y1="12" y2="12"></line><line x1="18" x2="22" y1="12" y2="12"></line><line x1="4.93" x2="7.76" y1="19.07" y2="16.24"></line><line x1="16.24" x2="19.07" y1="7.76" y2="4.93"></line></svg>,
+        Briefcase: <svg xmlns="http://www.w3.org/2000/svg" width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={className}><rect width="20" height="14" x="2" y="7" rx="2" ry="2"></rect><path d="M16 21V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16"></path></svg>,
+      };
+      return icons[name] || null;
+    };
+
+    // UAE and USA restricted airports for free tier
+    const UAE_AIRPORTS = ['DXB', 'AUH', 'SHJ', 'RKT', 'AAN', 'DWC', 'AJM'];
+    const USA_AIRPORTS = ['JFK', 'LAX', 'ORD', 'DFW', 'DEN', 'ATL', 'SFO', 'SEA', 'LAS', 'MCO', 'EWR', 'CLT', 'PHX', 'IAH', 'MIA', 'BOS', 'MSP', 'DTW', 'PHL', 'LGA', 'FLL', 'BWI', 'DCA', 'MDW', 'SLC', 'SAN', 'IAD', 'TPA', 'PDX', 'STL'];
+
+    // ============================================
+    // MAIN APP COMPONENT
+    // ============================================
+
+    const SkyScout = () => {
+      // State Management
+      const [activeTab, setActiveTab] = useState('search');
+      const [tripType, setTripType] = useState('round-trip');
+      const [searchParams, setSearchParams] = useState({
+        from: '',
+        to: '',
+        departDate: '',
+        returnDate: '',
+        passengers: 1,
+        class: 'ECONOMY'
       });
+      const [flights, setFlights] = useState([]);
+      const [loading, setLoading] = useState(false);
+      const [error, setError] = useState('');
+      const [accessToken, setAccessToken] = useState('');
+      const [sortBy, setSortBy] = useState('price');
+      const [priceAlerts, setPriceAlerts] = useState([]);
+      const [savedSearches, setSavedSearches] = useState([]);
+      const [favoriteRoutes, setFavoriteRoutes] = useState([]);
+      const [airportSuggestions, setAirportSuggestions] = useState([]);
+      const [showSuggestions, setShowSuggestions] = useState({ from: false, to: false });
+      const [flexibleDates, setFlexibleDates] = useState([]);
+      const [showMobileMenu, setShowMobileMenu] = useState(false);
       
-      const data = await response.json();
-      if (data.access_token) {
-        setAccessToken(data.access_token);
-        return data.access_token;
-      }
-    } catch (err) {
-      setError('Failed to authenticate with Amadeus API');
-      console.error(err);
-    }
-  };
+      // User & Auth
+      const [isLoggedIn, setIsLoggedIn] = useState(false);
+      const [user, setUser] = useState(null);
+      const [isPremium, setIsPremium] = useState(false);
+      
+      // Modals
+      const [showBookingModal, setShowBookingModal] = useState(false);
+      const [showSubscribeModal, setShowSubscribeModal] = useState(false);
+      const [selectedFlight, setSelectedFlight] = useState(null);
+      
+      // Stripe
+      const [stripe, setStripe] = useState(null);
+      const [cardElement, setCardElement] = useState(null);
+      const [paymentProcessing, setPaymentProcessing] = useState(false);
+      
+      // Price comparison & charts
+      const [priceHistory, setPriceHistory] = useState([]);
+      const [monthlyPrices, setMonthlyPrices] = useState([]);
 
-  useEffect(() => {
-    getAccessToken();
-    getUserLocation();
-    loadUserData();
-  }, []);
+      // Refs
+      const googleButtonRef = useRef(null);
+      const cardElementRef = useRef(null);
 
-  const getUserLocation = () => {
-    if (navigator.geolocation) {
-      navigator.geolocation.getCurrentPosition(
-        (position) => {
-          setUserLocation({
-            lat: position.coords.latitude,
-            lng: position.coords.longitude
+      // ============================================
+      // INITIALIZATION
+      // ============================================
+
+      useEffect(() => {
+        initializeApp();
+      }, []);
+
+      const initializeApp = async () => {
+        // Get Amadeus token
+        await getAccessToken();
+        
+        // Initialize Stripe
+        if (window.Stripe && CONFIG.STRIPE_PUBLISHABLE_KEY.startsWith('pk_')) {
+          const stripeInstance = window.Stripe(CONFIG.STRIPE_PUBLISHABLE_KEY);
+          setStripe(stripeInstance);
+        }
+        
+        // Initialize EmailJS
+        if (window.emailjs && CONFIG.EMAILJS_PUBLIC_KEY) {
+          emailjs.init(CONFIG.EMAILJS_PUBLIC_KEY);
+        }
+        
+        // Initialize Google Sign-In
+        if (window.google && CONFIG.GOOGLE_CLIENT_ID.includes('apps.googleusercontent.com')) {
+          window.google.accounts.id.initialize({
+            client_id: CONFIG.GOOGLE_CLIENT_ID,
+            callback: handleGoogleSignIn
           });
-        },
-        (error) => console.log('Location access denied')
-      );
-    }
-  };
+        }
+        
+        // Load user data from localStorage
+        loadUserData();
+      };
 
-  const loadUserData = () => {
-    try {
-      const alerts = JSON.parse(localStorage.getItem('priceAlerts') || '[]');
-      const searches = JSON.parse(localStorage.getItem('savedSearches') || '[]');
-      const favorites = JSON.parse(localStorage.getItem('favoriteRoutes') || '[]');
-      const user = localStorage.getItem('username');
-      
-      setPriceAlerts(alerts);
-      setSavedSearches(searches);
-      setFavoriteRoutes(favorites);
-      if (user) {
-        setIsLoggedIn(true);
-        setUsername(user);
-      }
-    } catch (err) {
-      console.error('Error loading user data:', err);
-    }
-  };
+      // ============================================
+      // AMADEUS API FUNCTIONS
+      // ============================================
 
-  const searchAirports = async (query, field) => {
-    if (!query || query.length < 2) {
-      setAirportSuggestions([]);
-      return;
-    }
+      const getAccessToken = async () => {
+        try {
+          const response = await fetch('https://test.api.amadeus.com/v1/security/oauth2/token', {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/x-www-form-urlencoded',
+            },
+            body: `grant_type=client_credentials&client_id=${CONFIG.AMADEUS_API_KEY}&client_secret=${CONFIG.AMADEUS_API_SECRET}`
+          });
+          
+          const data = await response.json();
+          if (data.access_token) {
+            setAccessToken(data.access_token);
+            return data.access_token;
+          }
+        } catch (err) {
+          console.error('Amadeus auth error:', err);
+          setError('Failed to connect to flight search service');
+        }
+      };
 
-    try {
-      const token = accessToken || await getAccessToken();
-      const response = await fetch(
-        `https://test.api.amadeus.com/v1/reference-data/locations?subType=AIRPORT&keyword=${query}&page[limit]=5`,
-        {
-          headers: {
-            'Authorization': `Bearer ${token}`
+      const searchAirports = async (query, field) => {
+        if (!query || query.length < 2) {
+          setAirportSuggestions([]);
+          return;
+        }
+
+        try {
+          const token = accessToken || await getAccessToken();
+          const response = await fetch(
+            `https://test.api.amadeus.com/v1/reference-data/locations?subType=AIRPORT,CITY&keyword=${encodeURIComponent(query)}&page[limit]=10`,
+            {
+              headers: {
+                'Authorization': `Bearer ${token}`
+              }
+            }
+          );
+
+          const data = await response.json();
+          if (data.data) {
+            // Filter for free tier
+            let filtered = data.data;
+            if (!isPremium) {
+              filtered = data.data.filter(airport => 
+                UAE_AIRPORTS.includes(airport.iataCode) || USA_AIRPORTS.includes(airport.iataCode)
+              );
+            }
+            setAirportSuggestions(filtered);
+            setShowSuggestions({ ...showSuggestions, [field]: true });
+          }
+        } catch (err) {
+          console.error('Airport search error:', err);
+        }
+      };
+
+      const searchFlights = async () => {
+        if (!isLoggedIn) {
+          setError('Please sign in with Google to search flights');
+          renderGoogleButton();
+          return;
+        }
+
+        if (!searchParams.from || !searchParams.to || !searchParams.departDate) {
+          setError('Please fill in all required fields');
+          return;
+        }
+
+        // Check route restrictions for free tier
+        if (!isPremium) {
+          const fromAllowed = UAE_AIRPORTS.includes(searchParams.from) || USA_AIRPORTS.includes(searchParams.from);
+          const toAllowed = UAE_AIRPORTS.includes(searchParams.to) || USA_AIRPORTS.includes(searchParams.to);
+          
+          if (!fromAllowed || !toAllowed) {
+            setError('Free accounts limited to UAE ↔ USA routes. Upgrade to Premium for worldwide access!');
+            setTimeout(() => setShowSubscribeModal(true), 2000);
+            return;
           }
         }
-      );
 
-      const data = await response.json();
-      if (data.data) {
-        setAirportSuggestions(data.data);
-        setShowSuggestions({ ...showSuggestions, [field]: true });
-      }
-    } catch (err) {
-      console.error('Airport search error:', err);
-    }
-  };
+        setLoading(true);
+        setError('');
 
-  const searchFlights = async () => {
-    if (!searchParams.from || !searchParams.to || !searchParams.departDate) {
-      setError('Please fill in all required fields');
-      return;
-    }
+        try {
+          const token = accessToken || await getAccessToken();
+          let url = `https://test.api.amadeus.com/v2/shopping/flight-offers?originLocationCode=${searchParams.from}&destinationLocationCode=${searchParams.to}&departureDate=${searchParams.departDate}&adults=${searchParams.passengers}&travelClass=${searchParams.class}&max=50&currencyCode=USD`;
+          
+          if (tripType === 'round-trip' && searchParams.returnDate) {
+            url += `&returnDate=${searchParams.returnDate}`;
+          }
 
-    setLoading(true);
-    setError('');
+          const response = await fetch(url, {
+            headers: {
+              'Authorization': `Bearer ${token}`
+            }
+          });
 
-    try {
-      const token = accessToken || await getAccessToken();
-      let url = `https://test.api.amadeus.com/v2/shopping/flight-offers?originLocationCode=${searchParams.from}&destinationLocationCode=${searchParams.to}&departureDate=${searchParams.departDate}&adults=${searchParams.passengers}&travelClass=${searchParams.class}&max=50`;
-      
-      if (tripType === 'round-trip' && searchParams.returnDate) {
-        url += `&returnDate=${searchParams.returnDate}`;
-      }
-
-      const response = await fetch(url, {
-        headers: {
-          'Authorization': `Bearer ${token}`
+          const data = await response.json();
+          
+          if (data.data && data.data.length > 0) {
+            setFlights(data.data);
+            saveSearch();
+            generateFlexibleDates();
+            // Track price history
+            trackPriceHistory(data.data);
+          } else {
+            setError('No flights found for this route. Try different dates or airports.');
+            setFlights([]);
+          }
+        } catch (err) {
+          console.error('Flight search error:', err);
+          setError('Failed to search flights. Please try again.');
+        } finally {
+          setLoading(false);
         }
-      });
+      };
 
-      const data = await response.json();
-      
-      if (data.data && data.data.length > 0) {
-        setFlights(data.data);
-        saveSearch();
-        generateFlexibleDates();
-      } else {
-        setError('No flights found for this route');
-        setFlights([]);
-      }
-    } catch (err) {
-      setError('Failed to search flights. Please try again.');
-      console.error(err);
-    } finally {
-      setLoading(false);
-    }
-  };
+      const generateFlexibleDates = async () => {
+        const dates = [];
+        const baseDate = new Date(searchParams.departDate);
+        
+        // Generate ±3 days with mock prices (in production, make multiple API calls)
+        for (let i = -3; i <= 3; i++) {
+          const date = new Date(baseDate);
+          date.setDate(baseDate.getDate() + i);
+          dates.push({
+            date: date.toISOString().split('T')[0],
+            offset: i,
+            price: null, // Will be populated with real data
+            loading: true
+          });
+        }
+        
+        setFlexibleDates(dates);
+        
+        // Fetch real prices for flexible dates (limited to prevent API overuse)
+        // In production, you might want to fetch these in parallel or cache results
+      };
 
-  const generateFlexibleDates = () => {
-    const dates = [];
-    const baseDate = new Date(searchParams.departDate);
-    
-    for (let i = -3; i <= 3; i++) {
-      const date = new Date(baseDate);
-      date.setDate(baseDate.getDate() + i);
-      dates.push({
-        date: date.toISOString().split('T')[0],
-        offset: i,
-        price: Math.floor(Math.random() * 200) + 300
-      });
-    }
-    
-    setFlexibleDates(dates);
-  };
+      const trackPriceHistory = (flightData) => {
+        if (!flightData.length) return;
+        
+        const cheapestPrice = Math.min(...flightData.map(f => parseFloat(f.price.total)));
+        const history = {
+          date: new Date().toISOString(),
+          price: cheapestPrice,
+          route: `${searchParams.from}-${searchParams.to}`
+        };
+        
+        const existingHistory = JSON.parse(localStorage.getItem('priceHistory') || '[]');
+        const updated = [history, ...existingHistory.slice(0, 29)];
+        localStorage.setItem('priceHistory', JSON.stringify(updated));
+        setPriceHistory(updated);
+      };
 
-  const saveSearch = () => {
-    const search = {
-      from: searchParams.from,
-      to: searchParams.to,
-      date: searchParams.departDate,
-      timestamp: new Date().toISOString()
-    };
-    
-    const updated = [search, ...savedSearches.slice(0, 9)];
-    setSavedSearches(updated);
-    try {
-      localStorage.setItem('savedSearches', JSON.stringify(updated));
-    } catch (err) {
-      console.error('Error saving search:', err);
-    }
-  };
+      // ============================================
+      // GOOGLE AUTHENTICATION
+      // ============================================
 
-  const addPriceAlert = (flight) => {
-    const alert = {
-      id: Date.now(),
-      route: `${searchParams.from} → ${searchParams.to}`,
-      price: parseFloat(flight.price.total),
-      date: searchParams.departDate,
-      created: new Date().toISOString()
-    };
-    
-    const updated = [...priceAlerts, alert];
-    setPriceAlerts(updated);
-    try {
-      localStorage.setItem('priceAlerts', JSON.stringify(updated));
-    } catch (err) {
-      console.error('Error saving alert:', err);
-    }
-  };
+      const renderGoogleButton = () => {
+        if (window.google && googleButtonRef.current && CONFIG.GOOGLE_CLIENT_ID.includes('apps.googleusercontent.com')) {
+          window.google.accounts.id.renderButton(
+            googleButtonRef.current,
+            {
+              theme: 'outline',
+              size: 'large',
+              text: 'continue_with',
+              width: 280
+            }
+          );
+        }
+      };
 
-  const toggleFavorite = () => {
-    const route = {
-      from: searchParams.from,
-      to: searchParams.to,
-      id: `${searchParams.from}-${searchParams.to}`
-    };
-    
-    const exists = favoriteRoutes.find(r => r.id === route.id);
-    let updated;
-    
-    if (exists) {
-      updated = favoriteRoutes.filter(r => r.id !== route.id);
-    } else {
-      updated = [...favoriteRoutes, route];
-    }
-    
-    setFavoriteRoutes(updated);
-    try {
-      localStorage.setItem('favoriteRoutes', JSON.stringify(updated));
-    } catch (err) {
-      console.error('Error saving favorite:', err);
-    }
-  };
+      const handleGoogleSignIn = async (response) => {
+        try {
+          // Decode JWT token
+          const credential = response.credential;
+          const payload = JSON.parse(atob(credential.split('.')[1]));
+          
+          const userData = {
+            email: payload.email,
+            name: payload.name,
+            picture: payload.picture,
+            emailVerified: payload.email_verified,
+            googleId: payload.sub
+          };
+          
+          // Save user data
+          localStorage.setItem('user', JSON.stringify(userData));
+          localStorage.setItem('googleToken', credential);
+          
+          // Check if premium
+          const premiumStatus = localStorage.getItem(`premium_${payload.sub}`) === 'true';
+          
+          setUser(userData);
+          setIsLoggedIn(true);
+          setIsPremium(premiumStatus);
+          
+          // Send welcome email
+          if (emailjs && CONFIG.EMAILJS_SERVICE_ID) {
+            await emailjs.send(
+              CONFIG.EMAILJS_SERVICE_ID,
+              CONFIG.EMAILJS_TEMPLATE_ID,
+              {
+                to_email: userData.email,
+                to_name: userData.name,
+                message: 'Welcome to SkyScout! Start searching for the best flight deals.'
+              }
+            );
+          }
+          
+        } catch (err) {
+          console.error('Google sign-in error:', err);
+          setError('Failed to sign in with Google');
+        }
+      };
 
-  const isFavorite = useMemo(() => {
-    return favoriteRoutes.some(r => r.id === `${searchParams.from}-${searchParams.to}`);
-  }, [favoriteRoutes, searchParams.from, searchParams.to]);
+      const handleSignOut = () => {
+        if (window.google) {
+          window.google.accounts.id.disableAutoSelect();
+        }
+        localStorage.removeItem('user');
+        localStorage.removeItem('googleToken');
+        setUser(null);
+        setIsLoggedIn(false);
+        setIsPremium(false);
+      };
 
-  const sortedFlights = useMemo(() => {
-    if (!flights.length) return [];
-    
-    return [...flights].sort((a, b) => {
-      switch (sortBy) {
-        case 'price':
-          return parseFloat(a.price.total) - parseFloat(b.price.total);
-        case 'duration':
-          const durationA = a.itineraries[0].duration.replace('PT', '').replace('H', '.').replace('M', '');
-          const durationB = b.itineraries[0].duration.replace('PT', '').replace('H', '.').replace('M', '');
-          return parseFloat(durationA) - parseFloat(durationB);
-        case 'best':
-          const scoreA = parseFloat(a.price.total) / parseFloat(a.itineraries[0].duration.replace('PT', '').replace('H', '.').replace('M', ''));
-          const scoreB = parseFloat(b.price.total) / parseFloat(b.itineraries[0].duration.replace('PT', '').replace('H', '.').replace('M', ''));
-          return scoreA - scoreB;
-        default:
-          return 0;
-      }
-    });
-  }, [flights, sortBy]);
+      // ============================================
+      // STRIPE PAYMENT PROCESSING
+      // ============================================
 
-  const cheapestFlight = useMemo(() => {
-    if (!flights.length) return null;
-    return flights.reduce((min, flight) => 
-      parseFloat(flight.price.total) < parseFloat(min.price.total) ? flight : min
-    );
-  }, [flights]);
+      useEffect(() => {
+        if (showSubscribeModal && stripe && cardElementRef.current && !cardElement) {
+          const elements = stripe.elements();
+          const card = elements.create('card', {
+            style: {
+              base: {
+                fontSize: '16px',
+                color: '#32325d',
+                fontFamily: 'Inter, sans-serif',
+                '::placeholder': {
+                  color: '#aab7c4'
+                }
+              },
+              invalid: {
+                color: '#fa755a',
+                iconColor: '#fa755a'
+              }
+            }
+          });
+          card.mount(cardElementRef.current);
+          setCardElement(card);
+        }
+      }, [showSubscribeModal, stripe]);
 
-  const formatDuration = (duration) => {
-    const hours = duration.match(/(\d+)H/)?.[1] || '0';
-    const minutes = duration.match(/(\d+)M/)?.[1] || '0';
-    return `${hours}h ${minutes}m`;
-  };
+      const handleSubscribe = async () => {
+        if (!stripe || !cardElement) {
+          setError('Payment system not initialized. Please refresh and try again.');
+          return;
+        }
 
-  const formatTime = (dateTime) => {
-    return new Date(dateTime).toLocaleTimeString('en-US', { 
-      hour: '2-digit', 
-      minute: '2-digit',
-      hour12: true 
-    });
-  };
+        if (!user) {
+          setError('Please sign in first');
+          return;
+        }
 
-  const handleLogin = () => {
-    const name = prompt('Enter your name:');
-    if (name) {
-      setUsername(name);
-      setIsLoggedIn(true);
-      try {
-        localStorage.setItem('username', name);
-      } catch (err) {
-        console.error('Error saving username:', err);
-      }
-    }
-  };
+        setPaymentProcessing(true);
+        setError('');
 
-  const handleLogout = () => {
-    setIsLoggedIn(false);
-    setUsername('');
-    try {
-      localStorage.removeItem('username');
-    } catch (err) {
-      console.error('Error removing username:', err);
-    }
-  };
+        try {
+          // Create payment method
+          const { error: pmError, paymentMethod } = await stripe.createPaymentMethod({
+            type: 'card',
+            card: cardElement,
+            billing_details: {
+              email: user.email,
+              name: user.name
+            }
+          });
 
-  const removeAlert = (alertId) => {
-    const updated = priceAlerts.filter(a => a.id !== alertId);
-    setPriceAlerts(updated);
-    try {
-      localStorage.setItem('priceAlerts', JSON.stringify(updated));
-    } catch (err) {
-      console.error('Error removing alert:', err);
-    }
-  };
+          if (pmError) {
+            throw new Error(pmError.message);
+          }
 
-  return (
-    <div className="min-h-screen bg-gradient-to-br from-blue-50 via-white to-purple-50">
-      <header className="bg-white shadow-sm border-b sticky top-0 z-50">
-        <div className="max-w-7xl mx-auto px-4 py-4">
-          <div className="flex items-center justify-between">
-            <div className="flex items-center space-x-2">
-              <div className="bg-gradient-to-br from-blue-600 to-purple-600 p-2 rounded-lg">
-                <Plane className="text-white" size={24} />
-              </div>
-              <div>
-                <h1 className="text-2xl font-bold bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent">
-                  SkyScout
-                </h1>
-                <p className="text-xs text-gray-500">Find Your Perfect Flight</p>
-              </div>
-            </div>
+          // In production, send paymentMethod.id to your backend to create subscription
+          // For now, simulate successful payment
+          console.log('Payment Method Created:', paymentMethod.id);
+          
+          // Simulate backend processing
+          await new Promise(resolve => setTimeout(resolve, 2000));
+          
+          // Activate premium
+          localStorage.setItem(`premium_${user.googleId}`, 'true');
+          setIsPremium(true);
+          setShowSubscribeModal(false);
+          
+          // Send confirmation email
+          if (emailjs && CONFIG.EMAILJS_SERVICE_ID) {
+            await emailjs.send(
+              CONFIG.EMAILJS_SERVICE_ID,
+              CONFIG.EMAILJS_TEMPLATE_ID,
+              {
+                to_email: user.email,
+                to_name: user.name,
+                message: `Thank you for upgrading to Premium! You now have access to worldwide flight search and price alerts.`
+              }
+            );
+          }
+          
+          alert('🎉 Welcome to Premium! You now have worldwide access!');
+          
+        } catch (err) {
+          console.error('Payment error:', err);
+          setError(err.message || 'Payment failed. Please try again.');
+        } finally {
+          setPaymentProcessing(false);
+        }
+      };
 
-            <nav className="hidden md:flex items-center space-x-6">
-              <button
-                onClick={() => setActiveTab('search')}
-                className={`flex items-center space-x-2 px-4 py-2 rounded-lg transition ${
-                  activeTab === 'search' ? 'bg-blue-100 text-blue-600' : 'text-gray-600 hover:bg-gray-100'
-                }`}
-              >
-                <Search size={18} />
-                <span>Search</span>
-              </button>
-              <button
-                onClick={() => setActiveTab('deals')}
-                className={`flex items-center space-x-2 px-4 py-2 rounded-lg transition ${
-                  activeTab === 'deals' ? 'bg-blue-100 text-blue-600' : 'text-gray-600 hover:bg-gray-100'
-                }`}
-              >
-                <TrendingDown size={18} />
-                <span>Deals</span>
-              </button>
-              <button
-                onClick={() => setActiveTab('alerts')}
-                className={`flex items-center space-x-2 px-4 py-2 rounded-lg transition relative ${
-                  activeTab === 'alerts' ? 'bg-blue-100 text-blue-600' : 'text-gray-600 hover:bg-gray-100'
-                }`}
-              >
-                <Bell size={18} />
-                <span>Alerts</span>
-                {priceAlerts.length > 0 && (
-                  <span className="absolute -top-1 -right-1 bg-red-500 text-white text-xs rounded-full w-5 h-5 flex items-center justify-center">
-                    {priceAlerts.length}
-                  </span>
-                )}
-              </button>
-              <button
-                onClick={() => setActiveTab('profile')}
-                className={`flex items-center space-x-2 px-4 py-2 rounded-lg transition ${
-                  activeTab === 'profile' ? 'bg-blue-100 text-blue-600' : 'text-gray-600 hover:bg-gray-100'
-                }`}
-              >
-                <Users size={18} />
-                <span>{isLoggedIn ? username : 'Account'}</span>
-              </button>
-            </nav>
+      // ============================================
+      // DATA MANAGEMENT
+      // ============================================
 
-            <button
-              className="md:hidden p-2 hover:bg-gray-100 rounded-lg"
-              onClick={() => setShowMobileMenu(!showMobileMenu)}
-            >
-              {showMobileMenu ? <X size={24} /> : <Menu size={24} />}
-            </button>
-          </div>
+      const loadUserData = () => {
+        const storedUser = localStorage.getItem('user');
+        const alerts = JSON.parse(localStorage.getItem('priceAlerts') || '[]');
+        const searches = JSON.parse(localStorage.getItem('savedSearches') || '[]');
+        const favorites = JSON.parse(localStorage.getItem('favoriteRoutes') || '[]');
+        const history = JSON.parse(localStorage.getItem('priceHistory') || '[]');
+        
+        if (storedUser) {
+          const userData = JSON.parse(storedUser);
+          setUser(userData);
+          setIsLoggedIn(true);
+          const premiumStatus = localStorage.getItem(`premium_${userData.googleId}`) === 'true';
+          setIsPremium(premiumStatus);
+        }
+        
+        setPriceAlerts(alerts);
+        setSavedSearches(searches);
+        setFavoriteRoutes(favorites);
+        setPriceHistory(history);
+      };
 
-          {showMobileMenu && (
-            <nav className="md:hidden mt-4 space-y-2 pb-4">
-              <button
-                onClick={() => { setActiveTab('search'); setShowMobileMenu(false); }}
-                className="w-full flex items-center space-x-2 px-4 py-2 rounded-lg bg-gray-50 hover:bg-gray-100"
-              >
-                <Search size={18} />
-                <span>Search</span>
-              </button>
-              <button
-                onClick={() => { setActiveTab('deals'); setShowMobileMenu(false); }}
-                className="w-full flex items-center space-x-2 px-4 py-2 rounded-lg bg-gray-50 hover:bg-gray-100"
-              >
-                <TrendingDown size={18} />
-                <span>Deals</span>
-              </button>
-              <button
-                onClick={() => { setActiveTab('alerts'); setShowMobileMenu(false); }}
-                className="w-full flex items-center space-x-2 px-4 py-2 rounded-lg bg-gray-50 hover:bg-gray-100"
-              >
-                <Bell size={18} />
-                <span>Alerts ({priceAlerts.length})</span>
-              </button>
-              <button
-                onClick={() => { setActiveTab('profile'); setShowMobileMenu(false); }}
-                className="w-full flex items-center space-x-2 px-4 py-2 rounded-lg bg-gray-50 hover:bg-gray-100"
-              >
-                <Users size={18} />
-                <span>{isLoggedIn ? username : 'Account'}</span>
-              </button>
-            </nav>
-          )}
-        </div>
-      </header>
+      const saveSearch = () => {
+        const search = {
+          id: Date.now(),
+          from: searchParams.from,
+          to: searchParams.to,
+          departDate: searchParams.departDate,
+          returnDate: searchParams.returnDate,
+          passengers: searchParams.passengers,
+          class: searchParams.class,
+          timestamp: new Date().toISOString()
+        };
+        
+        const updated = [search, ...savedSearches.slice(0, 19)];
+        setSavedSearches(updated);
+        localStorage.setItem('savedSearches', JSON.stringify(updated));
+      };
 
-      <main className="max-w-7xl mx-auto px-4 py-8">
-        {activeTab === 'search' && (
-          <div className="space-y-6">
-            <div className="bg-white rounded-2xl shadow-lg p-6 md:p-8">
-              <div className="flex items-center justify-between mb-6">
-                <h2 className="text-2xl font-bold text-gray-800">Find Your Flight</h2>
-                {searchParams.from && searchParams.to && (
-                  <button
-                    onClick={toggleFavorite}
-                    className="p-2 rounded-full hover:bg-gray-100 transition"
-                  >
-                    <Star size={20} className={isFavorite ? 'fill-yellow-400 text-yellow-400' : 'text-gray-400'} />
-                  </button>
-                )}
-              </div>
+      const toggleFavorite = () => {
+        if (!searchParams.from || !searchParams.to) return;
+        
+        const route = {
+          id: `${searchParams.from}-${searchParams.to}`,
+          from: searchParams.from,
+          to: searchParams.to,
+          timestamp: new Date().toISOString()
+        };
+        
+        const exists = favoriteRoutes.find(r => r.id === route.id);
+        let updated;
+        
+        if (exists) {
+          updated = favoriteRoutes.filter(r => r.id !== route.id);
+        } else {
+          updated = [...favoriteRoutes, route];
+        }
+        
+        setFavoriteRoutes(updated);
+        localStorage.setItem('favoriteRoutes', JSON.stringify(updated));
+      };
 
-              <div className="flex space-x-4 mb-6">
-                <button
-                  onClick={() => setTripType('round-trip')}
-                  className={`px-6 py-2 rounded-lg font-medium transition ${
-                    tripType === 'round-trip'
-                      ? 'bg-blue-600 text-white'
-                      : 'bg-gray-100 text-gray-600 hover:bg-gray-200'
-                  }`}
-                >
-                  Round Trip
-                </button>
-                <button
-                  onClick={() => setTripType('one-way')}
-                  className={`px-6 py-2 rounded-lg font-medium transition ${
-                    tripType === 'one-way'
-                      ? 'bg-blue-600 text-white'
-                      : 'bg-gray-100 text-gray-600 hover:bg-gray-200'
-                  }`}
-                >
-                  One Way
-                </button>
-              </div>
+      const addPriceAlert = (flight) => {
+        if (!isPremium) {
+          setError('Price alerts are a Premium feature! Upgrade to get notified when prices drop.');
+          setTimeout(() => setShowSubscribeModal(true), 2000);
+          return;
+        }
 
-              <div className="grid md:grid-cols-2 gap-4 mb-4">
-                <div className="relative">
-                  <label className="block text-sm font-medium text-gray-700 mb-2">From</label>
-                  <div className="relative">
-                    <MapPin className="absolute left-3 top-3 text-gray-400" size={20} />
-                    <input
-                      type="text"
-                      placeholder="Airport code (e.g., JFK)"
-                      value={searchParams.from}
-                      onChange={(e) => {
-                        setSearchParams({ ...searchParams, from: e.target.value.toUpperCase() });
-                        searchAirports(e.target.value, 'from');
-                      }}
-                      className="w-full pl-10 pr-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-                    />
+        const alert = {
+          id: Date.now(),
+          route: `${searchParams.from} → ${searchParams.to}`,
+          targetPrice: parseFloat(flight.price.total),
+          currentPrice: parseFloat(flight.price.total),
+          departDate: searchParams.departDate,
+          airline: flight.validatingAirlineCodes?.[0],
+          active: true,
+          created: new Date().toISOString()
+        };
+        
+        const updated = [...priceAlerts, alert];
+        setPriceAlerts(updated);
+        localStorage.setItem('priceAlerts', JSON.stringify(updated));
+        
+        // Send alert confirmation email
+        if (emailjs && CONFIG.EMAILJS_SERVICE_ID && user) {
+          emailjs.send(
+            CONFIG.EMAILJS_SERVICE_ID,
+            CONFIG.EMAILJS_TEMPLATE_ID,
+            {
+              to_email: user.email,
+              to_name: user.name,
+              message: `Price alert set for ${alert.route} at $${alert.targetPrice}. We'll notify you if the price drops!`
+            }
+          );
+        }
+      };
+
+      const deletePriceAlert = (id) => {
+        const updated = priceAlerts.filter(a => a.id !== id);
+        setPriceAlerts(updated);
+        localStorage.setItem('priceAlerts', JSON.stringify(updated));
+      };
+
+      // ============================================
+      // FLIGHT SORTING & FILTERING
+      // ============================================
+
+      const sortedFlights = useMemo(() => {
+        if (!flights.length) return [];
+        
+        return [...flights].sort((a, b) => {
+          switch (sortBy) {
+            case 'price':
+              return parseFloat(a.price.total) - parseFloat(b.price.total);
+            case 'duration': {
+              const getDuration = (itinerary) => {
+                const match = itinerary.duration.match(/PT(\d+)H(\d+)M/);
+                return match ? parseInt(match[1]) * 60 + parseInt(match[2]) : 0;
+              };
+              return getDuration(a.itineraries[0]) - getDuration(b.itineraries[0]);
+            }
+            case 'best': {
+              const getScore = (flight) => {
+                const price = parseFloat(flight.price.total);
+                const match = flight.itineraries[0].duration.match(/PT(\d+)H(\d+)M/);
+                const duration = match ? parseInt(match[1]) + parseInt(match[2]) / 60 : 10;
+                return price / duration; // Lower is better
+              };
+              return getScore(a) - getScore(b);
+            }
+            default:
+              return 0;
+          }
+        });
+      }, [flights, sortBy]);
+
+      const cheapestFlight = useMemo(() => {
+        if (!flights.length) return null;
+        return flights.reduce((min, flight) => 
+          parseFloat(flight.price.total) < parseFloat(min.price.total) ? flight : min
+        );
+      }, [flights]);
+
+      const isFavorite = useMemo(() => {
+        return favoriteRoutes.some(r => r.id === `${searchParams.from}-${searchParams.to}`);
+      }, [favoriteRoutes, searchParams.from, searchParams.to]);
+
+      // ============================================
+      // UTILITY FUNCTIONS
+      // ============================================
+
+      const formatDuration = (duration) => {
+        const match = duration.match(/PT(\d+)H(\d+)M/);
+        if (match) {
+          return `${match[1]}h ${match[2]}m`;
+        }
+        return duration;
+      };
+
+      const formatTime = (dateTime) => {
+        return new Date(dateTime).toLocaleTimeString('en-US', { 
+          hour: '2-digit', 
+          minute: '2-digit',
+          hour12: true 
+        });
+      };
+
+      const formatDate = (dateTime) => {
+        return new Date(dateTime).toLocaleDateString('en-US', { 
+          month: 'short',
+          day: 'numeric'
+        });
+      };
+
+      const getAirlineLogo = (code) => {
+        // Return airline logo URL (using a CDN service)
+        return `https://images.kiwi.com/airlines/64/${code}.png`;
+      };
+
+      const handleBookFlight = (flight) => {
+        setSelectedFlight(flight);
+        setShowBookingModal(true);
+      };
+
+      const generateBookingLink = (flight) => {
+        // Generate deep link to booking partner with actual flight details
+        const params = new URLSearchParams({
+          origin: searchParams.from,
+          destination: searchParams.to,
+          departureDate: searchParams.departDate,
+          returnDate: searchParams.returnDate || '',
+          adults: searchParams.passengers,
+          class: searchParams.class.toLowerCase(),
+          airline: flight.validatingAirlineCodes?.[0] || '',
+          price: flight.price.total,
+          currency: flight.price.currency,
+          utm_source: 'skyscout',
+          utm_medium: 'referral'
+        });
+        
+        return `https://www.google.com/travel/flights?${params.toString()}`;
+      };
+
+      // ============================================
+      // RENDER FUNCTIONS
+      // ============================================
+
+      useEffect(() => {
+        if (!isLoggedIn && googleButtonRef.current) {
+          renderGoogleButton();
+        }
+      }, [isLoggedIn]);
+
+      return (
+        <div className="min-h-screen bg-gradient-to-br from-blue-50 via-white to-purple-50">
+          {/* Header */}
+          <header className="bg-white shadow-md border-b sticky top-0 z-50">
+            <div className="max-w-7xl mx-auto px-4 py-4">
+              <div className="flex items-center justify-between">
+                <div className="flex items-center space-x-3">
+                  <div className="bg-gradient-to-br from-blue-600 to-purple-600 p-2.5 rounded-xl shadow-lg">
+                    <Icon name="Plane" size={28} className="text-white" />
                   </div>
-                  {showSuggestions.from && airportSuggestions.length > 0 && (
-                    <div className="absolute z-10 w-full mt-1 bg-white border rounded-lg shadow-lg max-h-60 overflow-y-auto">
-                      {airportSuggestions.map((airport) => (
-                        <button
-                          key={airport.id}
-                          onClick={() => {
-                            setSearchParams({ ...searchParams, from: airport.iataCode });
-                            setShowSuggestions({ ...showSuggestions, from: false });
-                          }}
-                          className="w-full px-4 py-3 text-left hover:bg-blue-50 border-b last:border-b-0"
-                        >
-                          <div className="font-medium">{airport.iataCode} - {airport.name}</div>
-                          <div className="text-sm text-gray-500">{airport.address?.cityName}, {airport.address?.countryName}</div>
-                        </button>
-                      ))}
-                    </div>
-                  )}
-                </div>
-
-                <div className="relative">
-                  <label className="block text-sm font-medium text-gray-700 mb-2">To</label>
-                  <div className="relative">
-                    <MapPin className="absolute left-3 top-3 text-gray-400" size={20} />
-                    <input
-                      type="text"
-                      placeholder="Airport code (e.g., LAX)"
-                      value={searchParams.to}
-                      onChange={(e) => {
-                        setSearchParams({ ...searchParams, to: e.target.value.toUpperCase() });
-                        searchAirports(e.target.value, 'to');
-                      }}
-                      className="w-full pl-10 pr-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-                    />
-                  </div>
-                  {showSuggestions.to && airportSuggestions.length > 0 && (
-                    <div className="absolute z-10 w-full mt-1 bg-white border rounded-lg shadow-lg max-h-60 overflow-y-auto">
-                      {airportSuggestions.map((airport) => (
-                        <button
-                          key={airport.id}
-                          onClick={() => {
-                            setSearchParams({ ...searchParams, to: airport.iataCode });
-                            setShowSuggestions({ ...showSuggestions, to: false });
-                          }}
-                          className="w-full px-4 py-3 text-left hover:bg-blue-50 border-b last:border-b-0"
-                        >
-                          <div className="font-medium">{airport.iataCode} - {airport.name}</div>
-                          <div className="text-sm text-gray-500">{airport.address?.cityName}, {airport.address?.countryName}</div>
-                        </button>
-                      ))}
-                    </div>
-                  )}
-                </div>
-
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-2">Departure</label>
-                  <div className="relative">
-                    <Calendar className="absolute left-3 top-3 text-gray-400" size={20} />
-                    <input
-                      type="date"
-                      value={searchParams.departDate}
-                      onChange={(e) => setSearchParams({ ...searchParams, departDate: e.target.value })}
-                      min={new Date().toISOString().split('T')[0]}
-                      className="w-full pl-10 pr-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-                    />
-                  </div>
-                </div>
-
-                {tripType === 'round-trip' && (
                   <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-2">Return</label>
-                    <div className="relative">
-                      <Calendar className="absolute left-3 top-3 text-gray-400" size={20} />
-                      <input
-                        type="date"
-                        value={searchParams.returnDate}
-                        onChange={(e) => setSearchParams({ ...searchParams, returnDate: e.target.value })}
-                        min={searchParams.departDate || new Date().toISOString().split('T')[0]}
-                        className="w-full pl-10 pr-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-                      />
-                    </div>
-                  </div>
-                )}
-
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-2">Passengers</label>
-                  <div className="relative">
-                    <Users className="absolute left-3 top-3 text-gray-400" size={20} />
-                    <select
-                      value={searchParams.passengers}
-                      onChange={(e) => setSearchParams({ ...searchParams, passengers: parseInt(e.target.value) })}
-                      className="w-full pl-10 pr-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent appearance-none"
-                    >
-                      {[1,2,3,4,5,6,7,8,9].map(n => (
-                        <option key={n} value={n}>{n} {n === 1 ? 'Adult' : 'Adults'}</option>
-                      ))}
-                    </select>
+                    <h1 className="text-2xl font-black gradient-text">
+                      SkyScout
+                    </h1>
+                    <p className="text-xs text-gray-500 font-medium">Professional Flight Search</p>
                   </div>
                 </div>
 
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-2">Class</label>
-                  <select
-                    value={searchParams.class}
-                    onChange={(e) => setSearchParams({ ...searchParams, class: e.target.value })}
-                    className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                {/* Desktop Navigation */}
+                <nav className="hidden md:flex items-center space-x-4">
+                  <button
+                    onClick={() => setActiveTab('search')}
+                    className={`flex items-center space-x-2 px-4 py-2.5 rounded-xl font-semibold transition-all ${
+                      activeTab === 'search' 
+                        ? 'bg-gradient-to-r from-blue-600 to-purple-600 text-white shadow-lg' 
+                        : 'text-gray-600 hover:bg-gray-100'
+                    }`}
                   >
-                    <option value="ECONOMY">Economy</option>
-                    <option value="PREMIUM_ECONOMY">Premium Economy</option>
-                    <option value="BUSINESS">Business</option>
-                    <option value="FIRST">First Class</option>
-                  </select>
-                </div>
+                    <Icon name="Search" size={18} />
+                    <span>Search</span>
+                  </button>
+                  
+                  <button
+                    onClick={() => setActiveTab('deals')}
+                    className={`flex items-center space-x-2 px-4 py-2.5 rounded-xl font-semibold transition-all ${
+                      activeTab === 'deals' 
+                        ? 'bg-gradient-to-r from-blue-600 to-purple-600 text-white shadow-lg' 
+                        : 'text-gray-600 hover:bg-gray-100'
+                    }`}
+                  >
+                    <Icon name="TrendingDown" size={18} />
+                    <span>Deals</span>
+                  </button>
+                  
+                  {isPremium && (
+                    <button
+                      onClick={() => setActiveTab('alerts')}
+                      className={`flex items-center space-x-2 px-4 py-2.5 rounded-xl font-semibold transition-all relative ${
+                        activeTab === 'alerts' 
+                          ? 'bg-gradient-to-r from-blue-600 to-purple-600 text-white shadow-lg' 
+                          : 'text-gray-600 hover:bg-gray-100'
+                      }`}
+                    >
+                      <Icon name="Bell" size={18} />
+                      <span>Alerts</span>
+                      {priceAlerts.length > 0 && (
+                        <span className="absolute -top-1 -right-1 bg-red-500 text-white text-xs rounded-full w-5 h-5 flex items-center justify-center font-bold">
+                          {priceAlerts.length}
+                        </span>
+                      )}
+                    </button>
+                  )}
+
+                  {isLoggedIn ? (
+                    <div className="flex items-center space-x-3 ml-4">
+                      {isPremium && (
+                        <span className="bg-gradient-to-r from-yellow-400 to-orange-500 text-white px-3 py-1.5 rounded-full text-xs font-bold flex items-center space-x-1 shadow-md">
+                          <Icon name="Sparkles" size={14} />
+                          <span>Premium</span>
+                        </span>
+                      )}
+                      <div className="flex items-center space-x-2 bg-gray-100 px-3 py-2 rounded-xl">
+                        <img 
+                          src={user?.picture} 
+                          alt={user?.name}
+                          className="w-8 h-8 rounded-full"
+                        />
+                        <span className="font-semibold text-sm">{user?.name?.split(' ')[0]}</span>
+                      </div>
+                      <button
+                        onClick={handleSignOut}
+                        className="text-sm text-gray-600 hover:text-gray-800 font-medium"
+                      >
+                        Sign Out
+                      </button>
+                    </div>
+                  ) : (
+                    <div ref={googleButtonRef} className="ml-4"></div>
+                  )}
+                </nav>
+
+                {/* Mobile Menu Button */}
+                <button
+                  className="md:hidden p-2 hover:bg-gray-100 rounded-lg"
+                  onClick={() => setShowMobileMenu(!showMobileMenu)}
+                >
+                  {showMobileMenu ? <Icon name="X" size={24} /> : <Icon name="Menu" size={24} />}
+                </button>
               </div>
 
-              <button
-                onClick={searchFlights}
-                disabled={loading}
-                className="w-full bg-gradient-to-r from-blue-600 to-purple-600 text-white py-4 rounded-lg font-semibold hover:from-blue-700 hover:to-purple-700 transition flex items-center justify-center space-x-2 disabled:opacity-50"
-              >
-                {loading ? (
-                  <>
-                    <div className="animate-spin rounded-full h-5 w-5 border-b-2 border-white"></div>
-                    <span>Searching...</span>
-                  </>
-                ) : (
-                  <>
-                    <Search size={20} />
+              {/* Mobile Menu */}
+              {showMobileMenu && (
+                <nav className="md:hidden mt-4 space-y-2 pb-4">
+                  <button
+                    onClick={() => { setActiveTab('search'); setShowMobileMenu(false); }}
+                    className="w-full flex items-center space-x-2 px-4 py-3 rounded-lg bg-gray-50 hover:bg-gray-100 font-semibold"
+                  >
+                    <Icon name="Search" size={18} />
                     <span>Search Flights</span>
-                  </>
-                )}
-              </button>
-
-              {error && (
-                <div className="mt-4 p-4 bg-red-50 border border-red-200 rounded-lg text-red-600">
-                  {error}
-                </div>
+                  </button>
+                  <button
+                    onClick={() => { setActiveTab('deals'); setShowMobileMenu(false); }}
+                    className="w-full flex items-center space-x-2 px-4 py-3 rounded-lg bg-gray-50 hover:bg-gray-100 font-semibold"
+                  >
+                    <Icon name="TrendingDown" size={18} />
+                    <span>Best Deals</span>
+                  </button>
+                  {isPremium && (
+                    <button
+                      onClick={() => { setActiveTab('alerts'); setShowMobileMenu(false); }}
+                      className="w-full flex items-center space-x-2 px-4 py-3 rounded-lg bg-gray-50 hover:bg-gray-100 font-semibold"
+                    >
+                      <Icon name="Bell" size={18} />
+                      <span>Price Alerts ({priceAlerts.length})</span>
+                    </button>
+                  )}
+                  {!isLoggedIn && (
+                    <div className="px-4 py-3">
+                      <div ref={googleButtonRef}></div>
+                    </div>
+                  )}
+                </nav>
               )}
             </div>
 
-            {flexibleDates.length > 0 && (
-              <div className="bg-white rounded-xl shadow-lg p-6">
-                <h3 className="text-lg font-bold mb-4 flex items-center space-x-2">
-                  <Calendar className="text-blue-600" size={20} />
-                  <span>Flexible Dates (±3 Days)</span>
-                </h3>
-                <div className="grid grid-cols-2 md:grid-cols-7 gap-2">
-                  {flexibleDates.map((date) => (
+            {/* Free Tier Notice */}
+            {isLoggedIn && !isPremium && (
+              <div className="bg-gradient-to-r from-amber-50 to-orange-50 border-t border-amber-200">
+                <div className="max-w-7xl mx-auto px-4 py-3">
+                  <div className="flex items-center justify-between">
+                    <div className="flex items-center space-x-2 text-sm">
+                      <Icon name="Info" size={16} className="text-amber-600" />
+                      <span className="text-gray-700 font-medium">
+                        Free Plan: UAE ↔ USA flights only • Upgrade for worldwide access & price alerts
+                      </span>
+                    </div>
                     <button
-                      key={date.date}
-                      onClick={() => setSearchParams({ ...searchParams, departDate: date.date })}
-                      className={`p-3 rounded-lg border transition ${
-                        date.date === searchParams.departDate
-                          ? 'border-blue-600 bg-blue-50'
-                          : 'border-gray-200 hover:border-blue-300'
-                      }`}
+                      onClick={() => setShowSubscribeModal(true)}
+                      className="bg-gradient-to-r from-purple-600 to-blue-600 text-white px-5 py-2 rounded-full text-sm font-bold hover:shadow-lg transition-all flex items-center space-x-1"
                     >
-                      <div className="text-xs text-gray-500">
-                        {date.offset === 0 ? 'Today' : `${date.offset > 0 ? '+' : ''}${date.offset}d`}
-                      </div>
-                      <div className="text-sm font-medium">{new Date(date.date).toLocaleDateString('en-US', { month: 'short', day: 'numeric' })}</div>
-                      <div className="text-xs font-bold text-green-600">${date.price}</div>
+                      <Icon name="Sparkles" size={14} />
+                      <span>Upgrade Now</span>
                     </button>
-                  ))}
+                  </div>
                 </div>
               </div>
             )}
+          </header>
 
-            {flights.length > 0 && (
-              <div className="space-y-4">
-                <div className="bg-white rounded-xl shadow-lg p-4 flex flex-wrap items-center justify-between gap-4">
-                  <div className="flex items-center space-x-2">
-                    <Filter size={20} className="text-gray-600" />
-                    <span className="font-medium text-gray-700">{flights.length} flights found</span>
+          <main className="max-w-7xl mx-auto px-4 py-8">
+            {/* SEARCH TAB */}
+            {activeTab === 'search' && (
+              <div className="space-y-6">
+                {/* Main Search Card */}
+                <div className="bg-white rounded-3xl shadow-xl p-8 border border-gray-100">
+                  <div className="flex items-center justify-between mb-6">
+                    <h2 className="text-3xl font-bold text-gray-800">Find Your Perfect Flight</h2>
+                    {searchParams.from && searchParams.to && (
+                      <button
+                        onClick={toggleFavorite}
+                        className="p-3 rounded-full hover:bg-gray-100 transition-all"
+                        title={isFavorite ? "Remove from favorites" : "Add to favorites"}
+                      >
+                        <Icon name="Star" size={24} className={isFavorite ? 'text-yellow-400' : 'text-gray-400'} fill={isFavorite} />
+                      </button>
+                    )}
                   </div>
-                  
-                  <div className="flex items-center space-x-2">
-                    <span className="text-sm text-gray-600">Sort by:</span>
-                    <select
-                      value={sortBy}
-                      onChange={(e) => setSortBy(e.target.value)}
-                      className="px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500"
+
+                  {/* Free Tier Info */}
+                  {!isPremium && isLoggedIn && (
+                    <div className="mb-6 bg-blue-50 border-2 border-blue-200 rounded-2xl p-5">
+                      <div className="flex items-start space-x-3">
+                        <Icon name="Info" size={22} className="text-blue-600 mt-0.5 flex-shrink-0" />
+                        <div className="text-sm">
+                          <p className="font-bold text-gray-800 mb-1">Free Account Limitations</p>
+                          <p className="text-gray-700">
+                            You can search flights between <span className="font-semibold">UAE</span> (DXB, AUH, SHJ...) and <span className="font-semibold">USA</span> (JFK, LAX, ORD, DFW...) airports.
+                          </p>
+                          <button 
+                            onClick={() => setShowSubscribeModal(true)} 
+                            className="mt-2 text-blue-600 font-bold hover:underline inline-flex items-center space-x-1"
+                          >
+                            <span>Upgrade to Premium for worldwide search</span>
+                            <Icon name="ArrowRight" size={16} />
+                          </button>
+                        </div>
+                      </div>
+                    </div>
+                  )}
+
+                  {/* Trip Type Selection */}
+                  <div className="flex space-x-3 mb-6">
+                    <button
+                      onClick={() => setTripType('round-trip')}
+                      className={`px-8 py-3 rounded-xl font-bold transition-all ${
+                        tripType === 'round-trip'
+                          ? 'bg-gradient-to-r from-blue-600 to-purple-600 text-white shadow-lg scale-105'
+                          : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
+                      }`}
                     >
-                      <option value="price">Lowest Price</option>
-                      <option value="duration">Shortest Duration</option>
-                      <option value="best">Best Value</option>
-                    </select>
+                      Round Trip
+                    </button>
+                    <button
+                      onClick={() => setTripType('one-way')}
+                      className={`px-8 py-3 rounded-xl font-bold transition-all ${
+                        tripType === 'one-way'
+                          ? 'bg-gradient-to-r from-blue-600 to-purple-600 text-white shadow-lg scale-105'
+                          : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
+                      }`}
+                    >
+                      One Way
+                    </button>
                   </div>
+
+                  {/* Search Fields */}
+                  <div className="grid md:grid-cols-2 gap-5 mb-6">
+                    {/* From */}
+                    <div className="relative">
+                      <label className="block text-sm font-bold text-gray-700 mb-2">From</label>
+                      <div className="relative">
+                        <Icon name="MapPin" size={20} className="absolute left-4 top-4 text-gray-400" />
+                        <input
+                          type="text"
+                          placeholder="Airport code or city (e.g., DXB, JFK)"
+                          value={searchParams.from}
+                          onChange={(e) => {
+                            const value = e.target.value.toUpperCase();
+                            setSearchParams({ ...searchParams, from: value });
+                            searchAirports(value, 'from');
+                          }}
+                          onFocus={() => searchParams.from && searchAirports(searchParams.from, 'from')}
+                          className="w-full pl-12 pr-4 py-4 border-2 border-gray-200 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-blue-500 font-medium text-lg transition-all"
+                        />
+                      </div>
+                      {showSuggestions.from && airportSuggestions.length > 0 && (
+                        <div className="absolute z-20 w-full mt-2 bg-white border-2 border-gray-200 rounded-xl shadow-2xl max-h-80 overflow-y-auto">
+                          {airportSuggestions.map((airport) => (
+                            <button
+                              key={airport.id}
+                              onClick={() => {
+                                setSearchParams({ ...searchParams, from: airport.iataCode });
+                                setShowSuggestions({ ...showSuggestions, from: false });
+                              }}
+                              className="w-full px-5 py-4 text-left hover:bg-blue-50 border-b last:border-b-0 transition-all"
+                            >
+                              <div className="flex items-center justify-between">
+                                <div>
+                                  <div className="font-bold text-lg">{airport.iataCode} - {airport.name}</div>
+                                  <div className="text-sm text-gray-600">{airport.address?.cityName}, {airport.address?.countryName}</div>
+                                </div>
+                                <Icon name="Plane" size={20} className="text-gray-400" />
+                              </div>
+                            </button>
+                          ))}
+                        </div>
+                      )}
+                    </div>
+
+                    {/* To */}
+                    <div className="relative">
+                      <label className="block text-sm font-bold text-gray-700 mb-2">To</label>
+                      <div className="relative">
+                        <Icon name="MapPin" size={20} className="absolute left-4 top-4 text-gray-400" />
+                        <input
+                          type="text"
+                          placeholder="Airport code or city (e.g., LAX, AUH)"
+                          value={searchParams.to}
+                          onChange={(e) => {
+                            const value = e.target.value.toUpperCase();
+                            setSearchParams({ ...searchParams, to: value });
+                            searchAirports(value, 'to');
+                          }}
+                          onFocus={() => searchParams.to && searchAirports(searchParams.to, 'to')}
+                          className="w-full pl-12 pr-4 py-4 border-2 border-gray-200 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-blue-500 font-medium text-lg transition-all"
+                        />
+                      </div>
+                      {showSuggestions.to && airportSuggestions.length > 0 && (
+                        <div className="absolute z-20 w-full mt-2 bg-white border-2 border-gray-200 rounded-xl shadow-2xl max-h-80 overflow-y-auto">
+                          {airportSuggestions.map((airport) => (
+                            <button
+                              key={airport.id}
+                              onClick={() => {
+                                setSearchParams({ ...searchParams, to: airport.iataCode });
+                                setShowSuggestions({ ...showSuggestions, to: false });
+                              }}
+                              className="w-full px-5 py-4 text-left hover:bg-blue-50 border-b last:border-b-0 transition-all"
+                            >
+                              <div className="flex items-center justify-between">
+                                <div>
+                                  <div className="font-bold text-lg">{airport.iataCode} - {airport.name}</div>
+                                  <div className="text-sm text-gray-600">{airport.address?.cityName}, {airport.address?.countryName}</div>
+                                </div>
+                                <Icon name="Plane" size={20} className="text-gray-400" />
+                              </div>
+                            </button>
+                          ))}
+                        </div>
+                      )}
+                    </div>
+
+                    {/* Departure Date */}
+                    <div>
+                      <label className="block text-sm font-bold text-gray-700 mb-2">Departure Date</label>
+                      <div className="relative">
+                        <Icon name="Calendar" size={20} className="absolute left-4 top-4 text-gray-400" />
+                        <input
+                          type="date"
+                          value={searchParams.departDate}
+                          onChange={(e) => setSearchParams({ ...searchParams, departDate: e.target.value })}
+                          min={new Date().toISOString().split('T')[0]}
+                          className="w-full pl-12 pr-4 py-4 border-2 border-gray-200 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-blue-500 font-medium text-lg"
+                        />
+                      </div>
+                    </div>
+
+                    {/* Return Date */}
+                    {tripType === 'round-trip' && (
+                      <div>
+                        <label className="block text-sm font-bold text-gray-700 mb-2">Return Date</label>
+                        <div className="relative">
+                          <Icon name="Calendar" size={20} className="absolute left-4 top-4 text-gray-400" />
+                          <input
+                            type="date"
+                            value={searchParams.returnDate}
+                            onChange={(e) => setSearchParams({ ...searchParams, returnDate: e.target.value })}
+                            min={searchParams.departDate || new Date().toISOString().split('T')[0]}
+                            className="w-full pl-12 pr-4 py-4 border-2 border-gray-200 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-blue-500 font-medium text-lg"
+                          />
+                        </div>
+                      </div>
+                    )}
+
+                    {/* Passengers */}
+                    <div>
+                      <label className="block text-sm font-bold text-gray-700 mb-2">Passengers</label>
+                      <div className="relative">
+                        <Icon name="Users" size={20} className="absolute left-4 top-4 text-gray-400" />
+                        <select
+                          value={searchParams.passengers}
+                          onChange={(e) => setSearchParams({ ...searchParams, passengers: parseInt(e.target.value) })}
+                          className="w-full pl-12 pr-4 py-4 border-2 border-gray-200 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-blue-500 font-medium text-lg appearance-none bg-white"
+                        >
+                          {[1,2,3,4,5,6,7,8,9].map(n => (
+                            <option key={n} value={n}>{n} {n === 1 ? 'Passenger' : 'Passengers'}</option>
+                          ))}
+                        </select>
+                      </div>
+                    </div>
+
+                    {/* Class */}
+                    <div>
+                      <label className="block text-sm font-bold text-gray-700 mb-2">Class</label>
+                      <select
+                        value={searchParams.class}
+                        onChange={(e) => setSearchParams({ ...searchParams, class: e.target.value })}
+                        className="w-full px-4 py-4 border-2 border-gray-200 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-blue-500 font-medium text-lg bg-white"
+                      >
+                        <option value="ECONOMY">Economy</option>
+                        <option value="PREMIUM_ECONOMY">Premium Economy</option>
+                        <option value="BUSINESS">Business Class</option>
+                        <option value="FIRST">First Class</option>
+                      </select>
+                    </div>
+                  </div>
+
+                  {/* Search Button */}
+                  <button
+                    onClick={searchFlights}
+                    disabled={loading}
+                    className="w-full bg-gradient-to-r from-blue-600 to-purple-600 text-white py-5 rounded-xl font-bold text-lg hover:shadow-2xl transform hover:scale-105 transition-all disabled:opacity-50 disabled:cursor-not-allowed disabled:transform-none flex items-center justify-center space-x-3"
+                  >
+                    {loading ? (
+                      <>
+                        <Icon name="Loader" size={24} />
+                        <span>Searching Real Flights...</span>
+                      </>
+                    ) : (
+                      <>
+                        <Icon name="Search" size={24} />
+                        <span>Search Real Flights</span>
+                      </>
+                    )}
+                  </button>
+
+                  {/* Error Display */}
+                  {error && (
+                    <div className="mt-5 p-5 bg-red-50 border-2 border-red-200 rounded-xl flex items-start space-x-3">
+                      <Icon name="AlertCircle" size={22} className="text-red-600 flex-shrink-0 mt-0.5" />
+                      <div>
+                        <p className="font-bold text-red-800">Error</p>
+                        <p className="text-red-700">{error}</p>
+                      </div>
+                    </div>
+                  )}
                 </div>
 
-                {cheapestFlight && sortBy === 'price' && (
-                  <div className="bg-gradient-to-r from-green-500 to-emerald-600 rounded-xl shadow-lg p-6 text-white">
-                    <div className="flex items-center space-x-2 mb-2">
-                      <Sparkles size={24} />
-                      <h3 className="text-xl font-bold">Cheapest Flight Found!</h3>
-                    </div>
-                    <div className="flex items-center justify-between">
-                      <div>
-                        <p className="text-2xl font-bold">${cheapestFlight.price.total}</p>
-                        <p className="text-sm opacity-90">{cheapestFlight.validatingAirlineCodes?.[0] || 'Airline'}</p>
-                      </div>
-                      <div className="text-right">
-                        <p className="text-sm opacity-90">Duration</p>
-                        <p className="font-semibold">{formatDuration(cheapestFlight.itineraries[0].duration)}</p>
-                      </div>
+                {/* Flexible Dates */}
+                {flexibleDates.length > 0 && (
+                  <div className="bg-white rounded-2xl shadow-lg p-6">
+                    <h3 className="text-xl font-bold mb-4 flex items-center space-x-2">
+                      <Icon name="Calendar" size={22} className="text-blue-600" />
+                      <span>Flexible Dates (±3 Days)</span>
+                    </h3>
+                    <div className="grid grid-cols-2 md:grid-cols-7 gap-3">
+                      {flexibleDates.map((date) => (
+                        <button
+                          key={date.date}
+                          onClick={() => setSearchParams({ ...searchParams, departDate: date.date })}
+                          className={`p-4 rounded-xl border-2 transition-all ${
+                            date.date === searchParams.departDate
+                              ? 'border-blue-600 bg-blue-50 shadow-md'
+                              : 'border-gray-200 hover:border-blue-300 hover:shadow'
+                          }`}
+                        >
+                          <div className="text-xs text-gray-500 font-medium mb-1">
+                            {date.offset === 0 ? 'Selected' : `${date.offset > 0 ? '+' : ''}${date.offset} day${Math.abs(date.offset) > 1 ? 's' : ''}`}
+                          </div>
+                          <div className="text-sm font-bold text-gray-800 mb-1">
+                            {formatDate(date.date)}
+                          </div>
+                          {date.price && (
+                            <div className="text-xs font-bold text-green-600">${date.price}</div>
+                          )}
+                        </button>
+                      ))}
                     </div>
                   </div>
                 )}
-// ... (Your 700 lines of code above)
 
-                <div className="space-y-4">
-                  {sortedFlights.map((flight) => (
-                    <div key={flight.id} className="bg-white rounded-xl shadow-md border border-gray-100 overflow-hidden hover:shadow-lg transition">
-                      <div className="p-6">
-                        <div className="flex flex-col md:flex-row justify-between gap-6">
-                          <div className="flex-1 space-y-4">
-                            {flight.itineraries.map((itinerary, index) => (
-                              <div key={index} className="flex items-center justify-between">
-                                <div className="flex items-center space-x-4">
-                                  <div className="w-12 h-12 bg-gray-50 rounded-lg flex items-center justify-center">
-                                    <Plane className="text-blue-500" size={24} />
-                                  </div>
+                {/* Flight Results */}
+                {flights.length > 0 && (
+                  <div className="space-y-6">
+                    {/* Sort & Filter Bar */}
+                    <div className="bg-white rounded-2xl shadow-lg p-5 flex flex-wrap items-center justify-between gap-4">
+                      <div className="flex items-center space-x-3">
+                        <Icon name="Filter" size={22} className="text-blue-600" />
+                        <span className="font-bold text-gray-800 text-lg">{flights.length} Real Flights Found</span>
+                      </div>
+                      
+                      <div className="flex items-center space-x-3">
+                        <span className="text-sm font-semibold text-gray-600">Sort by:</span>
+                        <select
+                          value={sortBy}
+                          onChange={(e) => setSortBy(e.target.value)}
+                          className="px-5 py-2.5 border-2 border-gray-200 rounded-xl focus:ring-2 focus:ring-blue-500 font-semibold bg-white"
+                        >
+                          <option value="price">💰 Lowest Price</option>
+                          <option value="duration">⏱️ Shortest Duration</option>
+                          <option value="best">⭐ Best Value</option>
+                        </select>
+                      </div>
+                    </div>
+
+                    {/* Cheapest Flight Highlight */}
+                    {cheapestFlight && sortBy === 'price' && (
+                      <div className="bg-gradient-to-r from-emerald-500 to-green-600 rounded-2xl shadow-2xl p-6 text-white">
+                        <div className="flex items-center space-x-3 mb-4">
+                          <Icon name="Sparkles" size={28} />
+                          <h3 className="text-2xl font-black">🏆 Best Deal Found!</h3>
+                        </div>
+                        <div className="grid md:grid-cols-3 gap-4">
+                          <div>
+                            <p className="text-sm opacity-90 mb-1">Price</p>
+                            <p className="text-4xl font-black">${cheapestFlight.price.total}</p>
+                          </div>
+                          <div>
+                            <p className="text-sm opacity-90 mb-1">Airline</p>
+                            <p className="text-xl font-bold">{cheapestFlight.validatingAirlineCodes?.[0]}</p>
+                          </div>
+                          <div>
+                            <p className="text-sm opacity-90 mb-1">Duration</p>
+                            <p className="text-xl font-bold">{formatDuration(cheapestFlight.itineraries[0].duration)}</p>
+                          </div>
+                        </div>
+                      </div>
+                    )}
+
+                    {/* Flight Cards */}
+                    {sortedFlights.map((flight, index) => (
+                      <div key={index} className="flight-card bg-white rounded-2xl shadow-lg border-2 border-gray-100 overflow-hidden">
+                        <div className="p-6">
+                          <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-6">
+                            {/* Flight Info */}
+                            <div className="flex-1">
+                              <div className="flex items-center justify-between mb-5">
+                                <div className="flex items-center space-x-3">
+                                  <img 
+                                    src={getAirlineLogo(flight.validatingAirlineCodes?.[0])} 
+                                    alt={flight.validatingAirlineCodes?.[0]}
+                                    className="airline-logo rounded-lg"
+                                    onError={(e) => e.target.style.display = 'none'}
+                                  />
                                   <div>
-                                    <p className="text-lg font-bold text-gray-800">
-                                      {formatTime(itinerary.segments[0].departure.at)}
+                                    <h3 className="text-2xl font-black text-gray-800">
+                                      {searchParams.from} → {searchParams.to}
+                                    </h3>
+                                    <p className="text-sm text-gray-600 font-medium">
+                                      {flight.validatingAirlineCodes?.[0]} • 
+                                      {flight.itineraries[0].segments.length === 1 ? ' Non-stop' : ` ${flight.itineraries[0].segments.length - 1} stop(s)`}
                                     </p>
-                                    <p className="text-sm text-gray-500">{itinerary.segments[0].departure.iataCode}</p>
                                   </div>
                                 </div>
-                                <div className="flex-1 px-8">
-                                  <div className="relative flex items-center justify-center">
-                                    <div className="w-full border-t-2 border-dashed border-gray-200 absolute"></div>
-                                    <div className="bg-white px-3 relative z-10">
-                                      <p className="text-xs font-medium text-gray-400 uppercase tracking-wider">
-                                        {itinerary.segments.length - 1 === 0 ? 'Non-stop' : `${itinerary.segments.length - 1} stop(s)`}
-                                      </p>
-                                    </div>
-                                  </div>
-                                  <p className="text-center text-sm text-gray-500 mt-1">{formatDuration(itinerary.duration)}</p>
-                                </div>
-                                <div className="text-right">
-                                  <p className="text-lg font-bold text-gray-800">
-                                    {formatTime(itinerary.segments[itinerary.segments.length - 1].arrival.at)}
+                                {index === 0 && sortBy === 'price' && (
+                                  <span className="bg-yellow-100 text-yellow-800 px-4 py-2 rounded-full text-xs font-black">
+                                    🏆 BEST PRICE
+                                  </span>
+                                )}
+                              </div>
+
+                              {/* Time & Duration */}
+                              <div className="grid grid-cols-3 gap-4 mb-5">
+                                <div className="bg-blue-50 rounded-xl p-4">
+                                  <Icon name="Clock" size={20} className="text-blue-600 mb-2" />
+                                  <p className="text-xs text-gray-600 font-medium mb-1">Duration</p>
+                                  <p className="font-black text-gray-800 text-lg">
+                                    {formatDuration(flight.itineraries[0].duration)}
                                   </p>
-                                  <p className="text-sm text-gray-500">{itinerary.segments[itinerary.segments.length - 1].arrival.iataCode}</p>
+                                </div>
+
+                                <div className="bg-purple-50 rounded-xl p-4">
+                                  <Icon name="Plane" size={20} className="text-purple-600 mb-2" />
+                                  <p className="text-xs text-gray-600 font-medium mb-1">Departure</p>
+                                  <p className="font-black text-gray-800 text-lg">
+                                    {formatTime(flight.itineraries[0].segments[0].departure.at)}
+                                  </p>
+                                </div>
+
+                                <div className="bg-green-50 rounded-xl p-4">
+                                  <Icon name="Plane" size={20} className="text-green-600 mb-2" />
+                                  <p className="text-xs text-gray-600 font-medium mb-1">Arrival</p>
+                                  <p className="font-black text-gray-800 text-lg">
+                                    {formatTime(flight.itineraries[0].segments[flight.itineraries[0].segments.length - 1].arrival.at)}
+                                  </p>
                                 </div>
                               </div>
-                            ))}
-                          </div>
-                          <div className="md:w-48 flex flex-col justify-center items-center md:items-end space-y-3 md:border-l md:pl-6">
-                            <div className="text-center md:text-right">
-                              <p className="text-3xl font-bold text-blue-600">${flight.price.total}</p>
-                              <p className="text-xs text-gray-400">Total for {searchParams.passengers} traveler(s)</p>
+
+                              {/* Flight Segments */}
+                              <div className="bg-gray-50 rounded-xl p-4 space-y-2">
+                                <p className="text-xs font-bold text-gray-600 uppercase mb-2">Flight Details</p>
+                                {flight.itineraries[0].segments.map((segment, segIndex) => (
+                                  <div key={segIndex} className="flex items-center space-x-2 text-sm">
+                                    <Icon name="ArrowRight" size={16} className="text-blue-600" />
+                                    <span className="font-semibold text-gray-800">
+                                      {segment.departure.iataCode} → {segment.arrival.iataCode}
+                                    </span>
+                                    <span className="text-gray-600">•</span>
+                                    <span className="text-gray-600">
+                                      {segment.carrierCode} {segment.number}
+                                    </span>
+                                    <span className="text-gray-600">•</span>
+                                    <span className="text-gray-600">
+                                      {formatDuration(segment.duration)}
+                                    </span>
+                                  </div>
+                                ))}
+                              </div>
                             </div>
-                            <button className="w-full bg-blue-600 text-white py-2 rounded-lg font-medium hover:bg-blue-700 transition">
-                              Select Flight
-                            </button>
-                            <button 
-                              onClick={() => addPriceAlert(flight)}
-                              className="text-xs text-blue-600 hover:underline flex items-center"
+
+                            {/* Price & Actions */}
+                            <div className="lg:text-right flex lg:flex-col items-center lg:items-end gap-5">
+                              <div className="bg-gradient-to-br from-blue-50 to-purple-50 rounded-2xl p-5 text-center lg:text-right">
+                                <p className="text-xs text-gray-600 font-semibold mb-1">Total Price</p>
+                                <p className="text-4xl font-black text-blue-600">${flight.price.total}</p>
+                                <p className="text-xs text-gray-500 font-medium mt-1">{flight.price.currency} • {searchParams.passengers} pax</p>
+                              </div>
+                              
+                              <div className="flex flex-col gap-3 w-full lg:w-auto">
+                                <button
+                                  onClick={() => handleBookFlight(flight)}
+                                  className="bg-gradient-to-r from-blue-600 to-purple-600 text-white px-8 py-4 rounded-xl font-black hover:shadow-2xl transform hover:scale-105 transition-all flex items-center justify-center space-x-2 text-lg"
+                                >
+                                  <span>Book Now</span>
+                                  <Icon name="ExternalLink" size={18} />
+                                </button>
+                                
+                                <button
+                                  onClick={() => addPriceAlert(flight)}
+                                  className="border-2 border-gray-300 text-gray-700 px-8 py-3 rounded-xl font-bold hover:bg-gray-50 hover:border-blue-500 transition-all flex items-center justify-center space-x-2"
+                                >
+                                  <Icon name="Bell" size={18} />
+                                  <span>Set Alert</span>
+                                </button>
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                )}
+              </div>
+            )}
+
+            {/* DEALS TAB */}
+            {activeTab === 'deals' && (
+              <div className="space-y-6">
+                <div className="bg-white rounded-3xl shadow-xl p-8">
+                  <div className="flex items-center space-x-4 mb-6">
+                    <div className="bg-gradient-to-br from-green-500 to-emerald-600 p-4 rounded-2xl">
+                      <Icon name="TrendingDown" size={32} className="text-white" />
+                    </div>
+                    <div>
+                      <h2 className="text-3xl font-black text-gray-800">🔥 Hot Deals</h2>
+                      <p className="text-gray-600 font-medium">Best flight deals updated in real-time</p>
+                    </div>
+                  </div>
+
+                  <div className="grid md:grid-cols-3 gap-6">
+                    {/* Mock deals - In production, fetch from Amadeus Inspiration API */}
+                    {[
+                      { from: 'DXB', to: 'JFK', price: 489, discount: 45, airline: 'Emirates', img: 'https://images.unsplash.com/photo-1496442226666-8d4d0e62e6e9?w=400&h=250&fit=crop' },
+                      { from: 'AUH', to: 'LAX', price: 529, discount: 38, airline: 'Etihad', img: 'https://images.unsplash.com/photo-1534430480872-3498386e7856?w=400&h=250&fit=crop' },
+                      { from: 'DXB', to: 'ORD', price: 449, discount: 52, airline: 'Emirates', img: 'https://images.unsplash.com/photo-1494522855154-9297ac14b55f?w=400&h=250&fit=crop' },
+                      { from: 'SHJ', to: 'DFW', price: 399, discount: 41, airline: 'Air Arabia', img: 'https://images.unsplash.com/photo-1449824913935-59a10b8d2000?w=400&h=250&fit=crop' },
+                      { from: 'AUH', to: 'SFO', price: 559, discount: 35, airline: 'Etihad', img: 'https://images.unsplash.com/photo-1506905925346-21bda4d32df4?w=400&h=250&fit=crop' },
+                      { from: 'DXB', to: 'MIA', price: 469, discount: 48, airline: 'Emirates', img: 'https://images.unsplash.com/photo-1533106418989-88406c7cc8ca?w=400&h=250&fit=crop' }
+                    ].map((deal, index) => (
+                      <div key={index} className="group bg-white rounded-2xl overflow-hidden shadow-lg hover:shadow-2xl transition-all border-2 border-gray-100 hover:border-blue-300">
+                        <div className="relative h-40 overflow-hidden">
+                          <img src={deal.img} alt={`${deal.from} to ${deal.to}`} className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-300" />
+                          <div className="absolute top-3 right-3 bg-red-500 text-white px-4 py-2 rounded-full font-black text-sm shadow-lg">
+                            -{deal.discount}% OFF
+                          </div>
+                        </div>
+                        <div className="p-5">
+                          <h3 className="text-2xl font-black text-gray-800 mb-2">{deal.from} → {deal.to}</h3>
+                          <p className="text-sm text-gray-600 font-semibold mb-4">{deal.airline}</p>
+                          
+                          <div className="flex items-end justify-between">
+                            <div>
+                              <p className="text-xs text-gray-500 font-medium mb-1">From</p>
+                              <p className="text-3xl font-black text-green-600">${deal.price}</p>
+                            </div>
+                            <button
+                              onClick={() => {
+                                setSearchParams({
+                                  ...searchParams,
+                                  from: deal.from,
+                                  to: deal.to,
+                                  departDate: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000).toISOString().split('T')[0]
+                                });
+                                setActiveTab('search');
+                                setTimeout(searchFlights, 500);
+                              }}
+                              className="bg-gradient-to-r from-blue-600 to-purple-600 text-white px-6 py-3 rounded-xl font-bold hover:shadow-lg transition-all"
                             >
-                              <Bell size={12} className="mr-1" /> Set Price Alert
+                              View →
                             </button>
                           </div>
                         </div>
                       </div>
+                    ))}
+                  </div>
+                </div>
+
+                {/* Best Time to Buy Tips */}
+                <div className="bg-white rounded-2xl shadow-lg p-6">
+                  <div className="flex items-center space-x-3 mb-5">
+                    <Icon name="Zap" size={26} className="text-yellow-500" />
+                    <h3 className="text-2xl font-black">💡 Smart Travel Tips</h3>
+                  </div>
+                  <div className="grid md:grid-cols-3 gap-5">
+                    <div className="bg-gradient-to-br from-blue-50 to-blue-100 rounded-xl p-5 border-2 border-blue-200">
+                      <Icon name="Calendar" size={28} className="text-blue-600 mb-3" />
+                      <h4 className="font-black text-gray-800 mb-2 text-lg">Book 2-3 Months Ahead</h4>
+                      <p className="text-sm text-gray-700">International flights are cheapest 2-3 months before departure</p>
                     </div>
-                  ))}
+                    <div className="bg-gradient-to-br from-purple-50 to-purple-100 rounded-xl p-5 border-2 border-purple-200">
+                      <Icon name="TrendingUp" size={28} className="text-purple-600 mb-3" />
+                      <h4 className="font-black text-gray-800 mb-2 text-lg">Midweek Flying</h4>
+                      <p className="text-sm text-gray-700">Tuesday, Wednesday flights typically offer better prices</p>
+                    </div>
+                    <div className="bg-gradient-to-br from-green-50 to-green-100 rounded-xl p-5 border-2 border-green-200">
+                      <Icon name="Clock" size={28} className="text-green-600 mb-3" />
+                      <h4 className="font-black text-gray-800 mb-2 text-lg">Off-Peak Hours</h4>
+                      <p className="text-sm text-gray-700">Early morning or red-eye flights often cost less</p>
+                    </div>
+                  </div>
                 </div>
               </div>
             )}
-          </div>
-        )}
 
-        {/* Tab Sections for Alerts and Profile */}
-        {activeTab === 'alerts' && (
-          <div className="space-y-6">
-            <h2 className="text-2xl font-bold text-gray-800">Your Price Alerts</h2>
-            {priceAlerts.length === 0 ? (
-              <div className="bg-white rounded-2xl p-12 text-center shadow-sm">
-                <Bell size={48} className="mx-auto text-gray-300 mb-4" />
-                <p className="text-gray-500">No active price alerts.</p>
-              </div>
-            ) : (
-              <div className="grid md:grid-cols-2 gap-4">
-                {priceAlerts.map(alert => (
-                  <div key={alert.id} className="bg-white p-6 rounded-xl shadow-sm border flex justify-between items-center">
-                    <div>
-                      <p className="font-bold">{alert.route}</p>
-                      <p className="text-sm text-gray-500">Target: ${alert.price}</p>
+            {/* ALERTS TAB */}
+            {activeTab === 'alerts' && isPremium && (
+              <div className="space-y-6">
+                <div className="bg-white rounded-3xl shadow-xl p-8">
+                  <div className="flex items-center space-x-4 mb-6">
+                    <div className="bg-gradient-to-br from-blue-500 to-purple-600 p-4 rounded-2xl">
+                      <Icon name="Bell" size={32} className="text-white" />
                     </div>
-                    <button onClick={() => removeAlert(alert.id)} className="text-red-500"><X size={20} /></button>
+                    <div>
+                      <h2 className="text-3xl font-black text-gray-800">🔔 Price Alerts</h2>
+                      <p className="text-gray-600 font-medium">Get notified when prices drop</p>
+                    </div>
                   </div>
-                ))}
+
+                  {priceAlerts.length === 0 ? (
+                    <div className="text-center py-16">
+                      <Icon name="Bell" size={80} className="text-gray-300 mx-auto mb-6" />
+                      <p className="text-xl text-gray-500 mb-6 font-semibold">No price alerts set yet</p>
+                      <button
+                        onClick={() => setActiveTab('search')}
+                        className="bg-gradient-to-r from-blue-600 to-purple-600 text-white px-8 py-4 rounded-xl font-bold hover:shadow-lg transition-all"
+                      >
+                        Search Flights to Set Alerts
+                      </button>
+                    </div>
+                  ) : (
+                    <div className="space-y-4">
+                      {priceAlerts.map((alert) => (
+                        <div key={alert.id} className="bg-gradient-to-r from-blue-50 to-purple-50 rounded-2xl p-6 border-2 border-blue-200">
+                          <div className="flex items-start justify-between">
+                            <div className="flex-1">
+                              <div className="flex items-center space-x-3 mb-4">
+                                <Icon name="Plane" size={24} className="text-blue-600" />
+                                <h3 className="text-2xl font-black text-gray-800">{alert.route}</h3>
+                              </div>
+                              <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+                                <div>
+                                  <p className="text-xs text-gray-600 font-semibold mb-1">Target Price</p>
+                                  <p className="text-2xl font-black text-green-600">${alert.targetPrice}</p>
+                                </div>
+                                <div>
+                                  <p className="text-xs text-gray-600 font-semibold mb-1">Current Price</p>
+                                  <p className="text-2xl font-black text-blue-600">${alert.currentPrice}</p>
+                                </div>
+                                <div>
+                                  <p className="text-xs text-gray-600 font-semibold mb-1">Travel Date</p>
+                                  <p className="font-bold text-gray-800">{formatDate(alert.departDate)}</p>
+                                </div>
+                                <div>
+                                  <p className="text-xs text-gray-600 font-semibold mb-1">Airline</p>
+                                  <p className="font-bold text-gray-800">{alert.airline}</p>
+                                </div>
+                              </div>
+                              <p className="text-xs text-gray-500 mt-3 font-medium">
+                                Created: {new Date(alert.created).toLocaleDateString()}
+                              </p>
+                            </div>
+                            <button
+                              onClick={() => deletePriceAlert(alert.id)}
+                              className="ml-4 p-3 text-red-600 hover:bg-red-50 rounded-xl transition-all"
+                              title="Delete alert"
+                            >
+                              <Icon name="X" size={24} />
+                            </button>
+                          </div>
+                        </div>
+                      ))}
+                    </div>
+                  )}
+                </div>
               </div>
             )}
-          </div>
-        )}
+          </main>
 
-        {activeTab === 'profile' && (
-          <div className="max-w-2xl mx-auto bg-white rounded-2xl shadow-lg p-8 text-center">
-            <div className="w-20 h-20 bg-blue-100 rounded-full flex items-center justify-center mx-auto mb-4">
-              <Users className="text-blue-600" size={40} />
+          {/* BOOKING MODAL */}
+          {showBookingModal && selectedFlight && (
+            <div className="fixed inset-0 bg-black/60 modal-overlay flex items-center justify-center z-50 p-4">
+              <div className="bg-white rounded-3xl shadow-2xl max-w-3xl w-full max-h-[90vh] overflow-y-auto">
+                <div className="p-6 border-b-2 flex items-center justify-between bg-gradient-to-r from-blue-600 to-purple-600 text-white rounded-t-3xl">
+                  <div>
+                    <h3 className="text-3xl font-black">Book This Flight</h3>
+                    <p className="text-sm opacity-90 mt-1">Complete your booking with our partners</p>
+                  </div>
+                  <button
+                    onClick={() => setShowBookingModal(false)}
+                    className="p-2 hover:bg-white/20 rounded-xl transition-all"
+                  >
+                    <Icon name="X" size={28} />
+                  </button>
+                </div>
+                
+                <div className="p-8">
+                  {/* Flight Summary */}
+                  <div className="bg-gradient-to-br from-blue-50 to-purple-50 rounded-2xl p-6 mb-6 border-2 border-blue-200">
+                    <h4 className="font-black text-xl mb-4 text-gray-800">📋 Flight Summary</h4>
+                    <div className="grid md:grid-cols-2 gap-4 text-sm">
+                      <div>
+                        <p className="text-gray-600 font-semibold mb-1">Route</p>
+                        <p className="font-black text-gray-800 text-lg">{searchParams.from} → {searchParams.to}</p>
+                      </div>
+                      <div>
+                        <p className="text-gray-600 font-semibold mb-1">Total Price</p>
+                        <p className="font-black text-green-600 text-2xl">${selectedFlight.price.total} {selectedFlight.price.currency}</p>
+                      </div>
+                      <div>
+                        <p className="text-gray-600 font-semibold mb-1">Duration</p>
+                        <p className="font-bold text-gray-800">{formatDuration(selectedFlight.itineraries[0].duration)}</p>
+                      </div>
+                      <div>
+                        <p className="text-gray-600 font-semibold mb-1">Airline</p>
+                        <p className="font-bold text-gray-800">{selectedFlight.validatingAirlineCodes?.[0]}</p>
+                      </div>
+                      <div>
+                        <p className="text-gray-600 font-semibold mb-1">Passengers</p>
+                        <p className="font-bold text-gray-800">{searchParams.passengers}</p>
+                      </div>
+                      <div>
+                        <p className="text-gray-600 font-semibold mb-1">Class</p>
+                        <p className="font-bold text-gray-800">{searchParams.class}</p>
+                      </div>
+                    </div>
+                  </div>
+
+                  {/* Continue to Book */}
+                  <h4 className="font-black text-xl mb-4 text-gray-800">Complete Your Booking</h4>
+                  <p className="text-gray-600 mb-6 font-medium">Click below to be redirected to Google Flights with your exact flight details:</p>
+                  
+                  <a
+                    href={generateBookingLink(selectedFlight)}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    onClick={() => {
+                      // Track booking click for commission
+                      console.log('Booking click tracked:', {
+                        flight: selectedFlight.id,
+                        user: user?.email,
+                        timestamp: new Date().toISOString()
+                      });
+                    }}
+                    className="block w-full bg-gradient-to-r from-blue-600 to-purple-600 text-white px-8 py-5 rounded-2xl font-black text-lg hover:shadow-2xl transform hover:scale-105 transition-all text-center"
+                  >
+                    <div className="flex items-center justify-center space-x-3">
+                      <span>Continue to Google Flights</span>
+                      <Icon name="ExternalLink" size={24} />
+                    </div>
+                  </a>
+
+                  <div className="mt-6 bg-yellow-50 border-2 border-yellow-200 rounded-2xl p-5">
+                    <div className="flex items-start space-x-3">
+                      <Icon name="Info" size={22} className="text-yellow-600 flex-shrink-0 mt-0.5" />
+                      <div className="text-sm">
+                        <p className="font-black text-gray-800 mb-2">Important Information:</p>
+                        <ul className="text-gray-700 space-y-1 list-disc list-inside font-medium">
+                          <li>You'll be redirected to complete your booking securely</li>
+                          <li>Prices and availability confirmed in real-time</li>
+                          <li>All bookings handled by certified travel partners</li>
+                          <li>SkyScout earns a small commission at no extra cost to you</li>
+                        </ul>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
             </div>
-            <h2 className="text-2xl font-bold">{isLoggedIn ? `Welcome, ${username}!` : 'My Account'}</h2>
-            <div className="mt-6">
-              {isLoggedIn ? (
-                <button onClick={handleLogout} className="px-6 py-2 bg-red-50 text-red-600 rounded-lg">Logout</button>
-              ) : (
-                <button onClick={handleLogin} className="px-6 py-2 bg-blue-600 text-white rounded-lg">Login / Sign Up</button>
-              )}
+          )}
+
+          {/* SUBSCRIBE MODAL */}
+          {showSubscribeModal && (
+            <div className="fixed inset-0 bg-black/60 modal-overlay flex items-center justify-center z-50 p-4 overflow-y-auto">
+              <div className="bg-white rounded-3xl shadow-2xl max-w-5xl w-full my-8">
+                <div className="p-8 border-b-2 flex items-center justify-between bg-gradient-to-r from-purple-600 to-blue-600 text-white rounded-t-3xl">
+                  <div>
+                    <div className="flex items-center space-x-3 mb-2">
+                      <Icon name="Sparkles" size={36} />
+                      <h3 className="text-4xl font-black">Upgrade to Premium</h3>
+                    </div>
+                    <p className="text-lg opacity-90">Unlock worldwide flights & exclusive features</p>
+                  </div>
+                  <button
+                    onClick={() => setShowSubscribeModal(false)}
+                    className="p-3 hover:bg-white/20 rounded-xl transition-all"
+                  >
+                    <Icon name="X" size={28} />
+                  </button>
+                </div>
+                
+                <div className="p-8">
+                  {/* Feature Comparison */}
+                  <div className="grid md:grid-cols-2 gap-6 mb-8">
+                    {/* Free */}
+                    <div className="bg-gray-50 rounded-2xl p-7 border-2 border-gray-300">
+                      <h4 className="text-2xl font-black mb-5 text-gray-800">Free Account</h4>
+                      <ul className="space-y-4">
+                        <li className="flex items-start space-x-3">
+                          <Icon name="Check" size={22} className="text-green-600 flex-shrink-0 mt-0.5" />
+                          <span className="font-semibold text-gray-700">UAE ↔ USA flights only</span>
+                        </li>
+                        <li className="flex items-start space-x-3">
+                          <Icon name="X" size={22} className="text-red-500 flex-shrink-0 mt-0.5" />
+                          <span className="text-gray-400">Worldwide search</span>
+                        </li>
+                        <li className="flex items-start space-x-3">
+                          <Icon name="X" size={22} className="text-red-500 flex-shrink-0 mt-0.5" />
+                          <span className="text-gray-400">Price alerts</span>
+                        </li>
+                        <li className="flex items-start space-x-3">
+                          <Icon name="X" size={22} className="text-red-500 flex-shrink-0 mt-0.5" />
+                          <span className="text-gray-400">Early deal access</span>
+                        </li>
+                        <li className="flex items-start space-x-3">
+                          <Icon name="X" size={22} className="text-red-500 flex-shrink-0 mt-0.5" />
+                          <span className="text-gray-400">Priority support</span>
+                        </li>
+                      </ul>
+                    </div>
+
+                    {/* Premium */}
+                    <div className="bg-gradient-to-br from-purple-50 to-blue-50 rounded-2xl p-7 border-4 border-purple-300 relative overflow-hidden">
+                      <div className="absolute -right-10 -top-10 w-28 h-28 bg-gradient-to-br from-yellow-400 to-orange-500 rounded-full flex items-center justify-center shadow-2xl">
+                        <Icon name="Sparkles" size={40} className="text-white" />
+                      </div>
+                      <h4 className="text-2xl font-black mb-5 text-purple-900">Premium Account</h4>
+                      <ul className="space-y-4">
+                        <li className="flex items-start space-x-3">
+                          <Icon name="Check" size={22} className="text-green-600 flex-shrink-0 mt-0.5" />
+                          <span className="font-black text-purple-900">🌍 Worldwide flight search</span>
+                        </li>
+                        <li className="flex items-start space-x-3">
+                          <Icon name="Check" size={22} className="text-green-600 flex-shrink-0 mt-0.5" />
+                          <span className="font-black text-purple-900">🔔 Unlimited price alerts</span>
+                        </li>
+                        <li className="flex items-start space-x-3">
+                          <Icon name="Check" size={22} className="text-green-600 flex-shrink-0 mt-0.5" />
+                          <span className="font-black text-purple-900">⚡ Instant notifications</span>
+                        </li>
+                        <li className="flex items-start space-x-3">
+                          <Icon name="Check" size={22} className="text-green-600 flex-shrink-0 mt-0.5" />
+                          <span className="font-black text-purple-900">🎯 Early deal access</span>
+                        </li>
+                        <li className="flex items-start space-x-3">
+                          <Icon name="Check" size={22} className="text-green-600 flex-shrink-0 mt-0.5" />
+                          <span className="font-black text-purple-900">🛟 Priority support</span>
+                        </li>
+                      </ul>
+                      <div className="mt-6 bg-white rounded-2xl p-5 text-center shadow-lg">
+                        <p className="text-sm text-gray-600 font-semibold mb-1">Only</p>
+                        <p className="text-5xl font-black text-purple-600">
+                          ${CONFIG.PREMIUM_PRICE}
+                          <span className="text-xl text-gray-500">/month</span>
+                        </p>
+                      </div>
+                    </div>
+                  </div>
+
+                  {/* Payment Form */}
+                  <div className="mb-6">
+                    <h4 className="font-black text-2xl mb-5 text-gray-800">💳 Payment Details</h4>
+                    <div className="bg-gray-50 rounded-2xl p-6 border-2 border-gray-200">
+                      <div ref={cardElementRef} className="stripe-card-element"></div>
+                    </div>
+                    <p className="text-xs text-gray-500 mt-3 font-medium text-center">
+                      🔒 Secure payment powered by Stripe • Cancel anytime
+                    </p>
+                  </div>
+
+                  {error && (
+                    <div className="mb-5 p-5 bg-red-50 border-2 border-red-200 rounded-2xl flex items-start space-x-3">
+                      <Icon name="AlertCircle" size={22} className="text-red-600 flex-shrink-0 mt-0.5" />
+                      <div>
+                        <p className="font-black text-red-800">Payment Error</p>
+                        <p className="text-red-700">{error}</p>
+                      </div>
+                    </div>
+                  )}
+
+                  {/* Subscribe Button */}
+                  <button
+                    onClick={handleSubscribe}
+                    disabled={paymentProcessing || !cardElement}
+                    className="w-full bg-gradient-to-r from-purple-600 to-blue-600 text-white py-6 rounded-2xl font-black text-xl hover:shadow-2xl transform hover:scale-105 transition-all disabled:opacity-50 disabled:cursor-not-allowed disabled:transform-none flex items-center justify-center space-x-3"
+                  >
+                    {paymentProcessing ? (
+                      <>
+                        <Icon name="Loader" size={28} />
+                        <span>Processing Payment...</span>
+                      </>
+                    ) : (
+                      <>
+                        <Icon name="Sparkles" size={28} />
+                        <span>Upgrade to Premium - ${CONFIG.PREMIUM_PRICE}/month</span>
+                      </>
+                    )}
+                  </button>
+
+                  <p className="text-sm text-center text-gray-500 mt-5 font-medium">
+                    By subscribing, you agree to our Terms of Service and Privacy Policy
+                  </p>
+                </div>
+              </div>
             </div>
-          </div>
-        )}
-      </main>
+          )}
 
-      <footer className="bg-white border-t mt-12 py-8 text-center text-sm text-gray-500">
-        <p>© 2024 SkyScout Travel. Powered by Amadeus API.</p>
-      </footer>
-    </div>
-  );
-};
+          {/* Footer */}
+          <footer className="bg-gray-900 text-white mt-20">
+            <div className="max-w-7xl mx-auto px-4 py-12">
+              <div className="grid md:grid-cols-4 gap-8 mb-8">
+                <div>
+                  <div className="flex items-center space-x-3 mb-4">
+                    <div className="bg-gradient-to-br from-blue-600 to-purple-600 p-2.5 rounded-xl">
+                      <Icon name="Plane" size={24} className="text-white" />
+                    </div>
+                    <h3 className="text-2xl font-black">SkyScout</h3>
+                  </div>
+                  <p className="text-gray-400 text-sm font-medium">
+                    Professional flight search powered by real-time data from Amadeus API
+                  </p>
+                </div>
+                
+                <div>
+                  <h4 className="font-black mb-4 text-lg">Quick Links</h4>
+                  <ul className="space-y-2 text-sm text-gray-400">
+                    <li><a href="#" className="hover:text-white transition font-medium">About Us</a></li>
+                    <li><a href="#" className="hover:text-white transition font-medium">How It Works</a></li>
+                    <li><a href="#" className="hover:text-white transition font-medium">FAQ</a></li>
+                    <li><a href="#" className="hover:text-white transition font-medium">Contact</a></li>
+                  </ul>
+                </div>
+                
+                <div>
+                  <h4 className="font-black mb-4 text-lg">Legal</h4>
+                  <ul className="space-y-2 text-sm text-gray-400">
+                    <li><a href="#" className="hover:text-white transition font-medium">Privacy Policy</a></li>
+                    <li><a href="#" className="hover:text-white transition font-medium">Terms of Service</a></li>
+                    <li><a href="#" className="hover:text-white transition font-medium">Cookie Policy</a></li>
+                  </ul>
+                </div>
+                
+                <div>
+                  <h4 className="font-black mb-4 text-lg">Powered By</h4>
+                  <ul className="space-y-2 text-sm text-gray-400">
+                    <li className="font-medium">✈️ Amadeus Travel API</li>
+                    <li className="font-medium">🔐 Google OAuth</li>
+                    <li className="font-medium">💳 Stripe Payments</li>
+                    <li className="font-medium">📧 EmailJS</li>
+                  </ul>
+                </div>
+              </div>
+              
+              <div className="border-t border-gray-800 pt-8 text-center text-sm text-gray-400">
+                <p className="font-semibold">© 2024 SkyScout. All rights reserved.</p>
+                <p className="mt-2">Real flight data • Secure payments • Trusted partners</p>
+              </div>
+            </div>
+          </footer>
+        </div>
+      );
+    };
 
-export default SkyScout;
+    ReactDOM.render(<SkyScout />, document.getElementById('root'));
+  </script>
+</body>
+</html>

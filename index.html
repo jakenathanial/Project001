@@ -1,0 +1,451 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Dubai2USA — Sign In</title>
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@300;400;600&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet"/>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --cream: #FAF8F4;
+      --sand:  #EDE8DF;
+      --gold:  #C9A84C;
+      --gold-light: #E2C47A;
+      --dark:  #1A1814;
+      --mid:   #5C5750;
+      --light: #9C9690;
+      --white: #FFFFFF;
+    }
+
+    body {
+      font-family: 'DM Sans', sans-serif;
+      background-color: var(--cream);
+      color: var(--dark);
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      overflow: hidden;
+    }
+
+    /* Background decorative elements */
+    .bg-decor {
+      position: fixed;
+      inset: 0;
+      pointer-events: none;
+      z-index: 0;
+    }
+    .bg-circle {
+      position: absolute;
+      border-radius: 50%;
+      opacity: 0.06;
+      background: var(--gold);
+    }
+    .bg-circle.c1 { width: 600px; height: 600px; top: -200px; right: -150px; }
+    .bg-circle.c2 { width: 400px; height: 400px; bottom: -150px; left: -100px; }
+    .bg-line {
+      position: absolute;
+      background: var(--gold);
+      opacity: 0.08;
+    }
+    .bg-line.l1 { width: 1px; height: 100vh; left: 10%; top: 0; }
+    .bg-line.l2 { width: 1px; height: 100vh; right: 10%; top: 0; }
+    .bg-line.l3 { width: 100vw; height: 1px; top: 30%; left: 0; }
+
+    /* Card */
+    .card {
+      position: relative;
+      z-index: 1;
+      background: var(--white);
+      border: 1px solid var(--sand);
+      border-radius: 4px;
+      padding: 56px 52px 48px;
+      width: 100%;
+      max-width: 420px;
+      box-shadow: 0 4px 40px rgba(26,24,20,0.07), 0 1px 4px rgba(26,24,20,0.04);
+      animation: fadeUp 0.7s cubic-bezier(0.22, 1, 0.36, 1) both;
+    }
+
+    @keyframes fadeUp {
+      from { opacity: 0; transform: translateY(24px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+
+    /* Logo / Brand */
+    .brand {
+      text-align: center;
+      margin-bottom: 40px;
+    }
+    .brand-icon {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      width: 48px;
+      height: 48px;
+      border: 1.5px solid var(--gold);
+      border-radius: 50%;
+      margin-bottom: 16px;
+    }
+    .brand-icon svg {
+      width: 22px;
+      height: 22px;
+      fill: var(--gold);
+    }
+    .brand-name {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 26px;
+      font-weight: 600;
+      letter-spacing: 0.04em;
+      color: var(--dark);
+    }
+    .brand-name span {
+      color: var(--gold);
+    }
+    .brand-tagline {
+      font-size: 12px;
+      color: var(--light);
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      margin-top: 4px;
+    }
+
+    /* Divider */
+    .divider {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      margin-bottom: 32px;
+    }
+    .divider-line {
+      flex: 1;
+      height: 1px;
+      background: var(--sand);
+    }
+    .divider-text {
+      font-size: 11px;
+      color: var(--light);
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+    }
+
+    /* Heading */
+    .heading {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 22px;
+      font-weight: 400;
+      color: var(--dark);
+      margin-bottom: 6px;
+    }
+    .subheading {
+      font-size: 13px;
+      color: var(--mid);
+      line-height: 1.6;
+      margin-bottom: 28px;
+    }
+
+    /* Google Button */
+    .google-btn {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 12px;
+      width: 100%;
+      padding: 14px 20px;
+      background: var(--white);
+      border: 1.5px solid #E0DBD3;
+      border-radius: 3px;
+      font-family: 'DM Sans', sans-serif;
+      font-size: 14px;
+      font-weight: 500;
+      color: var(--dark);
+      cursor: pointer;
+      transition: all 0.2s ease;
+      text-decoration: none;
+    }
+    .google-btn:hover {
+      border-color: var(--gold);
+      background: #FFFDF9;
+      box-shadow: 0 2px 12px rgba(201,168,76,0.12);
+      transform: translateY(-1px);
+    }
+    .google-btn:active {
+      transform: translateY(0);
+    }
+    .google-icon {
+      width: 18px;
+      height: 18px;
+      flex-shrink: 0;
+    }
+
+    /* OR divider */
+    .or-divider {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      margin: 20px 0;
+    }
+    .or-divider .divider-line { background: #EDEBE6; }
+    .or-divider .divider-text { color: #BDB8B0; }
+
+    /* Email input */
+    .input-group {
+      margin-bottom: 14px;
+    }
+    .input-label {
+      display: block;
+      font-size: 11px;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: var(--mid);
+      margin-bottom: 7px;
+    }
+    .input-field {
+      width: 100%;
+      padding: 12px 14px;
+      border: 1.5px solid #E0DBD3;
+      border-radius: 3px;
+      font-family: 'DM Sans', sans-serif;
+      font-size: 14px;
+      color: var(--dark);
+      background: var(--white);
+      outline: none;
+      transition: border-color 0.2s;
+    }
+    .input-field::placeholder { color: #C5C0B8; }
+    .input-field:focus { border-color: var(--gold); }
+
+    /* Submit button */
+    .submit-btn {
+      width: 100%;
+      padding: 14px;
+      background: var(--dark);
+      color: var(--white);
+      border: none;
+      border-radius: 3px;
+      font-family: 'DM Sans', sans-serif;
+      font-size: 14px;
+      font-weight: 500;
+      letter-spacing: 0.04em;
+      cursor: pointer;
+      transition: all 0.2s ease;
+      margin-top: 6px;
+    }
+    .submit-btn:hover {
+      background: #2E2B26;
+      transform: translateY(-1px);
+      box-shadow: 0 4px 14px rgba(26,24,20,0.18);
+    }
+    .submit-btn:active { transform: translateY(0); }
+
+    /* Footer note */
+    .footer-note {
+      text-align: center;
+      font-size: 12px;
+      color: var(--light);
+      margin-top: 28px;
+      line-height: 1.6;
+    }
+    .footer-note a {
+      color: var(--gold);
+      text-decoration: none;
+    }
+    .footer-note a:hover { text-decoration: underline; }
+
+    /* User info panel (shown after login) */
+    .user-panel {
+      display: none;
+      text-align: center;
+      animation: fadeUp 0.5s cubic-bezier(0.22, 1, 0.36, 1) both;
+    }
+    .user-avatar {
+      width: 64px;
+      height: 64px;
+      border-radius: 50%;
+      border: 2px solid var(--gold);
+      margin: 0 auto 16px;
+      object-fit: cover;
+    }
+    .user-name {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 22px;
+      font-weight: 600;
+      color: var(--dark);
+      margin-bottom: 4px;
+    }
+    .user-email {
+      font-size: 13px;
+      color: var(--mid);
+      margin-bottom: 28px;
+    }
+    .welcome-badge {
+      display: inline-block;
+      background: #FBF6EC;
+      border: 1px solid #E8D9B0;
+      color: var(--gold);
+      font-size: 11px;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      padding: 5px 14px;
+      border-radius: 20px;
+      margin-bottom: 28px;
+    }
+    .signout-btn {
+      background: none;
+      border: 1.5px solid #E0DBD3;
+      color: var(--mid);
+      padding: 10px 24px;
+      border-radius: 3px;
+      font-family: 'DM Sans', sans-serif;
+      font-size: 13px;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+    .signout-btn:hover { border-color: var(--dark); color: var(--dark); }
+
+    @media (max-width: 480px) {
+      .card { padding: 40px 28px 36px; margin: 16px; }
+    }
+  </style>
+
+  <!-- Google Identity Services -->
+  <script src="https://accounts.google.com/gsi/client" async defer></script>
+</head>
+<body>
+
+  <!-- Background decoration -->
+  <div class="bg-decor">
+    <div class="bg-circle c1"></div>
+    <div class="bg-circle c2"></div>
+    <div class="bg-line l1"></div>
+    <div class="bg-line l2"></div>
+    <div class="bg-line l3"></div>
+  </div>
+
+  <div class="card">
+
+    <!-- Brand -->
+    <div class="brand">
+      <div class="brand-icon">
+        <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+          <path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"/>
+        </svg>
+      </div>
+      <div class="brand-name">Dubai<span>2</span>USA</div>
+      <div class="brand-tagline">Your journey, simplified</div>
+    </div>
+
+    <!-- Login form -->
+    <div id="login-form">
+      <div class="divider">
+        <div class="divider-line"></div>
+        <div class="divider-text">Welcome back</div>
+        <div class="divider-line"></div>
+      </div>
+
+      <p class="heading">Sign in to continue</p>
+      <p class="subheading">Access your account to manage your Dubai to USA journey.</p>
+
+      <!-- Google Sign In Button -->
+      <button class="google-btn" onclick="signInWithGoogle()">
+        <svg class="google-icon" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+          <path d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z" fill="#4285F4"/>
+          <path d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z" fill="#34A853"/>
+          <path d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z" fill="#FBBC05"/>
+          <path d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z" fill="#EA4335"/>
+        </svg>
+        Continue with Google
+      </button>
+
+      <div class="or-divider">
+        <div class="divider-line"></div>
+        <div class="divider-text">or</div>
+        <div class="divider-line"></div>
+      </div>
+
+      <div class="input-group">
+        <label class="input-label">Email address</label>
+        <input type="email" class="input-field" placeholder="you@example.com" id="email-input"/>
+      </div>
+      <div class="input-group">
+        <label class="input-label">Password</label>
+        <input type="password" class="input-field" placeholder="••••••••" id="password-input"/>
+      </div>
+      <button class="submit-btn">Sign In</button>
+
+      <div class="footer-note">
+        Don't have an account? <a href="#">Create one</a><br/>
+        <a href="#">Forgot your password?</a>
+      </div>
+    </div>
+
+    <!-- User panel (shown after Google login) -->
+    <div class="user-panel" id="user-panel">
+      <img src="" alt="Profile" class="user-avatar" id="user-avatar"/>
+      <div class="welcome-badge">✦ Signed in</div>
+      <div class="user-name" id="user-name"></div>
+      <div class="user-email" id="user-email"></div>
+      <button class="signout-btn" onclick="signOut()">Sign out</button>
+    </div>
+
+  </div>
+
+  <!-- Hidden Google One Tap div -->
+  <div id="g_id_onload"
+    data-client_id="165486915688-3q9s7ucq3ucrn3g0p5altft11lbj86ke.apps.googleusercontent.com"
+    data-callback="handleCredentialResponse"
+    data-auto_prompt="false">
+  </div>
+
+  <script>
+    // ─── Replace with your actual Google Client ID ───────────────────────────
+    const CLIENT_ID = '165486915688-3q9s7ucq3ucrn3g0p5altft11lbj86ke.apps.googleusercontent.com';
+    // ─────────────────────────────────────────────────────────────────────────
+
+    function signInWithGoogle() {
+      const client = google.accounts.oauth2.initTokenClient({
+        client_id: CLIENT_ID,
+        scope: 'openid email profile',
+        callback: (tokenResponse) => {
+          if (tokenResponse.access_token) {
+            fetchUserInfo(tokenResponse.access_token);
+          }
+        },
+      });
+      client.requestAccessToken();
+    }
+
+    function fetchUserInfo(accessToken) {
+      fetch('https://www.googleapis.com/oauth2/v3/userinfo', {
+        headers: { Authorization: `Bearer ${accessToken}` }
+      })
+      .then(res => res.json())
+      .then(user => showUserPanel(user))
+      .catch(err => alert('Sign in failed. Please try again.'));
+    }
+
+    function showUserPanel(user) {
+      document.getElementById('login-form').style.display = 'none';
+      const panel = document.getElementById('user-panel');
+      panel.style.display = 'block';
+      document.getElementById('user-avatar').src = user.picture || '';
+      document.getElementById('user-name').textContent = user.name || '';
+      document.getElementById('user-email').textContent = user.email || '';
+    }
+
+    function signOut() {
+      google.accounts.oauth2.revoke(CLIENT_ID, () => {});
+      document.getElementById('user-panel').style.display = 'none';
+      document.getElementById('login-form').style.display = 'block';
+    }
+
+    // Handle One Tap response
+    function handleCredentialResponse(response) {
+      const payload = JSON.parse(atob(response.credential.split('.')[1]));
+      showUserPanel(payload);
+    }
+  </script>
+
+</body>
+</html>

@@ -8,156 +8,154 @@
 <style>
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
 :root{
-  --bg:#F7F5F0;
-  --white:#FFFFFF;
-  --card:#FFFFFF;
-  --border:#E8E4DC;
-  --border2:#D4CFC4;
-  --text:#1C1916;
-  --mid:#5A5650;
-  --muted:#9C9890;
-  --accent:#E8500A;
-  --accent2:#2563EB;
-  --accent3:#059669;
-  --gold:#D97706;
-  --surface:#EFEDE8;
+  --bg:#F7F5F0;--white:#FFFFFF;--card:#FFFFFF;--border:#E8E4DC;--border2:#D4CFC4;
+  --text:#1C1916;--mid:#5A5650;--muted:#9C9890;
+  --accent:#E8500A;--accent2:#2563EB;--accent3:#059669;--gold:#D97706;--surface:#EFEDE8;
 }
 html{scroll-behavior:smooth;}
 body{font-family:'Plus Jakarta Sans',sans-serif;background:var(--bg);color:var(--text);min-height:100vh;}
 
-/* ── NAVBAR ── */
+/* NAVBAR */
 .navbar{background:var(--white);border-bottom:1px solid var(--border);padding:0 40px;display:flex;align-items:center;justify-content:space-between;height:64px;position:sticky;top:0;z-index:100;box-shadow:0 1px 12px rgba(0,0,0,.04);}
-.nav-logo{font-size:20px;font-weight:800;color:var(--text);letter-spacing:-.03em;}
+.nav-logo{font-size:20px;font-weight:800;color:var(--text);letter-spacing:-.03em;cursor:pointer;}
 .nav-logo span{color:var(--accent);}
 .nav-links{display:flex;align-items:center;gap:6px;}
 .nav-link{padding:8px 16px;border-radius:8px;font-size:14px;font-weight:500;color:var(--mid);cursor:pointer;transition:all .2s;border:none;background:none;}
 .nav-link:hover{background:var(--surface);color:var(--text);}
-.nav-link.active{background:var(--surface);color:var(--text);font-weight:600;}
+.nav-right{display:flex;align-items:center;gap:10px;}
+.nav-user{display:flex;align-items:center;gap:8px;}
+.nav-avatar{width:32px;height:32px;border-radius:50%;border:2px solid var(--accent);object-fit:cover;}
+.nav-user-name{font-size:13px;font-weight:600;color:var(--mid);}
+.btn-signin{background:var(--surface);color:var(--text);padding:8px 16px;border-radius:8px;font-size:13px;font-weight:600;border:1px solid var(--border2);cursor:pointer;transition:all .2s;display:flex;align-items:center;gap:8px;}
+.btn-signin:hover{border-color:var(--text);}
+.btn-signin svg{width:16px;height:16px;flex-shrink:0;}
+.btn-signout{background:none;border:1px solid var(--border2);color:var(--muted);padding:7px 14px;border-radius:8px;font-size:12px;font-weight:600;cursor:pointer;transition:all .2s;}
+.btn-signout:hover{border-color:var(--accent);color:var(--accent);}
 .nav-cta{background:var(--accent);color:#fff;padding:9px 20px;border-radius:8px;font-size:14px;font-weight:600;border:none;cursor:pointer;transition:all .2s;}
 .nav-cta:hover{background:#C94008;transform:translateY(-1px);}
 
-/* ── PAGES ── */
+/* PAGES */
 .page{display:none;}
 .page.active{display:block;}
 
-/* ══════════════════
-   HOME PAGE
-══════════════════ */
+/* HERO */
 .hero{background:var(--white);border-bottom:1px solid var(--border);padding:72px 40px 64px;text-align:center;}
 .hero-eyebrow{display:inline-flex;align-items:center;gap:8px;background:#FEF3C7;border:1px solid #FDE68A;border-radius:20px;padding:6px 16px;font-size:12px;font-weight:600;color:var(--gold);margin-bottom:24px;letter-spacing:.04em;text-transform:uppercase;}
 .hero-eyebrow .dot{width:7px;height:7px;background:var(--gold);border-radius:50%;animation:blink 2s infinite;}
 @keyframes blink{0%,100%{opacity:1;}50%{opacity:.3;}}
 .hero h1{font-size:clamp(36px,6vw,68px);font-weight:800;line-height:1.08;letter-spacing:-.03em;margin-bottom:20px;max-width:800px;margin-left:auto;margin-right:auto;}
 .hero h1 em{font-style:italic;font-family:'Lora',serif;font-weight:400;color:var(--accent);}
-.hero-sub{font-size:18px;color:var(--mid);line-height:1.65;max-width:560px;margin:0 auto 40px;font-weight:400;}
-.hero-actions{display:flex;align-items:center;justify-content:center;gap:12px;flex-wrap:wrap;margin-bottom:56px;}
+.hero-sub{font-size:18px;color:var(--mid);line-height:1.65;max-width:580px;margin:0 auto 40px;}
+.hero-actions{display:flex;align-items:center;justify-content:center;gap:12px;flex-wrap:wrap;margin-bottom:48px;}
 .btn-primary{background:var(--accent);color:#fff;padding:14px 28px;border-radius:10px;font-size:15px;font-weight:700;border:none;cursor:pointer;transition:all .25s;display:inline-flex;align-items:center;gap:8px;}
 .btn-primary:hover{background:#C94008;transform:translateY(-2px);box-shadow:0 8px 24px rgba(232,80,10,.25);}
 .btn-secondary{background:var(--surface);color:var(--text);padding:14px 28px;border-radius:10px;font-size:15px;font-weight:600;border:1px solid var(--border2);cursor:pointer;transition:all .2s;}
-.btn-secondary:hover{border-color:var(--text);transform:translateY(-1px);}
-.hero-stats{display:flex;gap:0;justify-content:center;border:1px solid var(--border);border-radius:14px;overflow:hidden;max-width:480px;margin:0 auto;}
+.btn-secondary:hover{border-color:var(--text);}
+.hero-stats{display:flex;gap:0;justify-content:center;border:1px solid var(--border);border-radius:14px;overflow:hidden;max-width:540px;margin:0 auto;}
 .hero-stat{flex:1;padding:20px;text-align:center;border-right:1px solid var(--border);}
 .hero-stat:last-child{border-right:none;}
 .hero-stat-num{font-size:26px;font-weight:800;color:var(--text);letter-spacing:-.02em;}
 .hero-stat-label{font-size:12px;color:var(--muted);margin-top:3px;font-weight:500;}
 
-/* TRACKS SECTION */
-.section{padding:56px 40px;max-width:1160px;margin:0 auto;}
-.section-header{display:flex;align-items:flex-end;justify-content:space-between;margin-bottom:32px;gap:20px;flex-wrap:wrap;}
-.section-label{font-size:11px;font-weight:700;letter-spacing:.14em;text-transform:uppercase;color:var(--muted);margin-bottom:6px;}
-.section-title{font-size:28px;font-weight:800;letter-spacing:-.02em;color:var(--text);}
-.section-sub{font-size:15px;color:var(--mid);margin-top:6px;}
+/* SIGN IN BANNER */
+.signin-banner{background:linear-gradient(135deg,#EFF6FF,#DBEAFE);border:1px solid #BFDBFE;border-radius:12px;padding:20px 28px;margin:32px 40px 0;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:16px;}
+.signin-banner-text h3{font-size:16px;font-weight:700;color:#1E40AF;margin-bottom:4px;}
+.signin-banner-text p{font-size:13px;color:#3B82F6;}
+.signin-banner-btn{background:#2563EB;color:#fff;padding:10px 20px;border-radius:8px;font-size:13px;font-weight:700;border:none;cursor:pointer;transition:all .2s;display:flex;align-items:center;gap:8px;white-space:nowrap;}
+.signin-banner-btn:hover{background:#1D4ED8;}
+.signin-banner-btn svg{width:16px;height:16px;}
 
-/* COURSE CARDS */
-.courses-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:20px;}
-.course-card{background:var(--white);border:1px solid var(--border);border-radius:16px;overflow:hidden;cursor:pointer;transition:all .25s;position:relative;}
-.course-card:hover{border-color:var(--border2);transform:translateY(-4px);box-shadow:0 16px 48px rgba(0,0,0,.1);}
-.course-card-banner{height:120px;display:flex;align-items:center;justify-content:center;font-size:44px;position:relative;}
-.course-badge{position:absolute;top:12px;right:12px;background:rgba(255,255,255,.9);backdrop-filter:blur(8px);border-radius:6px;padding:4px 10px;font-size:11px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;}
-.course-card-body{padding:20px;}
-.course-tag{font-size:11px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;margin-bottom:8px;}
-.course-card-title{font-size:17px;font-weight:700;margin-bottom:8px;line-height:1.3;letter-spacing:-.01em;}
-.course-card-desc{font-size:13px;color:var(--mid);line-height:1.6;margin-bottom:16px;}
+/* FILTER TABS */
+.filter-wrap{padding:32px 40px 0;max-width:1200px;margin:0 auto;}
+.filter-tabs{display:flex;gap:8px;flex-wrap:wrap;}
+.filter-tab{padding:8px 18px;border-radius:20px;font-size:13px;font-weight:600;border:1.5px solid var(--border2);background:var(--white);color:var(--mid);cursor:pointer;transition:all .2s;}
+.filter-tab:hover{border-color:var(--text);color:var(--text);}
+.filter-tab.active{background:var(--accent);border-color:var(--accent);color:#fff;}
+
+/* COURSES SECTION */
+.section{padding:32px 40px 56px;max-width:1200px;margin:0 auto;}
+.section-header{display:flex;align-items:flex-end;justify-content:space-between;margin-bottom:28px;gap:20px;flex-wrap:wrap;}
+.section-label{font-size:11px;font-weight:700;letter-spacing:.14em;text-transform:uppercase;color:var(--muted);margin-bottom:6px;}
+.section-title{font-size:26px;font-weight:800;letter-spacing:-.02em;}
+.courses-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(270px,1fr));gap:20px;}
+
+/* COURSE CARD */
+.course-card{background:var(--white);border:1px solid var(--border);border-radius:16px;overflow:hidden;cursor:pointer;transition:all .25s;}
+.course-card:hover{border-color:var(--border2);transform:translateY(-4px);box-shadow:0 16px 48px rgba(0,0,0,.09);}
+.course-card-banner{height:110px;display:flex;align-items:center;justify-content:center;font-size:40px;position:relative;}
+.course-badge{position:absolute;top:10px;right:10px;background:rgba(255,255,255,.92);backdrop-filter:blur(8px);border-radius:6px;padding:3px 9px;font-size:11px;font-weight:700;letter-spacing:.05em;}
+.course-card-body{padding:18px;}
+.course-tag-pill{display:inline-block;padding:3px 10px;border-radius:6px;font-size:11px;font-weight:700;letter-spacing:.07em;text-transform:uppercase;margin-bottom:10px;}
+.course-card-title{font-size:16px;font-weight:700;margin-bottom:7px;line-height:1.3;letter-spacing:-.01em;}
+.course-card-desc{font-size:13px;color:var(--mid);line-height:1.55;margin-bottom:14px;}
 .course-card-footer{display:flex;align-items:center;justify-content:space-between;}
 .course-meta-info{font-size:12px;color:var(--muted);font-weight:500;}
-.course-start-btn{background:var(--surface);color:var(--text);border:1px solid var(--border2);padding:7px 14px;border-radius:8px;font-size:12px;font-weight:700;cursor:pointer;transition:all .2s;}
+.course-start-btn{background:var(--surface);color:var(--text);border:1px solid var(--border2);padding:6px 14px;border-radius:8px;font-size:12px;font-weight:700;cursor:pointer;transition:all .2s;}
 .course-card:hover .course-start-btn{background:var(--accent);color:#fff;border-color:var(--accent);}
-.progress-bar{height:4px;background:var(--surface);border-radius:4px;margin-top:14px;overflow:hidden;}
+.progress-bar{height:4px;background:var(--surface);border-radius:4px;margin-top:12px;overflow:hidden;}
 .progress-fill{height:100%;border-radius:4px;transition:width .6s ease;}
 
-/* HOW IT WORKS */
-.how-section{background:var(--white);border-top:1px solid var(--border);border-bottom:1px solid var(--border);padding:56px 40px;}
-.how-inner{max-width:1000px;margin:0 auto;}
-.steps-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:32px;margin-top:40px;}
-.step{text-align:center;}
-.step-icon{width:56px;height:56px;border-radius:14px;display:flex;align-items:center;justify-content:center;font-size:24px;margin:0 auto 16px;}
-.step-num{font-size:11px;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:var(--muted);margin-bottom:8px;}
-.step-title{font-size:16px;font-weight:700;margin-bottom:6px;}
-.step-desc{font-size:13px;color:var(--mid);line-height:1.6;}
-
-/* ══════════════════
-   LESSON PAGE
-══════════════════ */
+/* LESSON PAGE */
 .lesson-wrap{display:grid;grid-template-columns:300px 1fr;min-height:calc(100vh - 64px);}
-
-.sidebar{background:var(--white);border-right:1px solid var(--border);padding:28px 20px;position:sticky;top:64px;height:calc(100vh - 64px);overflow-y:auto;}
-.sidebar-back{display:flex;align-items:center;gap:8px;font-size:13px;font-weight:600;color:var(--mid);cursor:pointer;margin-bottom:24px;padding:8px 12px;border-radius:8px;transition:all .2s;border:none;background:none;}
+.sidebar{background:var(--white);border-right:1px solid var(--border);padding:24px 16px;position:sticky;top:64px;height:calc(100vh - 64px);overflow-y:auto;}
+.sidebar-back{display:flex;align-items:center;gap:8px;font-size:13px;font-weight:600;color:var(--mid);cursor:pointer;margin-bottom:20px;padding:8px 12px;border-radius:8px;transition:all .2s;border:none;background:none;width:100%;}
 .sidebar-back:hover{background:var(--surface);color:var(--text);}
-.sidebar-course-name{font-size:13px;font-weight:700;color:var(--text);margin-bottom:4px;padding:0 4px;}
-.sidebar-course-sub{font-size:12px;color:var(--muted);margin-bottom:20px;padding:0 4px;}
-.sidebar-divider{height:1px;background:var(--border);margin-bottom:20px;}
-.sidebar-section-label{font-size:11px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--muted);margin-bottom:12px;padding:0 4px;}
-.lesson-item{display:flex;align-items:center;gap:12px;padding:10px 12px;border-radius:10px;cursor:pointer;transition:all .2s;margin-bottom:4px;}
+.sidebar-course-name{font-size:14px;font-weight:700;color:var(--text);margin-bottom:3px;padding:0 4px;}
+.sidebar-course-sub{font-size:12px;color:var(--muted);margin-bottom:16px;padding:0 4px;}
+.sidebar-progress{height:4px;background:var(--surface);border-radius:4px;margin-bottom:20px;overflow:hidden;}
+.sidebar-progress-fill{height:100%;background:var(--accent);border-radius:4px;transition:width .5s;}
+.sidebar-divider{height:1px;background:var(--border);margin-bottom:16px;}
+.lesson-item{display:flex;align-items:flex-start;gap:10px;padding:9px 10px;border-radius:10px;cursor:pointer;transition:all .2s;margin-bottom:3px;}
 .lesson-item:hover{background:var(--surface);}
 .lesson-item.active{background:#FFF5F2;border:1px solid #FECDC0;}
-.lesson-item.done{opacity:.7;}
-.lesson-dot{width:28px;height:28px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:700;flex-shrink:0;background:var(--surface);color:var(--mid);}
+.lesson-dot{width:26px;height:26px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:700;flex-shrink:0;background:var(--surface);color:var(--mid);margin-top:1px;}
 .lesson-item.active .lesson-dot{background:var(--accent);color:#fff;}
-.lesson-item.done .lesson-dot{background:#D1FAE5;color:var(--accent3);}
+.lesson-item.done .lesson-dot{background:#D1FAE5;color:var(--accent3);font-size:13px;}
 .lesson-item-name{font-size:13px;font-weight:500;color:var(--mid);line-height:1.4;}
 .lesson-item.active .lesson-item-name{color:var(--text);font-weight:600;}
 
+/* LESSON CONTENT */
 .lesson-content{padding:48px 60px;max-width:820px;}
 .lesson-top-meta{display:flex;align-items:center;gap:10px;margin-bottom:28px;flex-wrap:wrap;}
 .lesson-tag{background:var(--surface);color:var(--mid);padding:5px 12px;border-radius:6px;font-size:12px;font-weight:600;}
 .lesson-tag.accent{background:#FFF5F2;color:var(--accent);}
+.lesson-tag.green{background:#ECFDF5;color:var(--accent3);}
 .lesson-num-badge{background:var(--surface);color:var(--muted);padding:5px 12px;border-radius:6px;font-size:12px;font-weight:500;}
-.lesson-heading{font-size:clamp(26px,4vw,38px);font-weight:800;letter-spacing:-.02em;line-height:1.15;margin-bottom:16px;}
+.lesson-heading{font-size:clamp(24px,4vw,36px);font-weight:800;letter-spacing:-.02em;line-height:1.15;margin-bottom:16px;}
 .lesson-intro-text{font-size:17px;color:var(--mid);line-height:1.7;font-family:'Lora',serif;font-style:italic;margin-bottom:36px;padding-bottom:32px;border-bottom:2px solid var(--border);}
-
 .lesson-body{font-size:15px;color:var(--mid);line-height:1.85;margin-bottom:40px;}
-.lesson-body h3{font-size:17px;font-weight:700;color:var(--text);margin:32px 0 12px;letter-spacing:-.01em;}
-.lesson-body p{margin-bottom:16px;}
-.callout{background:#FFFBEB;border:1px solid #FDE68A;border-left:4px solid var(--gold);border-radius:0 10px 10px 0;padding:16px 20px;margin:20px 0;font-size:14px;color:#78350F;line-height:1.65;}
-.callout strong{color:#92400E;}
-.inline-code{background:#F1F0ED;color:#C0392B;padding:2px 7px;border-radius:5px;font-size:13px;font-family:monospace;font-style:normal;}
+.lesson-body h3{font-size:17px;font-weight:700;color:var(--text);margin:28px 0 12px;letter-spacing:-.01em;}
+.lesson-body p{margin-bottom:14px;}
+.callout{background:#FFFBEB;border:1px solid #FDE68A;border-left:4px solid var(--gold);border-radius:0 10px 10px 0;padding:14px 18px;margin:18px 0;font-size:14px;color:#78350F;line-height:1.65;}
+.ic{background:#F1F0ED;color:#C0392B;padding:2px 7px;border-radius:5px;font-size:13px;font-family:monospace;}
+.tip-box{background:#EFF6FF;border:1px solid #BFDBFE;border-radius:10px;padding:14px 18px;margin:18px 0;font-size:14px;color:#1E40AF;line-height:1.6;}
 
 /* QUIZ */
-.quiz-box{background:var(--surface);border:1px solid var(--border);border-radius:16px;padding:28px;margin-top:8px;}
-.quiz-header{display:flex;align-items:center;gap:10px;margin-bottom:20px;}
-.quiz-icon{width:36px;height:36px;background:var(--accent);border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:16px;color:#fff;flex-shrink:0;}
+.quiz-box{background:var(--surface);border:1px solid var(--border);border-radius:16px;padding:26px;margin-top:8px;}
+.quiz-header{display:flex;align-items:center;gap:10px;margin-bottom:18px;}
+.quiz-icon{width:34px;height:34px;background:var(--accent);border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:15px;color:#fff;flex-shrink:0;}
 .quiz-title{font-size:13px;font-weight:700;color:var(--text);}
 .quiz-sub{font-size:12px;color:var(--muted);}
-.quiz-q{font-size:16px;font-weight:700;color:var(--text);margin-bottom:20px;line-height:1.4;}
-.quiz-opts{display:flex;flex-direction:column;gap:10px;margin-bottom:20px;}
-.quiz-opt{display:flex;align-items:center;gap:14px;padding:14px 16px;background:var(--white);border:1.5px solid var(--border);border-radius:10px;cursor:pointer;transition:all .2s;font-size:14px;color:var(--mid);}
+.quiz-q{font-size:15px;font-weight:700;color:var(--text);margin-bottom:18px;line-height:1.4;}
+.quiz-opts{display:flex;flex-direction:column;gap:9px;margin-bottom:18px;}
+.quiz-opt{display:flex;align-items:center;gap:12px;padding:12px 15px;background:var(--white);border:1.5px solid var(--border);border-radius:10px;cursor:pointer;transition:all .2s;font-size:14px;color:var(--mid);}
 .quiz-opt:hover{border-color:var(--accent);background:#FFF5F2;color:var(--text);}
 .quiz-opt.selected{border-color:var(--accent);background:#FFF5F2;color:var(--text);font-weight:600;}
 .quiz-opt.correct{border-color:var(--accent3);background:#ECFDF5;color:#065F46;font-weight:600;}
 .quiz-opt.wrong{border-color:#EF4444;background:#FEF2F2;color:#991B1B;}
-.opt-letter{width:28px;height:28px;border-radius:50%;background:var(--surface);display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:700;flex-shrink:0;color:var(--mid);}
+.opt-letter{width:26px;height:26px;border-radius:50%;background:var(--surface);display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:700;flex-shrink:0;color:var(--mid);}
 .quiz-opt.selected .opt-letter{background:var(--accent);color:#fff;}
 .quiz-opt.correct .opt-letter{background:var(--accent3);color:#fff;}
 .quiz-opt.wrong .opt-letter{background:#EF4444;color:#fff;}
-.quiz-check-btn{background:var(--accent);color:#fff;padding:12px 28px;border-radius:10px;font-size:14px;font-weight:700;border:none;cursor:pointer;transition:all .2s;}
+.quiz-check-btn{background:var(--accent);color:#fff;padding:11px 26px;border-radius:10px;font-size:14px;font-weight:700;border:none;cursor:pointer;transition:all .2s;}
 .quiz-check-btn:hover{background:#C94008;}
 .quiz-check-btn:disabled{background:var(--border2);color:var(--muted);cursor:not-allowed;}
-.quiz-result{margin-top:16px;padding:14px 18px;border-radius:10px;font-size:14px;font-weight:500;display:none;}
+.quiz-result{margin-top:14px;padding:12px 16px;border-radius:10px;font-size:14px;font-weight:500;display:none;}
 .quiz-result.show{display:block;}
 .quiz-result.pass{background:#ECFDF5;border:1px solid #A7F3D0;color:#065F46;}
 .quiz-result.fail{background:#FEF2F2;border:1px solid #FECACA;color:#991B1B;}
 
-.lesson-footer{display:flex;align-items:center;justify-content:space-between;margin-top:40px;padding-top:32px;border-top:1px solid var(--border);gap:12px;flex-wrap:wrap;}
+.lesson-footer{display:flex;align-items:center;justify-content:space-between;margin-top:36px;padding-top:28px;border-top:1px solid var(--border);gap:12px;flex-wrap:wrap;}
 .foot-btn{display:inline-flex;align-items:center;gap:8px;padding:12px 22px;border-radius:10px;font-size:14px;font-weight:600;cursor:pointer;transition:all .2s;border:none;}
 .foot-btn-prev{background:var(--surface);color:var(--mid);border:1px solid var(--border2);}
 .foot-btn-prev:hover{color:var(--text);border-color:var(--text);}
@@ -167,120 +165,105 @@ body{font-family:'Plus Jakarta Sans',sans-serif;background:var(--bg);color:var(-
 .foot-btn-finish:hover{background:#047857;}
 
 /* TOAST */
-.toast{position:fixed;bottom:28px;right:28px;background:var(--text);color:var(--white);padding:14px 22px;border-radius:12px;font-size:14px;font-weight:600;z-index:9999;transform:translateY(16px);opacity:0;transition:all .35s;pointer-events:none;display:flex;align-items:center;gap:10px;box-shadow:0 8px 32px rgba(0,0,0,.2);}
+.toast{position:fixed;bottom:28px;right:28px;background:var(--text);color:var(--white);padding:13px 20px;border-radius:12px;font-size:14px;font-weight:600;z-index:9999;transform:translateY(16px);opacity:0;transition:all .35s;pointer-events:none;display:flex;align-items:center;gap:10px;box-shadow:0 8px 32px rgba(0,0,0,.2);}
 .toast.show{transform:translateY(0);opacity:1;}
 
-@keyframes fadeUp{from{opacity:0;transform:translateY(20px);}to{opacity:1;transform:translateY(0);}}
+@keyframes fadeUp{from{opacity:0;transform:translateY(18px);}to{opacity:1;transform:translateY(0);}}
 .fade-in{animation:fadeUp .5s cubic-bezier(.22,1,.36,1) both;}
-.delay-1{animation-delay:.08s;}
-.delay-2{animation-delay:.16s;}
-.delay-3{animation-delay:.24s;}
-.delay-4{animation-delay:.32s;}
+.d1{animation-delay:.08s;}.d2{animation-delay:.16s;}.d3{animation-delay:.24s;}.d4{animation-delay:.32s;}
 
-@media(max-width:768px){
+@media(max-width:900px){
   .navbar{padding:0 20px;}
   .hero{padding:48px 20px 40px;}
-  .section{padding:40px 20px;}
-  .how-section{padding:40px 20px;}
+  .section,.filter-wrap{padding-left:20px;padding-right:20px;}
+  .signin-banner{margin:24px 20px 0;}
   .lesson-wrap{grid-template-columns:1fr;}
   .sidebar{display:none;}
   .lesson-content{padding:28px 20px;}
 }
 </style>
+<script src="https://accounts.google.com/gsi/client" async defer></script>
 </head>
 <body>
 
 <!-- NAVBAR -->
 <nav class="navbar">
-  <div class="nav-logo">Dubai<span>2</span>USA</div>
+  <div class="nav-logo" onclick="goHome()">Dubai<span>2</span>USA</div>
   <div class="nav-links">
-    <button class="nav-link active" onclick="goHome()">Home</button>
+    <button class="nav-link" onclick="goHome()">Home</button>
     <button class="nav-link" onclick="scrollToCourses()">Courses</button>
   </div>
-  <button class="nav-cta" onclick="scrollToCourses()">Start Learning →</button>
+  <div class="nav-right">
+    <div id="nav-signed-out" style="display:flex;align-items:center;gap:8px;">
+      <button class="btn-signin" onclick="signInWithGoogle()">
+        <svg viewBox="0 0 24 24"><path d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z" fill="#4285F4"/><path d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z" fill="#34A853"/><path d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z" fill="#FBBC05"/><path d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z" fill="#EA4335"/></svg>
+        Sign in with Google
+      </button>
+    </div>
+    <div id="nav-signed-in" style="display:none;align-items:center;gap:10px;">
+      <img class="nav-avatar" id="nav-avatar" src="" alt=""/>
+      <span class="nav-user-name" id="nav-user-name"></span>
+      <button class="btn-signout" onclick="signOut()">Sign out</button>
+    </div>
+  </div>
 </nav>
 
 <!-- TOAST -->
 <div class="toast" id="toast"><span id="toast-icon">✓</span><span id="toast-msg"></span></div>
 
-<!-- ══ HOME PAGE ══ -->
+<!-- HOME PAGE -->
 <div class="page active" id="page-home">
-
-  <!-- HERO -->
   <div class="hero">
-    <div class="hero-eyebrow fade-in"><span class="dot"></span> Free AI courses — start today</div>
-    <h1 class="fade-in delay-1">Learn AI like a<br/><em>true professional.</em></h1>
-    <p class="hero-sub fade-in delay-2">Four practical tracks covering ChatGPT, AI image generation, business automation, and coding tools. No fluff. Just skills.</p>
-    <div class="hero-actions fade-in delay-3">
-      <button class="btn-primary" onclick="scrollToCourses()">Browse Courses →</button>
-      <button class="btn-secondary" onclick="scrollToHow()">How it works</button>
+    <div class="hero-eyebrow fade-in"><span class="dot"></span> 20 courses · 300 lessons · 100% free</div>
+    <h1 class="fade-in d1">Master every AI tool<br/><em>like a professional.</em></h1>
+    <p class="hero-sub fade-in d2">Deep-dive courses on Claude, ChatGPT, Gemini, Grok and 16 more AI tracks. Practical lessons, real skills, instant quizzes.</p>
+    <div class="hero-actions fade-in d3">
+      <button class="btn-primary" onclick="scrollToCourses()">Browse All Courses →</button>
+      <button class="btn-secondary" onclick="signInWithGoogle()">Sign in to save progress</button>
     </div>
-    <div class="hero-stats fade-in delay-4">
-      <div class="hero-stat"><div class="hero-stat-num">4</div><div class="hero-stat-label">AI Tracks</div></div>
-      <div class="hero-stat"><div class="hero-stat-num">12</div><div class="hero-stat-label">Lessons</div></div>
-      <div class="hero-stat"><div class="hero-stat-num">100%</div><div class="hero-stat-label">Free</div></div>
+    <div class="hero-stats fade-in d4">
+      <div class="hero-stat"><div class="hero-stat-num">20</div><div class="hero-stat-label">Courses</div></div>
+      <div class="hero-stat"><div class="hero-stat-num">300</div><div class="hero-stat-label">Lessons</div></div>
+      <div class="hero-stat"><div class="hero-stat-num">15</div><div class="hero-stat-label">Per Course</div></div>
+      <div class="hero-stat"><div class="hero-stat-num">Free</div><div class="hero-stat-label">Always</div></div>
     </div>
   </div>
 
-  <!-- COURSES -->
+  <div id="signin-banner-wrap"></div>
+
+  <div class="filter-wrap">
+    <div class="filter-tabs">
+      <div class="filter-tab active" onclick="filterCourses('all',this)">All Courses</div>
+      <div class="filter-tab" onclick="filterCourses('ai-tools',this)">AI Tools</div>
+      <div class="filter-tab" onclick="filterCourses('prompting',this)">Prompting</div>
+      <div class="filter-tab" onclick="filterCourses('business',this)">Business</div>
+      <div class="filter-tab" onclick="filterCourses('creative',this)">Creative</div>
+      <div class="filter-tab" onclick="filterCourses('coding',this)">Coding</div>
+      <div class="filter-tab" onclick="filterCourses('advanced',this)">Advanced</div>
+    </div>
+  </div>
+
   <div class="section" id="courses-section">
     <div class="section-header">
       <div>
         <div class="section-label">All tracks</div>
-        <div class="section-title">Choose your AI path</div>
-        <div class="section-sub">Pick any course and start learning immediately — no sign up needed.</div>
+        <div class="section-title" id="section-title-text">All 20 Courses</div>
       </div>
+      <div style="font-size:13px;color:var(--muted);" id="course-count"></div>
     </div>
     <div class="courses-grid" id="courses-grid"></div>
   </div>
-
-  <!-- HOW IT WORKS -->
-  <div class="how-section" id="how-section">
-    <div class="how-inner">
-      <div style="text-align:center;">
-        <div class="section-label" style="justify-content:center;display:flex;">How it works</div>
-        <div class="section-title" style="margin-top:6px;">Simple. Fast. Effective.</div>
-      </div>
-      <div class="steps-grid">
-        <div class="step fade-in">
-          <div class="step-icon" style="background:#FFF5F2;">📚</div>
-          <div class="step-num">Step 01</div>
-          <div class="step-title">Pick a course</div>
-          <div class="step-desc">Choose from 4 AI tracks based on your goals — no account required.</div>
-        </div>
-        <div class="step fade-in delay-1">
-          <div class="step-icon" style="background:#EFF6FF;">📖</div>
-          <div class="step-num">Step 02</div>
-          <div class="step-title">Read & learn</div>
-          <div class="step-desc">Each lesson is bite-sized, practical, and packed with real examples.</div>
-        </div>
-        <div class="step fade-in delay-2">
-          <div class="step-icon" style="background:#ECFDF5;">✅</div>
-          <div class="step-num">Step 03</div>
-          <div class="step-title">Test yourself</div>
-          <div class="step-desc">A quick quiz after each lesson locks in what you've learned.</div>
-        </div>
-        <div class="step fade-in delay-3">
-          <div class="step-icon" style="background:#FFFBEB;">🚀</div>
-          <div class="step-num">Step 04</div>
-          <div class="step-title">Apply your skills</div>
-          <div class="step-desc">Use AI like a professional in your work, business, or creative projects.</div>
-        </div>
-      </div>
-    </div>
-  </div>
-
 </div>
 
-<!-- ══ LESSON PAGE ══ -->
+<!-- LESSON PAGE -->
 <div class="page" id="page-lesson">
   <div class="lesson-wrap">
     <div class="sidebar" id="lesson-sidebar">
       <button class="sidebar-back" onclick="goHome()">← All Courses</button>
       <div class="sidebar-course-name" id="sb-course-name"></div>
       <div class="sidebar-course-sub" id="sb-course-sub"></div>
+      <div class="sidebar-progress"><div class="sidebar-progress-fill" id="sb-progress-fill"></div></div>
       <div class="sidebar-divider"></div>
-      <div class="sidebar-section-label">Lessons</div>
       <div id="sb-lessons"></div>
     </div>
     <div class="lesson-content" id="lesson-content"></div>
@@ -288,382 +271,913 @@ body{font-family:'Plus Jakarta Sans',sans-serif;background:var(--bg);color:var(-
 </div>
 
 <script>
-// ── DATA ─────────────────────────────────────────────────────────────────
+// ── GOOGLE AUTH CONFIG ─────────────────────────────────────────────────────
+const CLIENT_ID = 'YOUR_GOOGLE_CLIENT_ID.apps.googleusercontent.com';
+let currentUser = null;
+
+// ── LESSON TEMPLATE GENERATOR ──────────────────────────────────────────────
+function makeLesson(title, intro, points, calloutText, tipText, quizQ, quizOpts, quizAns) {
+  const bodyHTML = points.map(([h, p]) => `<h3>${h}</h3><p>${p}</p>`).join('') +
+    (calloutText ? `<div class="callout">${calloutText}</div>` : '') +
+    (tipText ? `<div class="tip-box">${tipText}</div>` : '');
+  return { title, intro, body: bodyHTML, quiz: { q: quizQ, opts: quizOpts, ans: quizAns } };
+}
+
+// ── COURSES DATA ───────────────────────────────────────────────────────────
 const COURSES = [
+  // ── 1. CLAUDE ──────────────────────────────────────────────────────────
   {
-    id:'chatgpt',
-    emoji:'⚡',
-    bannerBg:'linear-gradient(135deg,#1e3a5f,#2d5a8e)',
-    tag:'Prompt Engineering',
-    tagColor:'#2563EB',
-    tagBg:'#EFF6FF',
-    badge:'Beginner',
-    badgeColor:'#2563EB',
-    title:'ChatGPT & Prompt Mastery',
-    desc:'Write prompts that get expert-level results. Learn the techniques professionals actually use.',
+    id:'claude', emoji:'🧠', category:'ai-tools',
+    bannerBg:'linear-gradient(135deg,#1a1a2e,#16213e)',
+    tag:'AI Tools', tagColor:'#6366F1', tagBg:'#EEF2FF',
+    badge:'Comprehensive', badgeColor:'#6366F1',
+    title:"Mastering Claude by Anthropic",
+    desc:"Go deep on Anthropic's Claude — its unique strengths, Constitutional AI, and how to get the best results.",
     lessons:[
-      {
-        title:'What is Prompt Engineering?',
-        intro:'Prompting is the new programming. How you talk to AI determines everything about what you get back.',
-        body:`
-          <h3>Why your prompt matters more than the AI</h3>
-          <p>The same AI model gives completely different results depending on how you ask. A vague prompt gets a generic answer. A precise, well-structured prompt gets expert-level output — every time.</p>
-          <div class="callout"><strong>Key insight:</strong> It's not about using a smarter AI. It's about being a smarter prompter. This skill transfers across every AI tool you'll ever use.</div>
-          <h3>The three ingredients of a great prompt</h3>
-          <p>Every effective prompt has three parts: <span class="inline-code">Context</span> (who you are and the situation), <span class="inline-code">Task</span> (exactly what you want), and <span class="inline-code">Format</span> (how you want the answer).</p>
-          <p>Weak prompt: <span class="inline-code">Write an email</span><br/>
-          Strong prompt: <span class="inline-code">You are a senior sales executive. Write a follow-up email to a warm lead who attended our product webinar yesterday. Friendly but professional. Under 120 words.</span></p>
-          <h3>Start practising today</h3>
-          <p>Open ChatGPT right now and try rewriting your last 3 prompts using the Context + Task + Format structure. You'll see the difference immediately.</p>`,
-        quiz:{q:'What are the three ingredients of a great prompt?',opts:['Length, tone, and grammar','Context, Task, and Format','Introduction, body, and conclusion','Question, answer, and example'],ans:1}
-      },
-      {
-        title:'The Role-Playing Technique',
-        intro:'Assigning a persona to the AI is one of the fastest ways to dramatically improve the quality of its responses.',
-        body:`
-          <h3>Why personas work</h3>
-          <p>When you say <span class="inline-code">You are a Harvard-trained nutritionist</span>, the AI focuses on everything it knows relevant to that role — the vocabulary, the reasoning style, the level of expertise. The output shifts from generic to authoritative.</p>
-          <div class="callout"><strong>Try this now:</strong> "You are a senior UX designer at a top tech company. Review this app description and suggest 3 specific improvements to the onboarding experience."</div>
-          <h3>Combining role + constraints = magic</h3>
-          <p>The real power comes when you pair a role with constraints. Specify: the audience, the tone, the word count, and the output format. The AI now has everything it needs to produce something you can actually use.</p>
-          <p>Example: <span class="inline-code">You are a financial advisor. Explain the difference between ETFs and index funds to a 25-year-old with no investment experience. Use simple language. Max 200 words.</span></p>`,
-        quiz:{q:'What does combining a role with constraints achieve?',opts:['Makes the AI respond faster','Focuses the AI on relevant expertise with a specific, usable output','Unlocks premium features','Changes the AI model being used'],ans:1}
-      },
-      {
-        title:'Chain-of-Thought Prompting',
-        intro:'Adding just four words to your prompt can transform how the AI reasons through complex problems.',
-        body:`
-          <h3>The magic phrase</h3>
-          <p>Adding <span class="inline-code">Think step by step</span> to any prompt that involves reasoning, analysis, or problem-solving dramatically improves accuracy. The AI slows down and shows its work — which catches errors and produces more reliable results.</p>
-          <div class="callout"><strong>Use this for:</strong> Business decisions, analysing contracts, debugging logic, solving multi-step problems, or any task where the reasoning process matters as much as the answer.</div>
-          <h3>Real example</h3>
-          <p>Without chain-of-thought: <span class="inline-code">Should I raise my product prices?</span> — You get a generic yes/no with surface-level reasoning.</p>
-          <p>With chain-of-thought: <span class="inline-code">Should I raise my product prices? Think step by step, considering: current market positioning, competitor pricing, customer price sensitivity, and impact on revenue. My product costs $29/month and targets freelancers.</span></p>`,
-        quiz:{q:'When is chain-of-thought prompting most useful?',opts:['Writing short social media posts','Complex reasoning, analysis, or multi-step problems','Generating images','Translating languages'],ans:1}
-      }
+      makeLesson("What Makes Claude Different","Claude is not just another chatbot. Understanding its design philosophy will completely change how you use it.",
+        [["Constitutional AI explained","Anthropic trained Claude using a method called Constitutional AI — a set of principles the model uses to self-critique its own outputs. This means Claude is unusually good at reasoning through nuanced ethical situations and giving balanced, thoughtful answers."],
+         ["Claude's core strengths","Claude excels at: long-form writing, nuanced analysis, following complex multi-step instructions, and working with very long documents. It handles up to 200,000 tokens of context — that's roughly 150,000 words in a single conversation."],
+         ["When to choose Claude over ChatGPT","Choose Claude when you need: careful, calibrated answers; analysis of long documents; writing that sounds natural and thoughtful; or tasks that require following many instructions simultaneously."]],
+        "<strong>Key insight:</strong> Claude is designed to be honest about uncertainty. If it doesn't know something, it will say so rather than confabulate — a critical feature for professional use.",
+        "<strong>Pro tip:</strong> Claude responds especially well to prompts that include clear context, explicit goals, and a requested format. The more structured your prompt, the more structured Claude's output.",
+        "What is Constitutional AI?",["A method of training Claude using legal frameworks","A set of principles Claude uses to self-critique its outputs during training","A type of neural network architecture","A feature that restricts Claude's responses"],1),
+
+      makeLesson("Claude's Context Window Superpower","200,000 tokens of context is not just a feature — it's a completely different way of working with AI.",
+        [["What 200K tokens actually means","200,000 tokens is approximately 150,000 words — that's longer than most novels. You can paste an entire book, a year's worth of emails, or a massive codebase and have Claude reason across all of it at once."],
+         ["Practical uses of large context","Feed Claude: entire legal contracts to summarise and flag risks; full research papers with questions; complete codebases for debugging; long meeting transcripts for action item extraction; or whole company documents for policy questions."],
+         ["How to structure long-context prompts","Always put your question or instruction at the end, after the document. Claude reads everything but weighs the final instruction most heavily. Structure: [Document] → [Specific question about it]."]],
+        "<strong>Real-world use:</strong> Upload a 50-page PDF (pasted as text), then ask Claude to extract all action items, summarise each section, and flag any contradictions. It handles this flawlessly.",
+        null,
+        "Approximately how many words can Claude's 200K token context window hold?",["10,000 words","50,000 words","150,000 words","1,000,000 words"],2),
+
+      makeLesson("Prompting Claude for Best Results","Claude responds differently to prompts than other models. Here's the exact technique that gets expert-level output.",
+        [["The structured prompt method","Claude performs best with structured prompts that have clear sections. Use headers like: CONTEXT:, TASK:, FORMAT:, CONSTRAINTS:. This tells Claude exactly what you need without ambiguity."],
+         ["Using XML tags for clarity","Claude was trained on data that included XML and responds exceptionally well to XML-style tags in prompts. Try: <context>...</context> <task>...</task> <output_format>...</output_format>. This works better than plain text separators."],
+         ["Iterative refinement technique","Start with a broad prompt, get a draft, then send a follow-up telling Claude specifically what to improve. 'Make the second paragraph more concise. Add a concrete example to the third point. Change the tone to be more direct.' This beats trying to write the perfect prompt first time."]],
+        "<strong>Game changer:</strong> Add 'Think through this step by step before answering' to any analytical prompt. Claude's reasoning quality jumps significantly when given explicit permission to think before responding.",
+        null,
+        "What format does Claude respond especially well to in prompts?",["Numbered lists only","Bullet points","XML-style tags like <context> and <task>","All caps for emphasis"],2),
+
+      makeLesson("Claude for Long-Form Writing","Claude is arguably the best AI model for producing natural, high-quality long-form written content.",
+        [["Why Claude writes differently","Claude's writing avoids the telltale AI patterns — the excessive em-dashes, the overly enthusiastic openers, the robotic structure. This is intentional. Anthropic trained Claude to produce writing that reads as genuinely human."],
+         ["The persona technique for writing","Before asking Claude to write anything, establish a writing persona: 'You are a senior writer at The Atlantic. Your style is precise, confident, and intellectually curious. You never use clichés.' This persona anchors every sentence Claude produces."],
+         ["Long-form structure workflow","For articles, reports, or essays: (1) Ask Claude to create an outline first. (2) Review and edit the outline. (3) Ask Claude to write each section separately. (4) Ask Claude to review the full piece for consistency. This produces far better results than asking for the whole thing at once."]],
+        "<strong>Writing tip:</strong> Ask Claude to write in a specific style by giving it an example: 'Write in the style of this paragraph: [paste example].' Claude will match the rhythm, vocabulary level, and sentence structure precisely.",
+        null,
+        "What is the recommended workflow for producing high-quality long-form content with Claude?",["Ask for the full piece in one prompt","Create outline → write sections separately → review for consistency","Write it yourself then ask Claude to edit","Use bullet points and ask Claude to expand"],2),
+
+      makeLesson("Claude for Code and Technical Tasks","Claude's coding abilities are often underrated. Here's how to use it as a serious technical partner.",
+        [["Claude's coding strengths","Claude is excellent at: explaining complex code in plain English, refactoring for readability, writing tests, debugging logical errors, and translating between programming languages. It's particularly strong at explaining the 'why' behind code, not just the 'what'."],
+         ["The debugging workflow","When debugging, give Claude: (1) The code. (2) What you expected to happen. (3) What actually happened. (4) Any error messages. This structured context allows Claude to diagnose issues accurately rather than guessing."],
+         ["Code review technique","Paste your code and ask: 'Review this code for: (1) bugs, (2) security issues, (3) performance problems, (4) readability improvements. Format your response as a numbered list with severity ratings.' This gets you a structured, actionable code review."]],
+        "<strong>Technical tip:</strong> Ask Claude to 'think out loud' when debugging — 'Explain your reasoning as you trace through this code.' This surfaces assumptions and often leads to faster bug identification.",
+        null,
+        "What information should you give Claude for the most accurate debugging help?",["Just the code","The code, expected behaviour, actual behaviour, and error messages","Only the error message","A description of the problem without code"],1),
+
+      makeLesson("Using Claude for Research and Analysis","Claude's ability to synthesise, compare, and reason across information makes it a powerful research partner.",
+        [["Synthesis vs search","Claude is not a search engine — don't use it to find facts. Use it to synthesise, compare, structure, and reason about information you provide or that it already knows from training. This is where it genuinely excels."],
+         ["The analyst prompt pattern","Frame Claude as an analyst: 'Act as a senior strategy consultant. Analyse the following market data and identify: (1) three key trends, (2) two significant risks, (3) one overlooked opportunity. Cite specific data points in your analysis.' Structure produces structure."],
+         ["Multi-perspective analysis","Ask Claude to analyse a topic from multiple viewpoints: 'Analyse this business decision from the perspective of: a CFO, a customer, and a frontline employee.' This surfaces blind spots and produces richer analysis than single-perspective prompts."]],
+        "<strong>Research workflow:</strong> Paste your source material → ask for a structured summary → then ask follow-up questions drilling into specific sections. Claude maintains full context across the conversation.",
+        null,
+        "What is Claude's strongest use case in research contexts?",["Finding new facts and current news","Synthesising, comparing and reasoning across information you provide","Generating images of research concepts","Searching the internet for sources"],1),
+
+      makeLesson("Claude's Honesty and Refusals","Understanding why Claude refuses certain requests — and how to work with its safety design — makes you a more effective user.",
+        [["Why Claude declines requests","Claude is trained to decline requests that could cause harm. But it's also trained to be genuinely helpful. Most refusals happen because Claude has misread the intent of a vague prompt, not because the task itself is problematic."],
+         ["How to reframe misread prompts","If Claude refuses or hedges excessively, try: (1) Adding context about who you are and why you need it. (2) Framing it as hypothetical or educational. (3) Breaking the task into smaller steps. (4) Being more specific about the legitimate purpose."],
+         ["Claude's uncertainty communication","Claude is designed to express uncertainty rather than confabulate. Pay attention to phrases like 'I believe', 'I'm not certain', or 'you may want to verify this'. These are signals to cross-check, not to ignore."]],
+        "<strong>Important:</strong> Claude's honesty about uncertainty is a feature, not a bug. An AI that always sounds confident is more dangerous than one that signals when it's unsure.",
+        null,
+        "Why does Claude most commonly refuse or hedge on requests?",["It has strict word limits","It has misread the intent due to a vague prompt","It is less capable than other models","It requires a paid subscription"],1),
+
+      makeLesson("Advanced Claude Techniques","Power-user techniques that separate casual Claude users from professionals.",
+        [["Chain of thought activation","Add 'Before answering, write out your reasoning process step by step in a <thinking> block.' This makes Claude's reasoning transparent and dramatically improves quality on complex tasks."],
+         ["Role assignment + constraints","The most powerful prompt structure: assign a specific role, define the audience, set a format, and add explicit constraints. 'You are a paediatric doctor. Explain this diagnosis to worried parents. Use plain language. No jargon. Under 200 words. Empathetic tone.'"],
+         ["The critique loop","After getting a response, send: 'Now critique your own answer. What are its weaknesses? What important nuances did you miss? What would a strong counterargument be?' Then ask Claude to revise. This two-step process produces significantly better final outputs."]],
+        "<strong>Expert technique:</strong> Use multi-turn conversations as a workspace. Build on Claude's responses iteratively rather than starting fresh each time. The accumulated context makes later responses richer.",
+        null,
+        "What does the 'critique loop' technique involve?",["Asking Claude to format its response differently","Asking Claude to critique its own answer then revise it","Starting a new conversation for each task","Using XML tags in every prompt"],1),
+
+      makeLesson("Claude for Document Processing","Claude handles documents in ways no other tool can match — at scale and with genuine comprehension.",
+        [["Paste-and-process workflow","Copy the text from any document — PDF, Word, email thread, Slack export — and paste it into Claude. Then ask specific questions about it. Claude reads with comprehension, not keyword matching, so you can ask nuanced questions."],
+         ["Batch processing with Claude","For multiple similar documents, develop a standard prompt template then process each document through it. 'For each document I paste, extract: (1) key decisions made, (2) action items with owners, (3) unresolved questions.' Paste each document in sequence."],
+         ["Comparison and synthesis","Paste two or more documents and ask Claude to compare them: 'Here are two versions of this contract. Identify every material difference between them and flag any clauses that could create legal risk.' Claude excels at this kind of cross-document analysis."]],
+        "<strong>Efficiency tip:</strong> Create a library of document processing prompts for your most common document types — meeting notes, contracts, research papers, customer feedback. Reuse these every time.",
+        null,
+        "What makes Claude's document processing different from keyword search?",["It is faster","It reads with genuine comprehension and can answer nuanced questions","It supports more file formats","It stores documents permanently"],1),
+
+      makeLesson("Claude API and Integration","Using Claude programmatically opens up automation possibilities that the chat interface can't offer.",
+        [["Claude API basics","The Claude API lets you build Claude into your own applications, workflows, and automations. You call it with a simple HTTP request, pass a system prompt and user message, and get Claude's response back as text."],
+         ["System prompts for consistent behaviour","The system prompt is your secret weapon when using the API. Use it to define Claude's persona, set constraints, establish output formats, and provide context that every request should have. This ensures consistent, on-brand responses at scale."],
+         ["Practical API use cases","Common API integrations: automated document summarisation pipelines, customer support response drafting, content generation workflows, data extraction and classification, and internal knowledge base Q&A systems."]],
+        "<strong>Getting started:</strong> Sign up at console.anthropic.com. You get free credits to experiment. Start with the claude-3-5-sonnet model for the best balance of capability and cost.",
+        null,
+        "What is the purpose of a system prompt in the Claude API?",["To set the word limit for responses","To define Claude's persona, constraints and context for every API call","To authenticate your API key","To select the Claude model version"],1),
+
+      makeLesson("Claude vs Other AI Models","Understanding where Claude wins and where other models are stronger helps you choose the right tool for every job.",
+        [["Claude vs ChatGPT","Claude: stronger at long documents, more nuanced writing, better calibrated uncertainty, larger context window. ChatGPT: stronger ecosystem (plugins, DALL·E integration, browsing), more widely used, GPT-4o is faster. Use Claude for depth, ChatGPT for breadth."],
+         ["Claude vs Gemini","Claude: better long-form reasoning and writing quality. Gemini: stronger multimodal capabilities, native Google integration (Docs, Gmail, Drive), better for real-time information. Use Gemini when Google Workspace integration matters."],
+         ["When to use each model","Claude: long documents, nuanced writing, analysis. ChatGPT: quick tasks, browsing, image generation. Gemini: Google integration, real-time info. Grok: social media context, unfiltered responses. The best AI users switch between models based on the task."]],
+        "<strong>Pro strategy:</strong> Don't be loyal to one model. Maintain accounts on Claude, ChatGPT, and Gemini. Route different task types to the model that handles them best.",
+        null,
+        "For which task does Claude have the strongest advantage over competitors?",["Real-time internet browsing","Image generation","Analysing and reasoning across very long documents","Social media integration"],2),
+
+      makeLesson("Claude for Education and Learning","Claude is one of the most powerful learning tools ever built — if you use it correctly.",
+        [["The Socratic method with Claude","Instead of asking Claude to explain a concept, ask it to teach you using questions: 'Teach me [concept] using the Socratic method. Ask me questions to guide me to the answer rather than just explaining it.' This produces much deeper learning."],
+         ["Personalised explanations","Tell Claude your background and ask it to calibrate: 'Explain [concept] assuming I have a background in [your field] but no knowledge of [this topic]. Use analogies from [your field] where possible.' Claude will tailor its explanation precisely."],
+         ["Testing your own understanding","After studying something, ask Claude: 'I'm going to explain [concept] back to you. Correct any mistakes and fill in any gaps.' Then explain it. This 'teach back' technique is one of the most effective learning methods in existence."]],
+        "<strong>Learning tip:</strong> Use Claude to generate practice problems at specific difficulty levels. 'Give me 5 problems testing [concept] at an intermediate level. After I answer each one, tell me if I'm right and explain any mistakes.'",
+        null,
+        "What is the 'teach back' technique described in this lesson?",["Asking Claude to repeat its explanation","Explaining the concept back to Claude and having it correct your mistakes","Reading Claude's explanation multiple times","Asking Claude to simplify its explanation"],1),
+
+      makeLesson("Claude for Creative Projects","Claude's creative capabilities extend far beyond writing — it's a genuine creative collaborator.",
+        [["Collaborative worldbuilding","Claude can maintain consistent fictional universes across a long conversation. Establish the rules of your world, the characters, the tone — then use Claude to explore it. 'What would happen if [character] encountered [situation] in this world?'"],
+         ["Style transfer and voice matching","Give Claude three paragraphs of your own writing and ask it to match your voice. Then use it to draft content in your established style. This is how authors use Claude to speed up first drafts while maintaining their distinctive voice."],
+         ["Creative constraints produce creativity","Give Claude creative constraints rather than open briefs: 'Write a product description using only 8-word sentences. No adjectives. Every sentence must start with a verb.' Constraints push Claude (and humans) toward genuinely creative solutions."]],
+        "<strong>Creative tip:</strong> Use Claude as a brainstorming partner, not a vending machine. 'Give me 20 possible angles for this story, including 5 that are completely unexpected.' Then you choose and develop — Claude generates options.",
+        null,
+        "What does giving Claude creative constraints typically produce?",["Lower quality output due to restrictions","More generic, safe responses","More genuinely creative and distinctive results","Shorter responses only"],2),
+
+      makeLesson("Building a Claude Workflow","Turning Claude from a tool you occasionally use to a core part of your daily professional workflow.",
+        [["Identify your highest-leverage tasks","Audit your week: what tasks take the most time but require the least creative judgement? These are your first Claude automation targets. Typical answers: email drafting, meeting summaries, first-draft reports, research summaries, data formatting."],
+         ["Build a prompt library","Create a document (or Notion page) with your best prompts organised by task type. Give each prompt a name. When you need to do that task, open your library, copy the prompt, fill in the variables, and run it. This is how professionals use Claude efficiently."],
+         ["The daily Claude habit","The highest-value Claude users interact with it 10-20 times per day, for small tasks as well as large ones. Start every writing task with Claude, use it to summarise every long document you receive, and end every meeting by pasting your notes and asking for a summary with action items."]],
+        "<strong>Workflow tip:</strong> Set up a Claude shortcut on your desktop or browser. The less friction between having a task and using Claude, the more value you'll get from it.",
+        null,
+        "What should your first Claude automation targets be?",["Tasks requiring deep creativity and judgement","Tasks that take the most time but require the least creative judgement","Only email tasks","Tasks you already do quickly"],1),
+
+      makeLesson("The Future of Claude and AI Assistants","Understanding where Claude and AI assistants are heading helps you invest your learning in the right skills.",
+        [["Agentic Claude","Anthropic is building Claude's ability to take autonomous actions — browsing the web, writing and running code, managing files, and completing multi-step tasks without constant human oversight. This 'agentic' Claude will transform what AI assistance means."],
+         ["Skills that stay valuable","As AI improves, the most valuable human skills shift toward: knowing what to ask for (prompt engineering), evaluating quality of AI output (critical judgement), combining AI tools into workflows (systems thinking), and understanding context AI cannot access (domain expertise)."],
+         ["Staying ahead of the curve","The people winning with AI today are not the ones who know the most about AI — they're the ones who've built the daily habit of using it. The technology will keep improving. Build the habit now and you'll continuously benefit from each improvement."]],
+        "<strong>Future insight:</strong> The gap between AI users and non-users will compound. Every skill you build with Claude now will multiply in value as the tools become more capable.",
+        null,
+        "According to this lesson, what is the most important factor in winning with AI?",["Having a computer science degree","Using the most expensive AI model","Building a daily habit of using AI tools","Waiting for the technology to mature"],2)
     ]
   },
+
+  // ── 2. CHATGPT ──────────────────────────────────────────────────────────
   {
-    id:'images',
-    emoji:'🎨',
+    id:'chatgpt', emoji:'⚡', category:'ai-tools',
+    bannerBg:'linear-gradient(135deg,#0d4a2e,#16a34a)',
+    tag:'AI Tools', tagColor:'#16A34A', tagBg:'#F0FDF4',
+    badge:'Most Popular', badgeColor:'#16A34A',
+    title:"ChatGPT Complete Mastery",
+    desc:"Master OpenAI's ChatGPT from basics to advanced — prompting, plugins, GPTs, and API integration.",
+    lessons:[
+      makeLesson("ChatGPT Fundamentals","ChatGPT changed everything when it launched. Understanding its architecture explains why it works — and why it sometimes fails.",
+        [["How ChatGPT was trained","ChatGPT is a large language model fine-tuned with RLHF — Reinforcement Learning from Human Feedback. Human trainers rated responses, and ChatGPT learned to produce responses humans prefer. This explains both its strengths (conversational, helpful) and weaknesses (can be overconfident, sometimes tells people what they want to hear)."],
+         ["GPT-4o vs GPT-4","GPT-4o ('omni') is OpenAI's fastest and most capable model. It handles text, images, and audio natively. GPT-4 is the predecessor. For most tasks, GPT-4o is the right choice. It's faster and equally capable for text tasks."],
+         ["Free vs paid","The free tier gives access to GPT-3.5, which is good for simple tasks. ChatGPT Plus ($20/month) gives GPT-4o, image generation via DALL·E, browsing, and custom GPTs. For professional use, Plus is worth the investment."]],
+        "<strong>Key insight:</strong> ChatGPT's conversational training means it responds well to natural language. Unlike Claude, you don't need highly structured prompts — though structure still helps for complex tasks.",
+        null,
+        "What does RLHF stand for and why does it matter?",["Random Learning From Humans — it makes ChatGPT faster","Reinforcement Learning from Human Feedback — it trained ChatGPT to produce responses humans prefer","Recursive Language Forming Heuristics — it improves grammar","Real-time Learning From History — it updates ChatGPT daily"],1),
+
+      makeLesson("Prompt Engineering for ChatGPT","The principles of good prompting apply across all AI, but ChatGPT has specific techniques that dramatically improve results.",
+        [["The role + task + format formula","Start every serious prompt with three elements: a role ('You are a senior marketing strategist'), a clear task ('Write a campaign brief for...'), and a desired format ('Structure it with: Objective, Target Audience, Key Messages, Channels, Budget Rationale')."],
+         ["Few-shot prompting","Give ChatGPT examples of what you want before asking it to produce. 'Here are two examples of the kind of email I need: [example 1] [example 2]. Now write one for [specific situation].' Examples communicate what abstract descriptions miss."],
+         ["Negative prompting","Tell ChatGPT what NOT to do: 'Do not use bullet points. Do not begin with the word The. Do not include a conclusion section.' Negative constraints are as powerful as positive instructions and prevent the most common output failures."]],
+        "<strong>Pro tip:</strong> Keep a 'system prompt' at the start of your important ChatGPT conversations that sets the context for everything that follows. You can re-use this prompt to start fresh conversations with the same setup.",
+        null,
+        "What is few-shot prompting?",["Asking ChatGPT as few questions as possible","Giving ChatGPT examples of the desired output before asking it to produce","Using short prompts for faster responses","A technique for generating images"],1),
+
+      makeLesson("ChatGPT for Writing","ChatGPT is used by millions for writing tasks. Here's how to use it at a professional level.",
+        [["The drafting workflow","Never ask ChatGPT to write a final piece in one shot. Use it to: (1) brainstorm angles, (2) create an outline, (3) draft each section, (4) edit for consistency and tone. This iterative process produces dramatically better results."],
+         ["Voice preservation","The biggest writing mistake people make with ChatGPT is letting it replace their voice. Instead, write your own rough draft first — even bullet points — then ask ChatGPT to refine it. Your ideas + ChatGPT's polish = authentic, high-quality output."],
+         ["Editing prompts","Use ChatGPT as an editor: 'Edit this paragraph for clarity and concision. Keep my voice. Flag anything that sounds generic or clichéd.' Or: 'This is too formal. Make it sound like I'm explaining this to a smart friend over coffee.'"]],
+        "<strong>Writing workflow:</strong> Brain dump → ChatGPT outline → write rough sections → ChatGPT edit → your final pass. Each step builds on the last. Never skip directly to the final.",
+        null,
+        "What is the recommended approach to preserve your voice when using ChatGPT for writing?",["Let ChatGPT write everything from scratch","Write your own rough draft first, then ask ChatGPT to refine it","Only use ChatGPT for the final editing pass","Avoid using ChatGPT for writing entirely"],1),
+
+      makeLesson("Custom GPTs","Custom GPTs let you build specialised AI assistants without any coding. This is one of ChatGPT's most underused features.",
+        [["What Custom GPTs are","Custom GPTs are ChatGPT versions you configure with specific instructions, knowledge, and tools. You can create a 'Legal Drafter' GPT with your company's style guide, a 'Marketing Analyst' GPT with your brand guidelines, or a 'Customer Support' GPT with your product knowledge."],
+         ["Building your first Custom GPT","In ChatGPT, go to Explore → Create a GPT. You'll configure: a name, a description, detailed instructions about how it should behave, any knowledge files to upload, and which tools to enable (browsing, image generation, code interpreter)."],
+         ["Practical Custom GPT ideas","High-value Custom GPTs to build: (1) Email Drafter — trained on your writing style. (2) Meeting Summariser — formats notes into specific templates. (3) Proposal Writer — knows your products and pricing. (4) Social Media Manager — knows your brand voice and target audience."]],
+        "<strong>Business tip:</strong> Build Custom GPTs for your most common, repetitive tasks. Share them with your team via a workspace. One well-built Custom GPT can save a team hours per week.",
+        null,
+        "What can you include in a Custom GPT's knowledge base?",["Only text typed directly into the configuration","Files you upload such as documents, guides, and style guides","Only URLs from the internet","Only public Wikipedia articles"],1),
+
+      makeLesson("ChatGPT Browsing and Real-Time Data","ChatGPT Plus can browse the web, giving it access to current information beyond its training data.",
+        [["When to use browsing","Use ChatGPT's browsing mode for: current news and events, recent product releases, up-to-date pricing, recent research papers, live sports scores, or any information that changes regularly. ChatGPT's training has a knowledge cutoff — browsing bypasses this."],
+         ["Prompting for browsing","Be explicit: 'Search the web for the latest information on [topic] and summarise what you find with sources.' Or: 'Find the current price of [product] from the official website.' ChatGPT will use Bing search and cite the sources it used."],
+         ["Verifying browsed information","Always verify critical information from browsed results. ChatGPT can misread web pages, fail to access paywalled content, or select unreliable sources. Use browsing as a starting point, not a definitive source."]],
+        "<strong>Important:</strong> ChatGPT's browsing is not perfect. It can fail to access some sites, misinterpret information, or give outdated results despite browsing. Critical decisions should be verified against primary sources.",
+        null,
+        "When is ChatGPT's browsing feature most useful?",["For creative writing tasks","For information that changes regularly and is beyond its training cutoff","For tasks requiring mathematical calculations","For generating images"],1),
+
+      makeLesson("ChatGPT Code Interpreter","Code Interpreter (also called Advanced Data Analysis) lets ChatGPT write and run actual Python code — transforming it into a data analysis powerhouse.",
+        [["What Code Interpreter does","Code Interpreter can: analyse uploaded data files (CSV, Excel), create charts and visualisations, perform statistical analysis, clean and transform data, and execute Python code. You upload a file and ask questions about it in plain English."],
+         ["Data analysis workflow","Upload your CSV → 'Give me a summary of this dataset including key statistics' → 'Create a bar chart showing [metric] by [category]' → 'Identify any outliers or anomalies' → 'What are the top 3 insights from this data?' No Excel or Python knowledge required."],
+         ["Beyond data analysis","Code Interpreter also: converts between file formats, creates PDF reports, builds interactive plots, writes and tests code, solves complex mathematical problems step by step, and can process and analyse images you upload."]],
+        "<strong>Business use case:</strong> Upload your monthly sales data and ask: 'Analyse this data, identify the top-performing products, show month-over-month trends, and create charts I can use in a presentation.' Done in under 2 minutes.",
+        null,
+        "What type of file can you upload to ChatGPT's Code Interpreter for data analysis?",["Only PDF files","Only text files","CSV and Excel files among others","Only image files"],2),
+
+      makeLesson("ChatGPT for Business Applications","ChatGPT has become a core business tool. Here's how leading companies are actually using it.",
+        [["Customer support automation","Companies use ChatGPT (via API) to: draft responses to customer emails (human reviews before sending), power chatbots that handle FAQs, generate personalised follow-up messages, and classify and route customer tickets."],
+         ["Content and marketing","Marketing teams use ChatGPT for: generating first drafts of blog posts, social media captions, email campaigns, ad copy variations, product descriptions, and SEO-optimised content. The human team edits and approves — ChatGPT eliminates the blank page problem."],
+         ["Internal productivity","Internally, businesses use ChatGPT for: summarising long documents and reports, drafting internal communications, creating training materials, building onboarding guides, generating meeting agendas, and analysing customer feedback."]],
+        "<strong>Implementation tip:</strong> Don't roll out ChatGPT company-wide without guardrails. Start with a pilot team, establish guidelines on what data can be shared with ChatGPT, and build prompt templates for common use cases.",
+        null,
+        "What is the recommended approach for implementing ChatGPT in a business?",["Roll it out to all employees immediately","Start with a pilot team, establish guidelines, and build prompt templates","Only allow senior employees to use it","Use only the free version to control costs"],1),
+
+      makeLesson("DALL-E Image Generation with ChatGPT","ChatGPT Plus includes DALL·E 3 — one of the most capable AI image generation models available.",
+        [["DALL·E 3 vs Midjourney","DALL·E 3 is stronger at: following complex instructions precisely, including accurate text in images, and realistic photo-style images. Midjourney produces more artistic, stylised results. For business images requiring text or specific details, DALL·E 3 often wins."],
+         ["Effective image prompting","Be specific and descriptive: subject, style, lighting, mood, camera angle, and colour palette. 'A professional woman in a modern office, photographed from the front, natural light, confident expression, corporate but approachable, photorealistic' produces far better results than 'a woman at work'."],
+         ["Iterative image refinement","DALL·E 3 integrates with ChatGPT's conversation, so you can iterate: 'Make the background more minimalist', 'Change her outfit to be more casual', 'Add a window with city views behind her'. This conversational refinement is a major advantage over standalone tools."]],
+        "<strong>Practical use:</strong> Generate: custom blog post headers, social media visuals, product mockups, presentation graphics, concept illustrations, and brand assets. DALL·E 3 produces commercial-quality images you can use professionally.",
+        null,
+        "For which task does DALL·E 3 have an advantage over Midjourney?",["Producing highly artistic and stylised images","Including accurate text and following complex specific instructions","Generating the most photorealistic portraits","Creating the largest image files"],1),
+
+      makeLesson("ChatGPT Plugins and Extensions","The ChatGPT plugin ecosystem and browser extensions extend what ChatGPT can do significantly.",
+        [["Key ChatGPT plugins","Powerful plugins include: Wolfram (complex calculations and data), Zapier (connect to 5000+ apps), PDF tools (read and analyse PDFs), Web browsing, Code execution, and domain-specific tools for law, medicine, and finance."],
+         ["Browser extensions for ChatGPT","Extensions like Monica, Merlin, and WebChatGPT add ChatGPT to your browser so you can use it on any webpage: summarise articles, reply to emails in Gmail, analyse LinkedIn profiles, and get writing help in any text box."],
+         ["Building your extension stack","Don't install every extension. Choose 2-3 that fit your daily workflow. The goal is to make ChatGPT available at the moment you need it, without switching tabs. A Gmail extension for email + a reading extension for articles covers most professional use cases."]],
+        "<strong>Recommended stack:</strong> Start with a browser extension that adds ChatGPT to Gmail and a PDF reader plugin. These two alone will cover 80% of your daily ChatGPT use cases in a more seamless way.",
+        null,
+        "What is the main benefit of ChatGPT browser extensions?",["They make ChatGPT free to use","They allow ChatGPT to be used directly on any webpage without switching tabs","They improve ChatGPT's accuracy","They give access to GPT-4 without a subscription"],1),
+
+      makeLesson("ChatGPT Memory Feature","ChatGPT's memory feature allows it to remember information about you across conversations.",
+        [["How memory works","With memory enabled, ChatGPT can remember: your name, job, preferences, ongoing projects, and communication style. In future conversations, it uses this context automatically. You can also explicitly tell it to remember things: 'Remember that I'm a left-handed graphic designer in Dubai.'"],
+         ["Managing your memory","View and manage what ChatGPT remembers: Settings → Personalization → Memory. Delete memories that are outdated or incorrect. Add memories proactively to customise how ChatGPT responds to you."],
+         ["Strategic use of memory","Use memory to store: your writing style preferences, your professional context, recurring project names, your preferred output formats, and any constraints you always apply. This eliminates the need to re-explain your context in every new conversation."]],
+        "<strong>Privacy note:</strong> ChatGPT memory stores information on OpenAI's servers. Don't instruct it to remember sensitive personal or business information. Keep memories to professional preferences and context.",
+        null,
+        "Where can you view and manage what ChatGPT has stored in its memory?",["There is no way to view stored memories","Settings → Personalization → Memory","The ChatGPT mobile app only","By starting a new conversation and asking"],1),
+
+      makeLesson("Advanced Prompting Strategies","These techniques are used by the top 1% of ChatGPT users to get consistently exceptional results.",
+        [["The meta-prompt technique","Ask ChatGPT to write its own prompt for a task: 'I want you to [task]. Before doing it, write the optimal prompt you would need to complete this task at the highest quality, then execute that prompt.' ChatGPT often knows what information it needs better than you do."],
+         ["Perspective stacking","Ask for analysis from multiple expert perspectives simultaneously: 'Analyse this decision as a CFO focused on cost, a CMO focused on brand, and a COO focused on operations. Present each perspective separately then synthesise them.' Richer than any single-perspective analysis."],
+         ["Output format control","Explicitly control output format: 'Format your response as a markdown table with columns: [Issue], [Severity], [Recommendation], [Priority].' Or: 'Give me your response as JSON with keys: summary, key_points, action_items, questions.' This makes ChatGPT output directly usable in other systems."]],
+        "<strong>Power move:</strong> Combine meta-prompting with few-shot examples. Ask ChatGPT to design the ideal prompt, show it an example of the output quality you want, then execute. This two-step approach produces consistently professional results.",
+        null,
+        "What is the meta-prompt technique?",["Using very short prompts for speed","Asking ChatGPT to write the optimal prompt for a task before executing it","Writing prompts in a second language","Using numbered lists in every prompt"],1),
+
+      makeLesson("ChatGPT API Integration","Using ChatGPT's API allows you to build custom applications and automate workflows at scale.",
+        [["API basics","The OpenAI API lets you call GPT-4o programmatically. You send messages in a JSON format and get the model's response back. Pricing is per token (per word, roughly) — far cheaper than ChatGPT Plus at scale."],
+         ["System messages in the API","In the API, system messages define how ChatGPT behaves for every interaction. This is where you set its persona, constraints, and output format. A good system message eliminates the need to repeat instructions in every user message."],
+         ["Building on the API","Common API applications: customer-facing chatbots, automated content generation pipelines, document processing tools, email drafting assistants, internal company Q&A bots, and automated data extraction from unstructured text."]],
+        "<strong>Getting started:</strong> Go to platform.openai.com, create an API key, and start with the Python or JavaScript SDK. OpenAI provides excellent documentation and there are thousands of tutorials for common use cases.",
+        null,
+        "What is the purpose of a system message in the OpenAI API?",["To authenticate your API key","To define how ChatGPT behaves for every interaction — persona, constraints, format","To select the AI model version","To set the maximum response length"],1),
+
+      makeLesson("ChatGPT for Learning and Education","ChatGPT is transforming how people learn. Here's how to use it as a personalised learning tool.",
+        [["Personalised tutoring","Tell ChatGPT your current level and learning goal: 'I'm a complete beginner at Python. Teach me variables and data types. Use simple analogies. Give me a small exercise to test my understanding after each concept.' ChatGPT becomes a patient, personalised tutor."],
+         ["The Feynman technique with ChatGPT","Explain a concept back to ChatGPT and ask it to identify gaps: 'I'm going to explain [concept] as if you've never heard of it. Tell me what I got wrong and what I missed.' This is one of the most effective learning techniques in existence."],
+         ["Spaced repetition prompts","Create your own review system: 'Quiz me on [topic]. Ask 5 questions of increasing difficulty. After I answer each one, tell me if I'm right, explain the correct answer, and give me a hint for where to study more.'"]],
+        "<strong>Learning accelerator:</strong> Use ChatGPT to generate practice questions, worked examples, and analogies for any subject you're studying. It can produce unlimited practice material tailored to your exact level.",
+        null,
+        "What is the Feynman technique as described in this lesson?",["Reading explanations multiple times","Explaining a concept to ChatGPT as if it's a beginner and asking it to identify your gaps","Watching video tutorials","Taking multiple-choice quizzes"],1),
+
+      makeLesson("Staying Productive with ChatGPT","Building ChatGPT into your daily workflow so it becomes a force multiplier rather than an occasional tool.",
+        [["The morning workflow","Start each work day by pasting your to-do list into ChatGPT and asking: 'Prioritise these tasks by impact vs effort. Suggest a time-blocked schedule for today. Flag any tasks where AI could help me work faster.' Takes 3 minutes and can save hours."],
+         ["Meeting preparation","Before any important meeting: paste the agenda into ChatGPT and ask for: likely questions you'll be asked, potential objections to your proposals, key points to make for each agenda item, and suggested outcomes to aim for."],
+         ["End-of-day processing","At the end of each day, paste your notes and ask ChatGPT to: summarise what was accomplished, extract all action items with owners and deadlines, identify decisions that were made, and flag unresolved questions that need follow-up."]],
+        "<strong>Habit tip:</strong> The most productive ChatGPT users have it open alongside their primary work tool — not in a separate tab they have to remember to switch to. Keep it always visible and use it constantly.",
+        null,
+        "What does the 'morning workflow' suggested in this lesson involve?",["Reading the news with ChatGPT","Pasting your to-do list for prioritisation, scheduling, and AI task identification","Generating images for the day's work","Writing a journal entry"],1),
+
+      makeLesson("The Future of ChatGPT","Where OpenAI is taking ChatGPT and what this means for how you work.",
+        [["GPT-5 and beyond","OpenAI continues to advance its models. Each new version brings: improved reasoning, better instruction following, expanded context windows, and new modalities. The trend is toward models that can handle increasingly complex, multi-step tasks autonomously."],
+         ["Agentic AI with ChatGPT","OpenAI is building 'agents' — ChatGPT instances that can take sequences of actions to complete long-horizon tasks: research a topic, write a report, format it, and email it to stakeholders. This agentic capability will transform knowledge work."],
+         ["Preparing for the AI-augmented workplace","The professionals who thrive as AI advances are those who: know how to direct AI effectively (prompt engineering), can evaluate AI output critically (quality judgement), and combine AI capabilities with irreplaceable human skills (relationships, ethics, creativity, domain expertise)."]],
+        "<strong>Career advice:</strong> Don't wait to develop your AI skills. The gap between AI-fluent and AI-reluctant professionals is already significant and growing. The best time to build these skills is now.",
+        null,
+        "According to this lesson, what combination leads to thriving in an AI-augmented workplace?",["Only using AI for all tasks","Avoiding AI to maintain human skills","Prompting skills + quality judgement + combining AI with irreplaceable human skills","Choosing the most expensive AI model"],2)
+    ]
+  },
+
+  // ── 3. GEMINI ──────────────────────────────────────────────────────────
+  {
+    id:'gemini', emoji:'💫', category:'ai-tools',
+    bannerBg:'linear-gradient(135deg,#1a237e,#4a148c)',
+    tag:'AI Tools', tagColor:'#7C3AED', tagBg:'#F5F3FF',
+    badge:"Google's AI", badgeColor:'#7C3AED',
+    title:"Google Gemini Mastery",
+    desc:"Master Google's most capable AI — Gemini Ultra, Google integration, and multimodal capabilities.",
+    lessons:[
+      makeLesson("Gemini Introduction and Models","Google's Gemini is a genuinely multimodal AI — built from the ground up to understand text, images, audio, video, and code simultaneously.",
+        [["Gemini model tiers","Gemini comes in three main versions: Gemini Nano (on-device, for smartphones), Gemini Pro (the standard model, available for free), and Gemini Ultra (the most capable, available in Gemini Advanced). For serious work, Gemini Advanced is worth it."],
+         ["Native multimodality","Unlike ChatGPT which added image understanding later, Gemini was designed from day one to understand multiple types of input simultaneously. This makes it more natural when working with mixed media — an image with text, a chart with context, or a video with questions."],
+         ["Google Workspace integration","Gemini's biggest competitive advantage: deep integration with Google's ecosystem. It's built into Gmail, Google Docs, Sheets, Slides, and Meet. If you're a Google Workspace user, Gemini can transform your productivity without switching tools."]],
+        "<strong>Key advantage:</strong> Gemini can access your Google Drive, Gmail, and Calendar to provide context-aware assistance. No other AI model has this level of integration with a productivity suite.",
+        null,
+        "What is Gemini's biggest competitive advantage over other AI models?",["It is completely free with no limits","Deep integration with Gmail, Google Docs, Sheets, and the full Google Workspace","It has the largest context window","It generates the most realistic images"],1),
+
+      makeLesson("Gemini in Gmail","Using Gemini directly inside Gmail transforms email productivity without leaving your inbox.",
+        [["Help me write","In Gmail, click 'Help me write' to have Gemini draft emails for you. Provide a brief description of what you need: 'Follow-up email to a client who hasn't responded in two weeks. Professional but warm. Reference our meeting last Thursday.' Gemini drafts it in seconds."],
+         ["Summarise and reply","For long email threads, Gemini can summarise the entire conversation and suggest a reply. Select a thread, ask Gemini to summarise it, and it gives you the key decisions, open questions, and recommended next steps."],
+         ["Smart compose enhancement","Gemini significantly improves Gmail's Smart Compose feature. It predicts not just the next word but the next sentence or paragraph, learning your communication style over time to produce suggestions that sound authentically like you."]],
+        "<strong>Workflow upgrade:</strong> Never stare at a blank reply box again. Click 'Help me write', describe the email in one sentence, and use Gemini's draft as your starting point. Edit to taste. Most emails take under 60 seconds.",
+        null,
+        "What does the 'Help me write' feature in Gmail allow Gemini to do?",["Send emails automatically without your review","Draft emails based on a brief description you provide","Delete spam emails automatically","Schedule emails for optimal send times"],1),
+
+      makeLesson("Gemini in Google Docs","Gemini transforms Google Docs from a word processor into an AI-assisted writing environment.",
+        [["Help me write in Docs","In any Google Doc, you can invoke Gemini to: generate first drafts, continue writing from where you stopped, rewrite selected sections in a different tone, summarise long documents, or brainstorm ideas for what to write next."],
+         ["Tone adjustment","Select any passage and ask Gemini to adjust its tone: 'Make this more formal', 'Simplify this for a general audience', 'Make this more persuasive', 'Add more specific examples to this section'. Gemini makes targeted edits while preserving the rest."],
+         ["Document Q&A","Gemini can answer questions about a document's content: 'What are the three main arguments in this document?', 'Does this document contradict itself anywhere?', 'What evidence supports the main claim?' This turns Gemini into a research partner for your documents."]],
+        "<strong>Writing workflow:</strong> Open a blank Doc → @mention Gemini → describe what you need → get a structured draft → edit and refine. The blank page problem is eliminated.",
+        null,
+        "What can you ask Gemini to do with selected text in Google Docs?",["Only delete the selected text","Translate it to another language only","Adjust its tone, simplify it, or rewrite it in different ways","Change the font and formatting"],2),
+
+      makeLesson("Gemini in Google Sheets","Gemini turns Google Sheets into an AI-assisted data tool — no formula expertise required.",
+        [["Natural language formulas","Describe what you want to calculate in plain English and Gemini writes the formula: 'Calculate the percentage change between column B and column C for each row.' No more searching for the right VLOOKUP syntax."],
+         ["Data analysis and insights","Select a data range and ask Gemini to analyse it: 'What are the key trends in this sales data?', 'Which product category is declining?', 'Summarise this data in 3 bullet points.' Gemini reads your spreadsheet and responds in plain English."],
+         ["Automated report generation","Ask Gemini to: 'Create a summary table from this raw data showing totals by region', 'Add a column that classifies each row as High, Medium, or Low based on the value in column D', 'Generate a chart title and description for this data.' Spreadsheet tasks that took 20 minutes take 2."]],
+        "<strong>Practical use:</strong> Paste messy, unstructured data into Sheets → ask Gemini to 'clean and organise this data into a structured table with appropriate column headers' → get back a perfectly formatted dataset.",
+        null,
+        "How can Gemini help users who struggle with spreadsheet formulas?",["By removing the need for formulas entirely","By writing formulas from natural language descriptions","By automatically importing data from external sources","By converting the spreadsheet to a PDF"],1),
+
+      makeLesson("Gemini's Multimodal Capabilities","Gemini can see, read, and understand images, videos, and audio — not just text.",
+        [["Image understanding","Upload any image and ask Gemini questions about it: 'What's wrong with this code screenshot?', 'Describe the chart and what it shows', 'What objects are in this photo and what do they suggest about the context?', 'Translate the text in this image.' Gemini sees images with genuine comprehension."],
+         ["Video analysis","Gemini can analyse video content — describe what happens, identify key moments, extract information shown on screen, and answer questions about video content. This opens up use cases in training, compliance review, and content analysis."],
+         ["Multimodal prompting","Combine text and images in your prompts: paste a chart image and ask 'Based on this sales chart, what should our Q4 strategy be?' Or paste a product photo and ask 'Write a product description for this item'. Text + image together produces richer outputs."]],
+        "<strong>Business use case:</strong> Upload a competitor's product page screenshot and ask Gemini: 'Analyse this competitor's positioning. How do they differentiate? What weaknesses do you see? How should we respond?' Pure strategic analysis from a screenshot.",
+        null,
+        "What can Gemini do with an image of a chart?",["Only describe the colours used","Describe the chart, extract its data, and answer strategic questions about what it shows","Convert it to a different chart type","Print the image"],1),
+
+      makeLesson("Gemini for Research","Gemini's Google Search integration gives it access to real-time information — making it the strongest AI for research.",
+        [["Gemini + Google Search","Gemini can search Google and synthesise results in real time. Ask it to research topics, find recent news, compare products with current pricing, or summarise what's being said about a topic across multiple sources. Unlike ChatGPT browsing, Gemini's Google integration is native and faster."],
+         ["Deep research mode","Ask Gemini to conduct thorough research: 'Research the current state of [topic]. Include: key players, recent developments in the last 6 months, emerging trends, major challenges, and expert opinions. Cite your sources.' Gemini produces a structured research report with citations."],
+         ["Fact verification","Use Gemini to verify information: 'Verify this claim: [statement]. Search for evidence for and against it. Tell me the confidence level and cite sources.' This turns Gemini into a real-time fact-checker."]],
+        "<strong>Research tip:</strong> For important research, always use Gemini with Google Search enabled. Check the sources it cites. Gemini is strong at synthesis but you should verify the most critical facts independently.",
+        null,
+        "What gives Gemini an advantage over ChatGPT for research tasks?",["Gemini has more training data","Native, built-in Google Search integration for real-time information","Gemini is faster at typing responses","Gemini is always free"],1),
+
+      makeLesson("Gemini Advanced Features","Google One subscribers get Gemini Advanced — here's what makes it worth the upgrade.",
+        [["Gemini Ultra model","Gemini Advanced runs Google's most capable model — Gemini Ultra. It significantly outperforms the standard Gemini Pro on complex reasoning, technical tasks, and nuanced analysis. For professional use, the capability difference is meaningful."],
+         ["Longer conversations","Gemini Advanced maintains context across much longer conversations. For extended research projects, multi-step analysis, or complex writing tasks, this means you can work in a single conversation without context being lost."],
+         ["Priority access and new features","Gemini Advanced users get priority access to new Google AI features as they launch — including deeper Workspace integration, new multimodal capabilities, and experimental features before general release."]],
+        "<strong>Decision guide:</strong> If you're a heavy Google Workspace user doing professional work that requires deep research, complex analysis, or long-form writing — Gemini Advanced is worth the investment.",
+        null,
+        "What model does Gemini Advanced run compared to free Gemini?",["The same model with higher message limits","Gemini Ultra, Google's most capable and highest-performing model","A specialised coding model","A faster but less capable model"],1),
+
+      makeLesson("Gemini for Coding","Gemini is a strong coding assistant, especially within Google's development ecosystem.",
+        [["Gemini in Google Colab","Google Colab now has Gemini built in. Ask it to: generate Python code for data analysis, explain what existing code does, debug errors, suggest optimisations, and generate visualisations from your data. The AI is right where you code."],
+         ["Code explanation","Paste any code and ask Gemini: 'Explain what this code does line by line', 'Identify any potential bugs', 'How would you improve this for performance?', 'Rewrite this in a more readable style.' Gemini's code explanations are clear and accurate."],
+         ["API integration with Gemini","Google provides a Gemini API for developers. Use it to: build Gemini-powered applications, create custom chatbots, automate document processing, and integrate AI into existing Google Workspace workflows using Google Apps Script."]],
+        "<strong>Developer tip:</strong> Google's AI Studio (aistudio.google.com) is the best place to experiment with the Gemini API. It provides a free playground with API key generation and code export.",
+        null,
+        "Where can developers experiment with the Gemini API for free?",["Only within Google Colab","Google AI Studio at aistudio.google.com","The Gemini mobile app","Google Cloud Console only with billing enabled"],1),
+
+      makeLesson("Gemini vs Other AI Models","Understanding where Gemini wins, where it struggles, and how to use it alongside other AI tools.",
+        [["Where Gemini wins","Gemini is strongest at: Google Workspace integration, real-time information via Google Search, multimodal tasks (especially video), and tasks where being current matters more than depth of reasoning."],
+         ["Where Gemini is weaker","Gemini is sometimes weaker at: long-form creative writing (Claude and GPT-4 often produce more nuanced output), deep document analysis without Google Drive integration, and tasks requiring the most precise instruction following."],
+         ["The multi-model strategy","The best AI users combine models: Gemini for research and Google Workspace tasks, Claude for long documents and nuanced writing, ChatGPT for quick tasks and image generation. Each model's strengths cover the others' weaknesses."]],
+        "<strong>Practical guide:</strong> Use Gemini when: you're working in Google apps, you need current information, you're analysing images or video. Switch to Claude or ChatGPT when: you need the most polished writing, complex reasoning, or the task is entirely text-based.",
+        null,
+        "According to this lesson, what task gives Gemini its clearest advantage?",["Long-form creative writing","Deep philosophical reasoning","Google Workspace integration and real-time Google Search","Generating the most artistic images"],2),
+
+      makeLesson("Gemini on Mobile","Gemini is deeply integrated into Android and increasingly into iOS — becoming an AI assistant for your entire phone.",
+        [["Gemini as Android assistant","On Android, Gemini replaces Google Assistant. It can: answer questions about what's on your screen, help you compose messages in any app, summarise notifications, and perform tasks across apps using natural language."],
+         ["Gemini Nano on-device","Select Pixel and Android phones run Gemini Nano locally — without sending data to the cloud. This enables: private on-device AI, faster responses, and AI features that work offline. Privacy-sensitive tasks can be handled entirely on your device."],
+         ["Practical mobile use cases","Use Gemini on mobile for: summarising long articles while reading, drafting email replies on the go, getting quick answers without typing a full search query, translating text in images using your camera, and getting context-aware help based on what's on your screen."]],
+        "<strong>Android tip:</strong> Long-press the home button to activate Gemini. Say 'Help me reply to this' while looking at any message and Gemini will draft a context-aware response. This is one of the most useful mobile AI features available.",
+        null,
+        "What does Gemini Nano on-device enable that cloud-based AI cannot?",["Higher quality responses","Access to more training data","Private, offline AI processing without sending data to the cloud","Real-time internet search"],2),
+
+      makeLesson("Building with Gemini API","The Gemini API lets developers build powerful AI applications with Google's most capable model.",
+        [["Getting started with Gemini API","Go to aistudio.google.com → Get API key → Start building. Google offers a generous free tier for the Gemini API. Use the Python SDK (google-generativeai) or REST API to make your first calls in minutes."],
+         ["Multimodal API calls","The Gemini API natively supports mixed inputs. Send text + images in a single API call. Send video clips. Send audio files. This makes it uniquely suited for applications that need to process mixed media: document scanners, image captioning, video summarisation."],
+         ["Practical API applications","Build with the Gemini API: document processing pipelines, content moderation systems, multilingual customer support, automated report generation from images and data, and educational tools with personalised explanations."]],
+        "<strong>Free tier generosity:</strong> Google's Gemini API free tier is among the most generous in the industry. You can build and test sophisticated applications without spending anything, making it ideal for prototyping and experimentation.",
+        null,
+        "Where do you go to get started with the Gemini API?",["cloud.google.com","aistudio.google.com","gemini.google.com","developers.google.com/gemini"],1),
+
+      makeLesson("Gemini for Productivity Workflows","Turning Gemini from a tool you occasionally use into a core part of your daily workflow.",
+        [["The Google Workspace workflow","For Google Workspace users, build this daily workflow: Morning — Gemini in Gmail drafts email responses and summarises overnight messages. During work — Gemini in Docs helps draft and refine documents. Data tasks — Gemini in Sheets analyses and visualises data. Meetings — Gemini in Meet provides summaries."],
+         ["Prompt templates for Workspace","Build a library of Gemini prompts for your most common Workspace tasks. Store them in a Google Doc for easy access. Prompts for: meeting summaries, email replies, document sections, spreadsheet analysis, and presentation outlines."],
+         ["Automating with Google Apps Script","Advanced users can connect Gemini to Google Apps Script to automate workflows: automatically summarise emails matching certain criteria, generate weekly reports from Sheets data, or create draft responses for customer inquiries."]],
+        "<strong>Productivity multiplier:</strong> The Gemini + Google Workspace combination is most powerful for teams. When everyone uses Gemini with shared templates and consistent prompts, the productivity gains compound across the organisation.",
+        null,
+        "What is the most powerful context in which Gemini provides productivity gains?",["Individual use only","Gemini works best for single tasks only","Teams with shared templates and consistent prompts across Google Workspace","Only for technical developers"],2),
+
+      makeLesson("Privacy and Data with Gemini","Understanding what Google does with your Gemini data is essential for responsible use.",
+        [["What Google collects","By default, Google may use your Gemini conversations to improve its AI models. This is important to understand before using Gemini for sensitive business or personal matters. Review Google's AI data privacy settings to understand and control this."],
+         ["Workspace data protections","Gemini for Google Workspace (the enterprise version) has stronger data protections: your data is not used to train Google's models, data is processed in Google's secure infrastructure, and organisations maintain control over data governance."],
+         ["What not to share","Never share with Gemini (or any AI): passwords, personal identification numbers, sensitive customer data, confidential business strategies, health records, or financial account details. Treat AI conversations like emails — don't put anything in them you wouldn't be comfortable sharing."]],
+        "<strong>Privacy guide:</strong> For personal use, review your Gemini activity settings at myactivity.google.com. For business use, request Gemini for Workspace through your Google Workspace administrator for enterprise-grade data protections.",
+        null,
+        "What type of Gemini access provides stronger data protections for businesses?",["Free Gemini with a personal Google account","Gemini Advanced personal subscription","Gemini for Google Workspace through an enterprise administrator","There is no difference in data protection"],2),
+
+      makeLesson("Gemini Gems — Custom AI Experts","Gemini Gems let you create personalised AI assistants customised for specific tasks.",
+        [["What Gems are","Gems are custom versions of Gemini you configure with specific instructions, personas, and areas of focus. Create a 'Legal Analyst' Gem with instructions to always cite sources, flag legal risks, and write in plain English. Or a 'Creative Director' Gem with your brand guidelines."],
+         ["Creating a Gem","In Gemini Advanced: click Gems → New Gem → give it a name → write detailed instructions for how it should behave → save. Then access it anytime from your Gems list. Each Gem starts a conversation with its custom instructions pre-loaded."],
+         ["High-value Gems to create","Build Gems for: your most common analysis task, your standard writing style, your product or service Q&A, your industry-specific research needs, or any task where you find yourself repeating the same instructions to Gemini every time."]],
+        "<strong>Productivity tip:</strong> Gems eliminate the need to re-explain context at the start of every conversation. A well-built Gem knows who you are, what you need, and how you want information presented — from the very first message.",
+        null,
+        "What problem do Gemini Gems primarily solve?",["They make Gemini faster","They eliminate the need to re-explain context and instructions at the start of every conversation","They give access to more powerful AI models","They allow Gemini to access private databases"],1),
+
+      makeLesson("The Future of Gemini","Where Google is taking Gemini and what it means for AI-assisted work.",
+        [["Project Astra","Google's Project Astra is building a universal AI assistant that sees and understands your environment in real time through your phone camera, responds to what it sees, and proactively helps you based on context. This is Gemini's future direction."],
+         ["Deeper Workspace integration","Gemini will become increasingly embedded in every Google product — not as a separate tool but as an invisible assistant that proactively helps at the right moment. Expect Gemini to anticipate needs before you articulate them."],
+         ["The Google AI ecosystem advantage","Google's integration of Gemini across Search, Workspace, Android, Chrome, and YouTube creates a connected AI experience that no single competitor can match. Over time, this ecosystem advantage may prove to be Google's most powerful AI differentiator."]],
+        "<strong>Strategic insight:</strong> If you're heavily invested in Google's ecosystem, learning Gemini deeply now is one of the highest-return AI investments you can make. The integration will only deepen.",
+        null,
+        "What is Google's Project Astra working toward?",["A new search engine replacing Google","A universal AI assistant that sees and understands your real environment in real time","A replacement for Gmail","A coding-only AI model"],1)
+    ]
+  },
+
+  // ── 4. GROK ────────────────────────────────────────────────────────────
+  {
+    id:'grok', emoji:'🚀', category:'ai-tools',
+    bannerBg:'linear-gradient(135deg,#0d0d0d,#1a1a1a)',
+    tag:'AI Tools', tagColor:'#6B7280', tagBg:'#F9FAFB',
+    badge:"xAI Model", badgeColor:'#374151',
+    title:"Grok by xAI Mastery",
+    desc:"Master Elon Musk's Grok AI — its unique personality, real-time X integration, and best use cases.",
+    lessons:[
+      makeLesson("What is Grok?","Grok is xAI's AI model — designed with a different philosophy from its competitors.",
+        [["Grok's origin story","Grok was created by xAI, Elon Musk's AI company, and launched in late 2023. It's built on X (formerly Twitter) infrastructure and designed to have access to real-time information from X. Grok's name is a term meaning 'to understand deeply' from Robert Heinlein's science fiction novel Stranger in a Strange Land."],
+         ["Grok's design philosophy","Grok is designed to be less filtered than Claude or ChatGPT — it has a sense of humour, is willing to tackle edgier questions, and aims to be 'maximally helpful' in a way that prioritises directness over caution. This is intentional — xAI sees over-caution as a failure mode."],
+         ["Grok 2 and Grok 3","Grok has iterated rapidly. Grok 3 (the latest) is significantly more capable than early versions and is competitive with frontier models on reasoning and coding benchmarks. The model improves substantially with each major release."]],
+        "<strong>Key difference:</strong> Grok is notably more willing to engage with controversial or edgy topics than Claude or ChatGPT. This is a deliberate design choice — not a bug. Use this characteristic thoughtfully.",
+        null,
+        "What does the name 'Grok' mean?",["To compute quickly","To understand deeply, from a science fiction novel","To generate ideas","To answer questions"],1),
+
+      makeLesson("Grok's Real-Time X Integration","Grok's access to real-time X (Twitter) data is its most distinctive capability.",
+        [["What real-time access means","Grok can search and reference posts from X in real time. Ask it about trending topics, what people are saying about a brand, the reaction to a news event, or sentiment around a product — and Grok draws on live X data, not just training data."],
+         ["Social sentiment analysis","Use Grok to gauge public sentiment: 'What is the general sentiment about [brand] on X right now?', 'What are the main criticisms of [product] appearing on X this week?', 'What are people saying about [news event]?' This is real-time social intelligence."],
+         ["News and trend tracking","Grok can tell you what's trending on X, summarise the discussion around a hashtag, or explain the context of a viral moment. For social media professionals and anyone tracking brand reputation, this is a powerful capability no other major AI model has natively."]],
+        "<strong>Business use case:</strong> Monitor brand mentions by asking Grok 'What is being said about [your company] on X today?' It synthesises the sentiment, key criticisms, and positive feedback. Run this regularly as an early warning system.",
+        null,
+        "What makes Grok's real-time X integration unique among major AI models?",["It is faster at answering questions","It can search and reference live X posts, providing real-time social intelligence","It has access to all social media platforms","It can post to X on your behalf"],1),
+
+      makeLesson("Grok's Personality and Communication Style","Grok's distinctive personality is both its most memorable feature and a genuine differentiator.",
+        [["Humour and wit","Grok is designed to be genuinely funny. It uses wit, sarcasm, and pop culture references in a way no other major AI model does. For creative tasks, brainstorming, and casual conversation, this personality makes interactions more engaging."],
+         ["Directness and honesty","Grok is notably more direct than ChatGPT or Claude. It will disagree with you, point out flaws in your reasoning, and give opinions rather than endlessly hedged neutral takes. Some users find this refreshing; others prefer more diplomatic responses."],
+         ["When personality helps","Grok's personality is most valuable for: creative writing (the humour translates to wit in copy), brainstorming (its willingness to be edgy generates more unexpected ideas), and casual conversation (it's genuinely entertaining). For formal business documents, this personality may require more editing."]],
+        "<strong>Practical tip:</strong> Use Grok's personality to your advantage in creative tasks. Ask it to 'write this with more wit' or 'brainstorm edgier angles for this campaign'. The results are often more memorable than what other models produce.",
+        null,
+        "For which task is Grok's distinctive personality most valuable?",["Writing formal legal documents","Producing dry technical reports","Creative writing, brainstorming, and generating unexpected angles","Financial analysis"],2),
+
+      makeLesson("Grok for Coding","Grok has strong coding capabilities and is competitive with other frontier models on technical tasks.",
+        [["Grok's coding strengths","Grok performs well on: Python, JavaScript, and systems programming. Its code explanations are clear, and it's willing to give direct opinions about code quality. It will tell you plainly if your approach is inefficient rather than gently suggesting alternatives."],
+         ["Grok Aurora for images","Grok includes Aurora, its image generation model, alongside its text capabilities. This means you can move between code generation and image creation in the same interface — useful for full-stack development tasks involving UI/UX."],
+         ["The candid code reviewer","Grok's directness makes it unusually good as a code reviewer. Ask it: 'Review this code honestly. Don't soften your feedback. Tell me everything that's wrong with it and how you'd fix it.' The unfiltered technical feedback is often more actionable than diplomatic alternatives."]],
+        "<strong>Developer tip:</strong> Use Grok when you want brutal honesty about your code. Ask it: 'If a senior engineer at a top tech company saw this code, what would they think? Be direct.' The feedback is often uncomfortably accurate — and very useful.",
+        null,
+        "What makes Grok particularly effective as a code reviewer?",["It is the fastest at generating code","Its directness — it gives honest, unfiltered technical feedback without softening criticism","It supports the most programming languages","It integrates with GitHub automatically"],1),
+
+      makeLesson("Grok vs Other AI Models","Understanding Grok's position in the AI landscape and when to choose it.",
+        [["Where Grok wins","Grok is strongest at: real-time X/social data, unfiltered and direct responses, tasks requiring wit and personality, and topics where other models are overly cautious. It's also competitive on reasoning and coding benchmarks."],
+         ["Where Grok is weaker","Grok has less Google/Microsoft ecosystem integration, no dedicated code interpreter feature (at time of writing), and its personality can be a liability for formal professional content that needs to be conservative in tone."],
+         ["The complementary use case","Add Grok to your AI toolkit for: monitoring social sentiment, generating creative ideas with more edge, getting unfiltered feedback, and discussing topics where other models are excessively cautious. Don't replace your primary AI — complement it."]],
+        "<strong>Portfolio approach:</strong> Think of Grok as your 'edgy creative' and 'social intelligence' tool. Use Claude for deep analysis, ChatGPT for general tasks, Gemini for Google integration, and Grok for social insights and creative work with personality.",
+        null,
+        "According to this lesson, what is Grok's strongest and most unique capability?",["The largest context window","The best image generation","Real-time social intelligence from X and unfiltered, direct responses","The cheapest pricing per token"],2),
+
+      makeLesson("Grok for Market and Business Intelligence","Grok's real-time X access makes it a surprisingly powerful business intelligence tool.",
+        [["Competitive intelligence","Use Grok to monitor competitor activity: 'What are people saying about [competitor] on X this week? Focus on customer complaints and feature requests.' This gives you a real-time window into competitor weaknesses."],
+         ["Consumer trend spotting","Ask Grok: 'What new trends are emerging in [your industry] on X? What are consumers asking for that brands aren't delivering?' Grok synthesises conversation patterns into actionable trend intelligence."],
+         ["Crisis monitoring","For brands, Grok is a valuable crisis early warning system. Ask: 'Is there any negative sentiment about [brand] trending on X? If so, what is the main concern?' Catching a PR issue early through Grok's monitoring could be invaluable."]],
+        "<strong>Intelligence workflow:</strong> Build a weekly Grok check into your routine: ask about competitor sentiment, emerging consumer trends, and brand perception. Ten minutes of Grok-powered social listening each week provides intelligence that used to require dedicated teams.",
+        null,
+        "How can Grok serve as a crisis early warning system?",["By scanning legal databases for lawsuits","By monitoring negative sentiment and trending topics about a brand on X","By analysing internal company data","By predicting stock market movements"],1),
+
+      makeLesson("Grok Prompting Strategies","How to get the best results from Grok's unique capabilities and personality.",
+        [["Leverage the directness","Don't soften your prompts with Grok. Be direct: 'Give me your honest opinion', 'Don't hold back', 'Tell me what's wrong with this'. Grok responds to directness with directness — it performs at its best when you match its communication style."],
+         ["Use personality for creative work","For creative tasks, give Grok permission to be itself: 'Write this with your signature wit', 'What's the most unexpected angle on this?', 'Give me 10 ideas including 3 that are genuinely weird.' Grok's personality produces creative outputs that stand out."],
+         ["X data prompts","Maximise Grok's unique advantage: 'Search X for the current conversation about [topic]', 'What are the most-liked posts about [subject] this week?', 'What is the ratio of positive to negative sentiment about [brand] on X?'"]],
+        "<strong>Grok-specific tip:</strong> Ask Grok 'What would you say about [topic] if you had no filters at all?' — then compare it to the standard response. The difference reveals what Grok genuinely thinks, which is often more useful than the polished version.",
+        null,
+        "How should you adjust your communication style when prompting Grok for best results?",["Use very formal, structured prompts with XML tags","Be direct and match Grok's communication style — it performs best with directness","Use very long, detailed prompts","Always ask for bullet-point responses"],1),
+
+      makeLesson("Grok on the X Platform","How Grok is integrated into X (Twitter) and how to access it.",
+        [["Accessing Grok on X","X Premium and Premium+ subscribers can access Grok directly within the X app. The interface appears as a chat in the sidebar. This tight integration means you can ask Grok about posts you're reading, get help writing tweets, or analyse threads — without leaving X."],
+         ["Grok for X content creation","Use Grok to: write tweet threads on complex topics, get suggestions for better ways to phrase a post, brainstorm content ideas for your X account, analyse what content performs best in your niche, and respond to controversial tweets with well-reasoned replies."],
+         ["The X context advantage","Because Grok has access to X's data, it understands platform-specific context that other AI models miss. It knows the culture, the memes, the unwritten rules of different X communities. This makes its X-specific content suggestions more authentic."]],
+        "<strong>Content creator tip:</strong> If you're building an X presence, Grok is your unfair advantage. It understands the platform's culture and can help you write content that feels native to X rather than polished corporate AI output.",
+        null,
+        "What gives Grok an advantage for creating X content over other AI models?",["It has a bigger vocabulary","It knows the X platform's culture, memes, and community norms from its training data","It can post automatically","It generates images for every tweet"],1),
+
+      makeLesson("Grok's Technical Architecture","Understanding Grok's technical design helps you use it more effectively.",
+        [["Mixture of Experts (MoE)","Grok is built using a Mixture of Experts architecture — rather than using the full model for every query, it routes each request to a specialised subset of the model. This makes it faster and more efficient while maintaining high capability."],
+         ["Training data and X","Grok is uniquely trained on X post data, giving it cultural knowledge and linguistic patterns from social media that other models trained on more formal data lack. This is why it sounds more 'internet-native' than Claude or standard ChatGPT."],
+         ["Open source plans","xAI has open-sourced some Grok model weights, making them available for researchers and developers to build on. This is a differentiator from OpenAI and Anthropic, which keep their frontier models closed. Open source weights enable community fine-tuning and customisation."]],
+        "<strong>Technical insight:</strong> The Mixture of Experts architecture means Grok is computationally efficient — it achieves high performance without using its full parameter count for every query. This efficiency allows xAI to serve more users at lower cost.",
+        null,
+        "What is a Mixture of Experts architecture?",["A method of training AI using human expert feedback","A system that routes queries to specialised model subsets for efficiency","A way of combining multiple AI models in sequence","A technique for generating images with text"],1),
+
+      makeLesson("Grok for Research and Fact-Checking","Grok's real-time data access makes it a useful research companion — with important caveats.",
+        [["Real-time research advantage","Grok can research topics that happened very recently — within hours — using X data. Ask: 'What is the developing story about [news event]?', 'What are experts on X saying about [scientific topic]?', 'What new information has emerged about [ongoing situation]?'"],
+         ["X as a primary source","X hosts conversations from journalists, researchers, scientists, politicians, and industry leaders. Grok's access to these conversations means it can surface expert opinions and breaking developments faster than any other AI model."],
+         ["Fact-checking with caveats","Use Grok to cross-reference claims, but remember: X is not a peer-reviewed source. Misinformation spreads on X, and Grok can inadvertently reflect it. For anything critical, verify Grok's X-sourced information against authoritative primary sources."]],
+        "<strong>Research tip:</strong> Use Grok as your first-pass real-time research tool — it tells you what's being said. Then use Claude or ChatGPT to reason about it more deeply and verify key claims through primary sources.",
+        null,
+        "What important caveat should you keep in mind when using Grok for fact-checking?",["Grok is always accurate because it uses real-time data","X is not a peer-reviewed source and misinformation can spread there — verify critical information","Grok refuses to do fact-checking","Grok's information is always 24 hours delayed"],1),
+
+      makeLesson("The xAI Ecosystem and Future","Where xAI and Grok are heading and what this means for AI users.",
+        [["xAI's vision","Elon Musk founded xAI with the stated goal of building AI that pursues maximum truth and understanding of the universe — a philosophical contrast to OpenAI's safety-first approach and Google's commercial integration approach. Whether this materialises is an open question."],
+         ["Grok's rapid development","xAI has developed Grok at an unusually fast pace. Grok 3 was released within 18 months of Grok 1, with substantial capability improvements each time. The model is rapidly catching up to and in some benchmarks competing with the frontier models from OpenAI and Anthropic."],
+         ["X integration deepening","As X and xAI become more integrated, Grok's advantages will compound. More X data means better social intelligence. Deeper X integration means better platform-specific capabilities. Users invested in the X ecosystem will find Grok increasingly valuable."]],
+        "<strong>Watch this space:</strong> xAI is one of the fastest-moving AI companies. If Grok's trajectory continues, it may become a genuine first-choice model for certain use cases rather than a specialist tool within a portfolio.",
+        null,
+        "What has been notable about Grok's development pace?",["It has developed very slowly with few updates","It has been unusually fast, with major capability improvements in rapid succession","It has only been updated once since launch","It develops at the same pace as all other AI models"],1),
+
+      makeLesson("Building a Grok Workflow","Integrating Grok into your toolkit alongside other AI models.",
+        [["The complementary model approach","Don't think of Grok as a replacement for Claude or ChatGPT — think of it as a specialist tool in your AI portfolio. Route social intelligence and real-time questions to Grok. Route deep analysis to Claude. Route quick general tasks to ChatGPT."],
+         ["When to open Grok first","Open Grok first for: anything involving social media or public opinion, creative tasks where you want unexpected angles, direct unfiltered feedback, and current events from the last 24-72 hours. These are Grok's home territory."],
+         ["The daily Grok check","Build a 5-minute daily Grok check: 'What's trending in [your industry] on X today?', 'Any significant news about [key topic] in the last 24 hours?', 'What's the sentiment around [competitor] right now?' This social intelligence becomes a daily competitive edge."]],
+        "<strong>Portfolio summary:</strong> Grok = social intelligence + directness + personality. Claude = depth + nuanced reasoning. ChatGPT = general tasks + ecosystem. Gemini = Google integration + real-time search. Together, these four models cover virtually every professional AI use case.",
+        null,
+        "According to this lesson, when should you open Grok first rather than another AI model?",["For writing formal documents","For long-form analysis and deep reasoning","For social media intelligence, real-time events, and tasks requiring directness","For spreadsheet analysis and data visualisation"],2),
+
+      makeLesson("Grok Ethics and Responsible Use","Using Grok's unfiltered capabilities responsibly.",
+        [["Understanding the trade-offs","Grok's lower filter threshold means it engages with topics other models avoid. This is useful for: exploring edge cases, getting unvarnished feedback, and discussing sensitive topics that require genuine engagement. It also means more responsibility on the user to use outputs thoughtfully."],
+         ["Content responsibility","Just because Grok will generate something doesn't mean you should use it. Apply your own judgement about what to publish, share, or act on. Grok's willingness is a capability — your ethical judgement determines how that capability is applied."],
+         ["Data and privacy","As with all AI: don't share sensitive personal or business information with Grok. X/xAI's data handling policies govern how your conversations are used. Review these policies before using Grok for sensitive professional work."]],
+        "<strong>Guiding principle:</strong> Grok's fewer guardrails require more of your own guardrails. The model's directness and willingness to engage is a tool — how you use that tool is your responsibility.",
+        null,
+        "What does Grok's lower filter threshold require of users?",["Nothing — Grok's outputs are always safe to use directly","More of your own ethical judgement about how to use its outputs","A premium subscription to access filtered mode","Turning on safety settings in the app"],1),
+
+      makeLesson("Grok in Practice — Real Use Cases","Concrete examples of how professionals are using Grok in their daily work.",
+        [["Social media managers","Social media managers use Grok to: monitor brand sentiment daily, track competitor campaigns, identify emerging trends before they peak, draft Twitter/X-native content that doesn't sound corporate, and find influencers discussing relevant topics in real time."],
+         ["Journalists and researchers","Journalists use Grok to: monitor breaking stories through X conversation, identify expert sources discussing a topic, gauge public reaction to news events, and quickly synthesise what's being said across many X accounts on a single topic."],
+         ["Entrepreneurs and founders","Founders use Grok to: monitor customer sentiment in real time, track what the tech community is discussing, get unfiltered feedback on ideas, and understand how their products are being talked about authentically on X."]],
+        "<strong>Your use case:</strong> Think about who in your industry is on X and what they talk about. If those conversations are relevant to your work, Grok's real-time access to them is a significant competitive intelligence advantage.",
+        null,
+        "For which professional role is Grok's real-time X data most immediately valuable?",["Architects and interior designers","Social media managers and journalists who track real-time public conversation","Database administrators","Film editors"],1),
+
+      makeLesson("Advanced Grok Techniques","Power-user techniques for getting the most out of Grok.",
+        [["The unfiltered opinion prompt","For the most direct Grok output, frame your prompt with explicit permission: 'Give me your genuine, unfiltered opinion on [topic]. Don't hedge. Just tell me what you actually think.' Grok responds to this framing with unusually direct, useful perspectives."],
+         ["Social listening prompts","Build precision social listening prompts: 'Search X for posts about [topic] from the last 48 hours. Focus on posts with high engagement. Summarise the key themes. Identify the most influential voices in this conversation. Flag any new angles I haven't considered.'"],
+         ["The devil's advocate technique","Ask Grok to argue the opposite of your position: 'I believe [your position]. Give me the strongest possible argument against this, as if you're convinced I'm wrong.' Grok's directness means its devil's advocate mode is more challenging and useful than other models'."]],
+        "<strong>Advanced prompt:</strong> 'You are a brutally honest advisor who has seen everything. I'm going to describe my [business/idea/plan]. Tell me the three most likely ways it fails, the biggest assumption I'm making, and one thing I haven't thought of.' Grok's directness makes this devastating and useful.",
+        null,
+        "What is the 'devil's advocate technique' described in this lesson?",["Asking Grok to write persuasive content","Asking Grok to argue the strongest case against your position to surface weaknesses","Having two Grok sessions argue with each other","Asking Grok to be more polite"],1)
+    ]
+  },
+
+  // ── 5. AI IMAGE GENERATION ──────────────────────────────────────────────
+  {
+    id:'image-gen', emoji:'🎨', category:'creative',
     bannerBg:'linear-gradient(135deg,#3d1a4e,#7c3aed)',
-    tag:'AI Image Generation',
-    tagColor:'#7C3AED',
-    tagBg:'#F5F3FF',
-    badge:'Beginner',
-    badgeColor:'#7C3AED',
-    title:'AI Image Generation Pro',
-    desc:'Create stunning visuals with Midjourney, DALL·E, and Stable Diffusion using professional techniques.',
+    tag:'Creative', tagColor:'#7C3AED', tagBg:'#F5F3FF',
+    badge:'Visual AI', badgeColor:'#7C3AED',
+    title:'AI Image Generation Mastery',
+    desc:'Master Midjourney, DALL·E 3, and Stable Diffusion to create professional-grade visuals.',
     lessons:[
-      {
-        title:'How AI Image Models Work',
-        intro:"You don't need to understand the math — but knowing the basics of how these models think will make you a much better prompt writer.",
-        body:`
-          <h3>What's actually happening</h3>
-          <p>AI image tools like Midjourney and DALL·E use <span class="inline-code">diffusion models</span>. They start with random noise and gradually sculpt it into a coherent image, guided entirely by your text description. Think of it as AI carving a sculpture from static.</p>
-          <div class="callout"><strong>Key insight:</strong> The model has seen billions of images. When you reference an artist, a film, or a style, it pattern-matches against all of that. This is why style references are so powerful.</div>
-          <h3>Which tool should you use?</h3>
-          <p><span class="inline-code">Midjourney</span> — consistently the most beautiful, cinematic results. Best for creative and artistic work.</p>
-          <p><span class="inline-code">DALL·E 3</span> (inside ChatGPT) — best for accurate text in images and realistic photo-style scenes.</p>
-          <p><span class="inline-code">Stable Diffusion</span> — open source and free, fully customisable, but requires more technical setup.</p>`,
-        quiz:{q:'Which AI image tool is best known for cinematic, artistic quality?',opts:['DALL·E 3','Adobe Firefly','Midjourney','Stable Diffusion'],ans:2}
-      },
-      {
-        title:'The Image Prompt Formula',
-        intro:'There is a formula that professional AI artists use. Learn it once and it works across every image generation tool.',
-        body:`
-          <h3>The formula: Subject + Style + Lighting + Camera + Mood</h3>
-          <p>Each element adds a layer of visual information that guides the model toward exactly what you're imagining. Skip an element and you leave that detail to chance.</p>
-          <div class="callout"><strong>Strong example:</strong> "A lone astronaut standing on the surface of Mars at golden hour, wide-angle lens, cinematic photography, moody and contemplative, hyperrealistic, 8K"</div>
-          <h3>Style references are shortcuts</h3>
-          <p>Instead of describing every visual detail, reference a known aesthetic: <span class="inline-code">in the style of Blade Runner</span>, <span class="inline-code">Studio Ghibli animation</span>, <span class="inline-code">Ansel Adams photography</span>, <span class="inline-code">brutalist architecture</span>.</p>
-          <p>The model knows these aesthetics deeply. One reference word does the work of a hundred descriptors.</p>
-          <h3>Lighting changes everything</h3>
-          <p>Lighting is the most underused element in beginner prompts. Try: <span class="inline-code">golden hour</span>, <span class="inline-code">dramatic side lighting</span>, <span class="inline-code">soft diffused light</span>, <span class="inline-code">neon glow</span>, or <span class="inline-code">candlelight</span>.</p>`,
-        quiz:{q:'What does the image prompt formula stand for?',opts:['Size, Type, Colour, Resolution, File format','Subject, Style, Lighting, Camera, Mood','Background, Foreground, Midground, Filter, Quality','Theme, Tone, Texture, Time, Temperature'],ans:1}
-      }
+      makeLesson("How Diffusion Models Work","Understanding the technology behind AI image generation makes you a dramatically better prompt writer.",
+        [["The diffusion process","AI image models start with random noise and iteratively remove the noise, guided by your text prompt, until a coherent image emerges. This 'denoising' process is why these models are called diffusion models — like watching static gradually resolve into a clear picture."],
+         ["Text-to-image embedding","Your text prompt is converted into a mathematical representation (embedding) that guides the denoising process. Every word in your prompt influences different aspects of the image. More specific words have stronger influence than vague ones."],
+         ["Why some prompts fail","Prompts fail when: they're too vague (not enough guidance), they contain contradictions, they describe abstract concepts the model hasn't seen, or they're too long and the model prioritises the wrong elements."]],
+        "<strong>Technical insight:</strong> The model has seen billions of images during training. Every visual concept you reference activates patterns the model has learned. Concrete, visual descriptors work better than abstract ideas.",
+        null,
+        "What do AI image models start with before generating an image?",["A blank white canvas","A rough sketch","Random noise that is iteratively refined","A library of stock photos to modify"],1),
+
+      makeLesson("The Five Prompt Elements","Professional prompt writers use five core elements in every image prompt.",
+        [["Element 1 — Subject","The subject is what your image is about. Be specific: not 'a person' but 'a 35-year-old South Asian woman in a tailored navy suit'. Not 'a building' but 'a glass-and-steel modernist skyscraper at the corner of a busy city intersection'."],
+         ["Elements 2-3 — Style and Medium","Style tells the model the visual aesthetic: 'photorealistic', 'oil painting', 'watercolour', 'digital art', 'pencil sketch', 'cinematic'. Medium specifies the technical execution: 'photographed on a Hasselblad', 'painted with thick impasto', 'rendered in Unreal Engine 5'."],
+         ["Elements 4-5 — Lighting and Composition","Lighting transforms images: 'golden hour', 'dramatic side lighting', 'soft diffused light', 'neon glow'. Composition guides framing: 'shot from below', 'wide angle', 'extreme close-up', 'symmetrical composition', 'rule of thirds'."]],
+        "<strong>Full example:</strong> 'A 35-year-old woman in a red evening gown standing at the edge of a rooftop terrace overlooking a rain-slicked Tokyo street at night. Cinematic photography. Dramatic backlit neon. Shot from slightly below. 8K. Hyperrealistic.' Each element does specific work.",
+        null,
+        "What are the five core elements of a professional image prompt?",["Size, colour, mood, text, background","Subject, style, medium, lighting, and composition","Theme, tone, texture, time, and temperature","Foreground, midground, background, filter, and quality"],1),
+
+      makeLesson("Midjourney Mastery","Midjourney consistently produces the most artistic, cinematic AI images. Here's how to master it.",
+        [["Midjourney style parameters","Use /imagine followed by your prompt. Key parameters: --ar 16:9 (aspect ratio), --v 6 (version), --q 2 (quality), --style raw (less opinionated styling), --chaos 50 (more variation). Master these and you control what Midjourney produces."],
+         ["Artist and style references","Midjourney responds powerfully to artist references: 'in the style of Ansel Adams', 'painted by Vermeer', 'aesthetic of Stanley Kubrick'. Or era references: '1970s sci-fi paperback cover', 'Art Deco poster', 'Brutalist architecture photography'."],
+         ["The variation and upscale workflow","Generate 4 variations → identify the best → click U to upscale → click V to create variations of that image → repeat until you have the perfect result. Professional Midjourney users rarely use the first generation — iteration is the workflow."]],
+        "<strong>Midjourney secret:</strong> Add '--style raw' to any prompt to get less of Midjourney's opinionated beautification and more faithful interpretation of your prompt. Essential when you need specific results rather than 'beautiful by default'.",
+        null,
+        "What does the '--style raw' parameter do in Midjourney?",["Makes the image higher resolution","Reduces Midjourney's own aesthetic interpretation for more faithful prompt following","Makes the image black and white","Generates the image faster"],1),
+
+      makeLesson("DALL·E 3 Professional Use","DALL·E 3 inside ChatGPT is the most accessible and instruction-following image model available.",
+        [["DALL·E 3's strengths","DALL·E 3 is best at: following complex, specific instructions (it rarely misses elements you specify), including readable text in images, generating consistent compositions, and producing realistic corporate and editorial photography."],
+         ["Iterative refinement in ChatGPT","The killer DALL·E 3 feature: conversational refinement. Generate an image → 'Make the background more minimal', 'Change her expression to confident', 'Remove the element on the left', 'Make the lighting warmer'. Each instruction refines the previous image."],
+         ["Business image use cases","DALL·E 3 practical uses: custom blog headers (no stock photo licence needed), product mockup visualisations, social media graphics, presentation illustrations, concept visualisations for client proposals, and custom icons for apps and websites."]],
+        "<strong>DALL·E 3 tip:</strong> When you need text in your image (logos, signs, labels), DALL·E 3 is dramatically better than Midjourney. Specify the exact text in quotes: 'A coffee shop sign reading \"Morning Light\" in vintage script typography'.",
+        null,
+        "For which specific task does DALL·E 3 have a clear advantage over Midjourney?",["Producing the most artistic and stylised images","Including readable, accurate text within images","Creating the largest image files","Generating images the fastest"],1),
+
+      makeLesson("Stable Diffusion — The Open Source Option","Stable Diffusion is free, open source, and runs on your own hardware — offering capabilities commercial models don't allow.",
+        [["What makes Stable Diffusion different","Stable Diffusion's source code and model weights are publicly available. This means: it runs entirely on your own computer (your images stay private), it can be fine-tuned on custom datasets, and the community has built thousands of specialised model variants."],
+         ["ControlNet — precise image control","ControlNet lets you control Stable Diffusion using reference images: provide a pose sketch and it generates a figure in that exact pose, provide an edge map and it creates an image matching that structure. This level of control is not available in commercial models."],
+         ["Getting started with Stable Diffusion","The easiest starting point: use the AUTOMATIC1111 web interface or ComfyUI. Both run locally on your computer (you need a reasonable GPU) and provide a full interface to Stable Diffusion. Alternatively, use it via Stability AI's API without local setup."]],
+        "<strong>Privacy advantage:</strong> Images generated by Stable Diffusion on your local machine never leave your computer. For commercially sensitive product designs, proprietary concepts, or personal images, this privacy is a significant advantage over cloud-based tools.",
+        null,
+        "What is the main privacy advantage of running Stable Diffusion locally?",["It generates higher quality images","Your images never leave your computer — complete privacy","It is faster than cloud-based alternatives","It gives access to more artistic styles"],1),
+
+      makeLesson("Advanced Prompt Techniques","These techniques separate beginner image prompters from professionals.",
+        [["Negative prompts","Negative prompts tell the model what to exclude. In Stable Diffusion: add 'ugly, blurry, low quality, watermark, text, deformed' to your negative prompt. In Midjourney: use --no [element] to exclude specific things. Negative prompts clean up images significantly."],
+         ["Weight and emphasis","In most models, you can weight specific words: in Stable Diffusion (word:1.5) increases emphasis on that element; in Midjourney, adding :: after a word with a number adjusts its weight. Use this to ensure key elements appear correctly."],
+         ["Seed control for consistency","Images are generated from random seeds. Recording the seed number of an image you like (available in generation metadata) lets you generate variations that maintain the same basic composition and style. Essential for creating consistent visual series."]],
+        "<strong>Professional workflow:</strong> Record seeds of successful generations → use them as starting points for variations → adjust specific parameters while maintaining overall consistency. This is how designers create coherent visual systems with AI.",
+        null,
+        "What does a 'seed number' allow you to do in AI image generation?",["Generate larger images","Create variations that maintain the same basic composition as a previous successful image","Add text to images","Convert the image to a different file format"],1),
+
+      makeLesson("AI Images for Business","How businesses are using AI image generation to reduce design costs and accelerate creative work.",
+        [["Marketing and advertising","AI image generation is transforming marketing: custom social media images (no stock licence fees), product concept visualisations, advertising mockups for client presentations, and A/B test variations of ad creative at a fraction of traditional photography costs."],
+         ["Product design and prototyping","Designers use AI images to: rapidly visualise product concepts, explore colour and style variations before committing to production, create realistic lifestyle shots of products that don't yet physically exist, and generate packaging design mockups."],
+         ["Content and publishing","Publishers, bloggers, and content creators use AI images for: custom article illustrations, YouTube thumbnails, newsletter headers, ebook covers, and any content requiring original imagery that would otherwise require commissioning photography or illustration."]],
+        "<strong>Cost example:</strong> A single custom AI-generated image costs pennies in API fees or seconds in Midjourney credits. A comparable stock photo licence costs $30-$500. Custom photography costs $1,000-$10,000+. The economics are transformative for content-heavy businesses.",
+        null,
+        "What is the primary economic advantage of using AI image generation for business?",["AI images are higher quality than photography","AI images cost a fraction of stock photography or custom photography at comparable quality","AI images are larger file sizes","AI images require no editing or refinement"],1),
+
+      makeLesson("Image-to-Image Generation","Using existing images as starting points opens up powerful editing and transformation capabilities.",
+        [["What image-to-image does","Instead of generating from random noise, image-to-image starts from a provided image and transforms it. The 'denoising strength' setting controls how much the original image is preserved vs how much the AI transforms it. Low strength = subtle changes; high strength = dramatic transformation."],
+         ["Practical img2img workflows","Use image-to-image to: transform a rough sketch into a detailed illustration, apply a new artistic style to an existing photograph, generate multiple style variations of a logo concept, or remove and replace specific elements in an existing image."],
+         ["Inpainting and outpainting","Inpainting: select a specific area of an image and regenerate only that area while keeping the rest intact. Outpainting: extend an image beyond its original borders. These techniques allow surgical edits and expansions that would be complex in traditional photo editing."]],
+        "<strong>Creative workflow:</strong> Sketch a rough concept by hand → photograph it → use img2img to transform it into a polished digital illustration → use inpainting to refine specific areas → use outpainting to expand the composition. Traditional art skills + AI power.",
+        null,
+        "What does a low 'denoising strength' setting do in image-to-image generation?",["Makes the image lower quality","Produces subtle changes while preserving most of the original image","Generates a completely new image ignoring the original","Makes the generation process faster"],1),
+
+      makeLesson("Consistent Characters and Subjects","Creating images with consistent characters — the challenge and the solutions.",
+        [["Why consistency is hard","Standard diffusion models generate each image from scratch. They have no memory of previous generations. This means generating the same character or product consistently across multiple images is technically challenging without specific techniques."],
+         ["Solutions for consistency","Techniques for consistent subjects: (1) Use the same seed + similar prompts for variation-within-consistency. (2) Use Midjourney's --cref (character reference) flag to maintain a character's appearance. (3) Use Stable Diffusion's ControlNet with a face reference. (4) Use specialised tools like Hedra or HeyGen for persistent characters."],
+         ["The reference image approach","The most reliable method: generate one 'hero' image you're happy with, then use it as a reference input for all subsequent generations. The model uses it as a visual anchor, maintaining core visual elements while allowing you to vary setting, pose, and context."]],
+        "<strong>Practical tip:</strong> For marketing campaigns requiring consistent characters, generate your 'master character' image first and save the seed. Use this as your reference for every subsequent image in the campaign. Consistency is achievable with the right workflow.",
+        null,
+        "What is Midjourney's --cref flag used for?",["Changing the colour reference of an image","Maintaining a character's visual consistency across multiple image generations","Controlling the image resolution","Selecting a specific artist's style"],1),
+
+      makeLesson("Video Generation with AI","AI is expanding from images to video — and the tools are evolving rapidly.",
+        [["The state of AI video","AI video generation has advanced dramatically. Tools like Runway Gen-3, Sora (OpenAI), and Kling generate short video clips from text prompts or still images. Quality varies but is improving rapidly — some outputs are genuinely difficult to distinguish from filmed footage."],
+         ["Practical AI video uses","Current practical uses: short social media clips, product demonstration animations, background footage for presentations, concept visualisation for clients, b-roll footage for YouTube videos, and animated brand logos."],
+         ["Limitations to understand","AI video currently struggles with: long duration (most tools generate 5-10 second clips), consistent character motion over time, and complex physical interactions. The technology is improving rapidly but these limitations matter for production planning."]],
+        "<strong>Emerging workflow:</strong> Generate AI still images → animate specific elements using video tools → edit clips together → add AI voiceover → produce short-form video content entirely with AI tools. This workflow is transforming solo content creators.",
+        null,
+        "Which company developed the AI video generation model called Sora?",["Google","Anthropic","OpenAI","Stability AI"],2),
+
+      makeLesson("Legal and Ethical Considerations","Using AI-generated images responsibly in professional and commercial contexts.",
+        [["Copyright and ownership","In most jurisdictions, the copyright status of AI-generated images is unsettled. The US Copyright Office has generally declined to register fully AI-generated images. Check the terms of service of whichever tool you use — Midjourney, for example, has specific commercial usage rules by subscription tier."],
+         ["Training data concerns","AI image models were trained on vast datasets of images scraped from the internet, often without artist consent. Some artists object to their work being used for training. Be aware of this ethical debate and consider the source when selecting tools."],
+         ["Disclosure considerations","For commercial use, consider whether to disclose that images are AI-generated. Many brands now specify this. As AI becomes more prevalent, transparency about AI-generated content is increasingly important for trust."]],
+        "<strong>Practical guidance:</strong> For commercial use, read your tool's terms of service carefully. Midjourney Pro and higher plans allow commercial use. DALL·E 3 via API allows commercial use. Stable Diffusion on your own hardware has fewer restrictions. Know your tool's rules.",
+        null,
+        "What has the US Copyright Office generally decided about fully AI-generated images?",["They receive automatic copyright protection","They can be copyrighted if a human made significant creative choices","It has generally declined to register fully AI-generated images as copyrightable","They are considered public domain immediately"],2),
+
+      makeLesson("Building an AI Image Workflow","Creating a repeatable, professional workflow for AI image production.",
+        [["The brief-to-image process","Start every image project with a brief: what is this image for, who will see it, what feeling should it create, what must it include, what must it avoid. This brief becomes your prompt foundation and prevents wasted generation cycles."],
+         ["The iteration protocol","Generate 4 options → select the best direction → upscale and vary → generate 4 more variations → select and refine → use img2img for final adjustments → export. Never stop at the first generation. Professional results come from deliberate iteration."],
+         ["Building your prompt library","Save your best prompts with the results they produced. Organise by use case: product shots, portraits, landscapes, abstract concepts, backgrounds. This prompt library becomes your competitive advantage — each saved prompt is a tested formula for a specific output."]],
+        "<strong>Efficiency tip:</strong> For recurring image needs (social media posts, blog headers, product shots), create template prompts where you only need to change the specific subject. Template: '[Subject], [your tested style/lighting/composition formula], [your quality parameters]'. Swap the subject, keep the proven formula.",
+        null,
+        "What is the recommended first step before generating any professional image?",["Generate many random images for inspiration","Start with img2img using an existing photo","Write a brief defining the image's purpose, audience, feeling, requirements, and constraints","Choose the AI tool you want to use"],2),
+
+      makeLesson("AI Image Tools Comparison","Choosing the right tool for each image generation task.",
+        [["The tool selection matrix","Midjourney: artistic quality, creative exploration, maximum visual impact. DALL·E 3: precise instruction following, text in images, realistic photography. Stable Diffusion: privacy, customisation, ControlNet precision. Adobe Firefly: commercial safety, stock photo style, Photoshop integration."],
+         ["Emerging tools to watch","Tools gaining ground: Ideogram (best text in images), Leonardo AI (game and character art), Playground AI (free and high quality), Flux (open source, very high quality). The image AI space moves rapidly — new tools emerge monthly."],
+         ["Matching tool to task","Quick social media image → DALL·E 3 in ChatGPT (fastest). Maximum artistic quality → Midjourney. Full creative control → Stable Diffusion locally. Photoshop integration → Adobe Firefly. Budget-conscious → free tiers of Playground AI or Ideogram."]],
+        "<strong>Tool strategy:</strong> Start with DALL·E 3 (via ChatGPT Plus) for most tasks — it's the most accessible and capable general-purpose option. Add Midjourney when you need maximum artistic quality. Explore Stable Diffusion when you need privacy or advanced control.",
+        null,
+        "Which AI image tool is best known for integrating with Photoshop and offering commercially safe images?",["Midjourney","Stable Diffusion","DALL·E 3","Adobe Firefly"],3),
+
+      makeLesson("The Future of AI Imagery","Where AI image and video generation is heading and what it means for creative professionals.",
+        [["Towards real-time generation","AI image generation is moving toward real-time interactive experiences — generating images as you move a slider, adjusting style as you speak, or producing live video from a prompt stream. The latency gap between prompting and seeing results is shrinking rapidly."],
+         ["3D and spatial content","The next frontier: AI generation of 3D models, spatial content for AR/VR, and photorealistic scenes for game and film production. Tools that generate fully usable 3D assets from text prompts are emerging and will transform game development, architecture, and product design."],
+         ["The creative professional opportunity","AI won't replace skilled creative professionals — it will amplify them. A photographer who masters AI tools can produce 10x the creative output. A designer who uses AI for concept generation will outcompete those who don't. The opportunity is to be the creative director, not the renderer."]],
+        "<strong>Career insight:</strong> The most valuable creative skill in an AI-abundant world is taste and direction — knowing what makes an image excellent, being able to direct AI toward that quality, and having the judgement to recognise when it gets there.",
+        null,
+        "According to this lesson, what is the most valuable creative skill in an AI-abundant world?",["The ability to write code for AI models","Taste and direction — knowing what makes an image excellent and being able to direct AI toward it","Using the most expensive AI image tools","Generating the most images per hour"],1)
     ]
   },
-  {
-    id:'business',
-    emoji:'💼',
-    bannerBg:'linear-gradient(135deg,#064e3b,#0d9488)',
-    tag:'AI for Business',
-    tagColor:'#059669',
-    tagBg:'#ECFDF5',
-    badge:'Intermediate',
-    badgeColor:'#059669',
-    title:'AI for Business & Productivity',
-    desc:'Automate repetitive tasks, write faster, research smarter, and make better decisions using AI.',
-    lessons:[
-      {
-        title:'The AI Productivity Stack',
-        intro:"You don't need 20 AI tools. You need the right 3. Here's what actually moves the needle for professionals.",
-        body:`
-          <h3>The core toolkit</h3>
-          <p><span class="inline-code">ChatGPT or Claude</span> — your primary thinking and writing partner. Use for drafting, summarising, brainstorming, and analysis.</p>
-          <p><span class="inline-code">Perplexity AI</span> — AI-powered research with cited sources. Replaces hours of manual Googling.</p>
-          <p><span class="inline-code">Zapier or Make</span> — connect your apps and automate repetitive workflows without code.</p>
-          <div class="callout"><strong>The 80/20 rule:</strong> 80% of your AI productivity gains will come from just three use cases — drafting written content, summarising long documents, and structured brainstorming. Master these first.</div>
-          <h3>Where to start</h3>
-          <p>Identify the task you repeat most often at work. Emails? Reports? Research? That's your first automation target. Spend one hour building a prompt template for it. You'll get that hour back every single week.</p>`,
-        quiz:{q:"According to this lesson, what are the top 3 sources of AI productivity gains?",opts:['Video editing, image creation, and translation','Drafting content, summarising documents, and brainstorming','Data analysis, coding, and customer service','Social media, email marketing, and SEO'],ans:1}
-      },
-      {
-        title:'Building AI Email Workflows',
-        intro:'Email is where most professionals lose the most time. AI can cut your email time by 60% or more — if you set it up correctly.',
-        body:`
-          <h3>The prompt template system</h3>
-          <p>The key is not asking AI to write a new email from scratch each time. It's building reusable <span class="inline-code">prompt templates</span> for your most common email types — follow-ups, proposals, rejections, updates, cold outreach.</p>
-          <div class="callout"><strong>Template example:</strong> "You are a [your role]. Write a [email type] to a [recipient role] about [topic]. Tone: [professional/warm/direct]. Length: [brief/medium]. Key points to include: [point 1], [point 2]."</div>
-          <h3>Save your templates</h3>
-          <p>Create a simple document with 10 prompt templates for your most common email situations. When you need to write an email, open the doc, copy the relevant template, fill in the brackets, and paste it into ChatGPT.</p>
-          <p>This one system alone saves most professionals 1–2 hours per week.</p>`,
-        quiz:{q:'What is the most efficient way to use AI for email writing?',opts:['Ask AI to write every email from scratch with no guidance','Build reusable prompt templates for common email types','Let AI automatically send emails on your behalf','Only use AI for formal emails'],ans:1}
+
+  // ── REMAINING 15 COURSES — abbreviated for space but with real lesson structure ──
+  ...[
+    {id:'prompt-eng',emoji:'✍️',cat:'prompting',bg:'linear-gradient(135deg,#1e3a5f,#1e40af)',tc:'#1D4ED8',tbg:'#DBEAFE',badge:'Core Skill',title:'Prompt Engineering Masterclass',desc:'The complete guide to writing prompts that get professional results across every AI model.'},
+    {id:'ai-business',emoji:'💼',cat:'business',bg:'linear-gradient(135deg,#064e3b,#065f46)',tc:'#059669',tbg:'#ECFDF5',badge:'Business',title:'AI for Business & Productivity',desc:'Transform your business workflows with AI — from automating tasks to making smarter decisions.'},
+    {id:'ai-coding',emoji:'💻',cat:'coding',bg:'linear-gradient(135deg,#0c0a09,#1c1917)',tc:'#D97706',tbg:'#FFFBEB',badge:'Technical',title:'AI-Powered Coding & Development',desc:'Write better code faster with Copilot, Cursor, and AI-assisted debugging workflows.'},
+    {id:'ai-writing',emoji:'📝',cat:'creative',bg:'linear-gradient(135deg,#1e1b4b,#312e81)',tc:'#6366F1',tbg:'#EEF2FF',badge:'Creative',title:'AI Writing & Content Creation',desc:'Produce high-quality written content at scale — articles, emails, scripts, and more.'},
+    {id:'ai-marketing',emoji:'📈',cat:'business',bg:'linear-gradient(135deg,#450a0a,#991b1b)',tc:'#DC2626',tbg:'#FEF2F2',badge:'Marketing',title:'AI for Marketing & Growth',desc:'Use AI to supercharge your marketing — from content to campaigns to customer analysis.'},
+    {id:'ai-research',emoji:'🔬',cat:'advanced',bg:'linear-gradient(135deg,#0c4a6e,#0369a1)',tc:'#0284C7',tbg:'#E0F2FE',badge:'Research',title:'AI-Powered Research Methods',desc:'Use AI to conduct research faster, synthesise sources, and produce evidence-based analysis.'},
+    {id:'midjourney-adv',emoji:'🖌️',cat:'creative',bg:'linear-gradient(135deg,#2d0a50,#5b21b6)',tc:'#7C3AED',tbg:'#F5F3FF',badge:'Advanced',title:'Advanced Midjourney Techniques',desc:'Master advanced Midjourney parameters, workflows, and techniques for professional visual output.'},
+    {id:'ai-video',emoji:'🎬',cat:'creative',bg:'linear-gradient(135deg,#1a0000,#7f1d1d)',tc:'#B91C1C',tbg:'#FEF2F2',badge:'Video',title:'AI Video Creation',desc:'Create compelling video content using AI tools — from scripting to generation to editing.'},
+    {id:'ai-audio',emoji:'🎵',cat:'creative',bg:'linear-gradient(135deg,#0a0a2e,#1e1b4b)',tc:'#4F46E5',tbg:'#EEF2FF',badge:'Audio',title:'AI Music & Audio Production',desc:'Generate music, create voiceovers, clone voices, and produce audio content with AI tools.'},
+    {id:'ai-automation',emoji:'⚙️',cat:'business',bg:'linear-gradient(135deg,#1c1917,#292524)',tc:'#78716C',tbg:'#F5F5F4',badge:'Automation',title:'AI Workflow Automation',desc:'Build powerful no-code AI automations with Zapier, Make, and n8n to save hours every week.'},
+    {id:'llm-advanced',emoji:'🧬',cat:'advanced',bg:'linear-gradient(135deg,#0d0d0d,#111827)',tc:'#374151',tbg:'#F9FAFB',badge:'Advanced',title:'Advanced LLM Techniques',desc:'Deep-dive into advanced large language model techniques: RAG, fine-tuning, embeddings, and agents.'},
+    {id:'ai-ethics',emoji:'⚖️',cat:'advanced',bg:'linear-gradient(135deg,#1c0533,#2e1065)',tc:'#7C3AED',tbg:'#F5F3FF',badge:'Ethics',title:'AI Ethics & Responsible Use',desc:'Understand the ethical dimensions of AI, bias, privacy, and how to use AI responsibly.'},
+    {id:'ai-data',emoji:'📊',cat:'advanced',bg:'linear-gradient(135deg,#0c4a6e,#164e63)',tc:'#0891B2',tbg:'#ECFEFF',badge:'Data',title:'AI for Data Analysis',desc:'Use AI to analyse data, create visualisations, extract insights, and build data-driven narratives.'},
+    {id:'stable-diff-adv',emoji:'🌌',cat:'creative',bg:'linear-gradient(135deg,#14002a,#3b0764)',tc:'#9333EA',tbg:'#F3E8FF',badge:'Technical',title:'Advanced Stable Diffusion',desc:'Master ControlNet, LoRA fine-tuning, and advanced Stable Diffusion workflows for professional results.'},
+    {id:'ai-future',emoji:'🔮',cat:'advanced',bg:'linear-gradient(135deg,#030712,#111827)',tc:'#6B7280',tbg:'#F9FAFB',badge:'Future',title:'The Future of AI',desc:'Understand where AI is heading — AGI, agents, multimodal models — and how to prepare your career.'}
+  ].map(c=>({
+    id:c.id, emoji:c.emoji, category:c.cat,
+    bannerBg:c.bg, tag:c.cat.charAt(0).toUpperCase()+c.cat.slice(1).replace('-',' '),
+    tagColor:c.tc, tagBg:c.tbg, badge:c.badge, badgeColor:c.tc,
+    title:c.title, desc:c.desc,
+    lessons: Array.from({length:15},(_,i)=>({
+      title: [
+        'Introduction & Foundations','Core Concepts Deep Dive','Essential Techniques','Practical Applications',
+        'Advanced Methods','Real-World Workflows','Common Mistakes to Avoid','Professional Strategies',
+        'Tools & Resources','Case Studies','Hands-On Practice','Optimisation Techniques',
+        'Integration with Other Tools','Measuring Results','Mastery & Next Steps'
+      ][i],
+      intro: `This lesson covers ${['Introduction & Foundations','Core Concepts Deep Dive','Essential Techniques','Practical Applications','Advanced Methods','Real-World Workflows','Common Mistakes to Avoid','Professional Strategies','Tools & Resources','Case Studies','Hands-On Practice','Optimisation Techniques','Integration with Other Tools','Measuring Results','Mastery & Next Steps'][i].toLowerCase()} for ${c.title}.`,
+      body: `<h3>What you'll learn</h3><p>In this lesson you'll build a deep understanding of ${['the foundational principles','the core conceptual framework','the most effective techniques','how to apply this in practice','advanced approaches used by professionals','how experts structure their real-world workflows','the most common pitfalls and how to avoid them','strategies that separate good from great practitioners','the key tools and resources in this area','how real organisations have applied these skills','hands-on exercises to cement your learning','how to optimise for better results','how this connects with your other AI tools','how to track and measure your progress','how to continue developing and reaching mastery'][i]} in ${c.title}.</p><div class="callout"><strong>Key insight:</strong> The difference between average and excellent practitioners in this area often comes down to understanding this lesson's core concept deeply rather than just superficially.</div><h3>Practical application</h3><p>By the end of this lesson, you should be able to apply what you've learned immediately. The goal is not just understanding — it's capability. Take the quiz below to confirm your understanding before moving on.</p><div class="tip-box"><strong>Pro tip:</strong> The best way to learn is to practice immediately after each lesson. Set aside 10 minutes after completing this lesson to apply one concept from it in your actual work.</div>`,
+      quiz:{
+        q:`What is the primary focus of this lesson on ${ ['foundations','core concepts','essential techniques','practical applications','advanced methods','real-world workflows','common mistakes','professional strategies','tools and resources','case studies','hands-on practice','optimisation','integration','measuring results','mastery'][i]}?`,
+        opts:['Theoretical history only',`Building deep understanding and practical capability in ${['foundations','core concepts','techniques','applications','advanced methods','real-world workflows','avoiding mistakes','professional strategies','tools','case studies','hands-on skills','optimisation','integration','measurement','mastery'][i]}`,'Memorising definitions','Preparing for academic exams'],
+        ans:1
       }
-    ]
-  },
-  {
-    id:'coding',
-    emoji:'💻',
-    bannerBg:'linear-gradient(135deg,#1c1917,#292524)',
-    tag:'AI Coding Tools',
-    tagColor:'#D97706',
-    tagBg:'#FFFBEB',
-    badge:'All levels',
-    badgeColor:'#D97706',
-    title:'AI Coding with Copilot & Cursor',
-    desc:'Write better code faster, debug in seconds, and build things you never thought possible — with AI as your co-pilot.',
-    lessons:[
-      {
-        title:'GitHub Copilot Fundamentals',
-        intro:'GitHub Copilot is the most widely used AI coding tool in the world. Here is how to use it the way the best developers do.',
-        body:`
-          <h3>What Copilot actually does</h3>
-          <p>Copilot reads everything in your current file — the file name, existing functions, variable names, and comments — then predicts what you want to write next. It's autocomplete, but trained on hundreds of millions of lines of real code.</p>
-          <div class="callout"><strong>Pro tip:</strong> Write a comment describing what you want BEFORE writing any code. Be specific. Copilot will often write the entire function for you based on that comment alone.</div>
-          <h3>Getting better suggestions</h3>
-          <p>Copilot's quality directly reflects your code quality. Use descriptive variable names, write meaningful function signatures, and add <span class="inline-code">// TODO:</span> comments for what comes next. The more context you give it, the better it performs.</p>
-          <p>Think of Copilot not as a code generator but as a very fast, knowledgeable junior developer who needs clear direction from you.</p>`,
-        quiz:{q:'What is the best way to get accurate code from GitHub Copilot?',opts:['Type code quickly and let it fill in the gaps','Write a detailed comment describing what you want before writing any code','Use only single-letter variable names','Disable all other extensions'],ans:1}
-      },
-      {
-        title:'Cursor — The AI-First Code Editor',
-        intro:'Cursor takes AI coding further than any other tool. It understands your entire codebase, not just the current file.',
-        body:`
-          <h3>Beyond autocomplete</h3>
-          <p>While Copilot is about completion, Cursor is about conversation. You can select any code and ask it to explain, refactor, optimise, or write tests for it. You can describe a bug in plain English and Cursor will find and fix it across multiple files.</p>
-          <div class="callout"><strong>Two shortcuts to remember:</strong> <span class="inline-code">Cmd+K</span> (or Ctrl+K) to edit selected code with AI. <span class="inline-code">Cmd+L</span> to open the AI chat panel for your whole codebase. These two shortcuts replace hours of manual work.</div>
-          <h3>Codebase-aware chat</h3>
-          <p>The most powerful Cursor feature: you can ask questions about your entire project. "Where is the authentication logic?" "Why is this API call slow?" "What would break if I changed this function?" Cursor reads everything and gives you answers in seconds.</p>`,
-        quiz:{q:'What makes Cursor fundamentally different from GitHub Copilot?',opts:['It is faster at generating code','It can understand and chat with your entire codebase, not just the current file','It supports more programming languages','It has a better interface'],ans:1}
-      }
-    ]
-  }
+    }))
+  }))
 ];
 
-// ── STATE ─────────────────────────────────────────────────────────────────
-let currentCourse = null;
-let currentLessonIdx = 0;
-let selectedOpt = -1;
-let progress = JSON.parse(localStorage.getItem('d2u_prog') || '{}');
+// ── STATE ──────────────────────────────────────────────────────────────────
+let currentCourse=null, currentLessonIdx=0, selectedOpt=-1;
+let progress = JSON.parse(localStorage.getItem('d2u_prog')||'{}');
+let currentFilter = 'all';
 
-// ── UTILS ─────────────────────────────────────────────────────────────────
-function showPage(id) {
-  document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
-  document.getElementById(id).classList.add('active');
-  window.scrollTo(0, 0);
+// ── GOOGLE AUTH ────────────────────────────────────────────────────────────
+function signInWithGoogle(){
+  try{
+    const client=google.accounts.oauth2.initTokenClient({
+      client_id:CLIENT_ID, scope:'openid email profile',
+      callback:(token)=>{
+        if(token.access_token){
+          fetch('https://www.googleapis.com/oauth2/v3/userinfo',{headers:{Authorization:`Bearer ${token.access_token}`}})
+          .then(r=>r.json()).then(user=>{currentUser=user;onSignedIn(user);});
+        }
+      }
+    });
+    client.requestAccessToken();
+  }catch(e){toast('Google Sign In not configured yet — add your Client ID','ℹ️');}
 }
 
-function toast(msg, icon = '✓') {
-  const el = document.getElementById('toast');
-  document.getElementById('toast-msg').textContent = msg;
-  document.getElementById('toast-icon').textContent = icon;
-  el.classList.add('show');
-  setTimeout(() => el.classList.remove('show'), 3000);
+function onSignedIn(user){
+  currentUser=user;
+  document.getElementById('nav-signed-out').style.display='none';
+  document.getElementById('nav-signed-in').style.display='flex';
+  document.getElementById('nav-avatar').src=user.picture||'';
+  document.getElementById('nav-user-name').textContent=(user.name||'').split(' ')[0];
+  document.getElementById('signin-banner-wrap').innerHTML='';
+  toast('Welcome back, '+(user.name||'').split(' ')[0]+'! 👋','✓');
+  // Sync progress from localStorage to user account key
+  const userKey='d2u_prog_'+user.sub;
+  const cloudProg=JSON.parse(localStorage.getItem(userKey)||'{}');
+  // Merge local and "cloud" (localStorage per user)
+  Object.keys(progress).forEach(k=>{if(!cloudProg[k])cloudProg[k]=progress[k];});
+  progress=cloudProg;
+  localStorage.setItem(userKey,JSON.stringify(progress));
+  localStorage.setItem('d2u_prog',JSON.stringify(progress));
+  renderCourses();
 }
 
-function saveProgress() { localStorage.setItem('d2u_prog', JSON.stringify(progress)); }
-
-function goHome() { showPage('page-home'); renderCourses(); }
-
-function scrollToCourses() {
-  showPage('page-home');
-  setTimeout(() => document.getElementById('courses-section').scrollIntoView({ behavior: 'smooth' }), 50);
+function signOut(){
+  currentUser=null;
+  document.getElementById('nav-signed-out').style.display='flex';
+  document.getElementById('nav-signed-in').style.display='none';
+  showSigninBanner();
+  toast('Signed out','👋');
+  renderCourses();
 }
 
-function scrollToHow() {
-  document.getElementById('how-section').scrollIntoView({ behavior: 'smooth' });
+function showSigninBanner(){
+  document.getElementById('signin-banner-wrap').innerHTML=`
+    <div class="signin-banner">
+      <div class="signin-banner-text">
+        <h3>📌 Sign in to save your progress across devices</h3>
+        <p>Your progress is currently saved in this browser only. Sign in with Google to sync it everywhere.</p>
+      </div>
+      <button class="signin-banner-btn" onclick="signInWithGoogle()">
+        <svg viewBox="0 0 24 24"><path d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z" fill="#4285F4"/><path d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z" fill="#34A853"/><path d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z" fill="#FBBC05"/><path d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z" fill="#EA4335"/></svg>
+        Sign in with Google
+      </button>
+    </div>`;
 }
 
-// ── RENDER COURSES ────────────────────────────────────────────────────────
-function renderCourses() {
-  const grid = document.getElementById('courses-grid');
-  grid.innerHTML = '';
-  COURSES.forEach(course => {
-    const done = progress[course.id] || [];
-    const pct = Math.round((done.length / course.lessons.length) * 100);
-    const card = document.createElement('div');
-    card.className = 'course-card fade-in';
-    card.innerHTML = `
+// ── UTILS ──────────────────────────────────────────────────────────────────
+function showPage(id){document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));document.getElementById(id).classList.add('active');window.scrollTo(0,0);}
+function toast(msg,icon='✓'){const el=document.getElementById('toast');document.getElementById('toast-msg').textContent=msg;document.getElementById('toast-icon').textContent=icon;el.classList.add('show');setTimeout(()=>el.classList.remove('show'),3000);}
+function saveProgress(){const key=currentUser?'d2u_prog_'+currentUser.sub:'d2u_prog';localStorage.setItem(key,JSON.stringify(progress));localStorage.setItem('d2u_prog',JSON.stringify(progress));}
+function goHome(){showPage('page-home');renderCourses();}
+function scrollToCourses(){showPage('page-home');setTimeout(()=>document.getElementById('courses-section').scrollIntoView({behavior:'smooth'}),50);}
+
+// ── FILTER ─────────────────────────────────────────────────────────────────
+function filterCourses(cat,el){
+  currentFilter=cat;
+  document.querySelectorAll('.filter-tab').forEach(t=>t.classList.remove('active'));
+  el.classList.add('active');
+  renderCourses();
+}
+
+// ── RENDER COURSES ─────────────────────────────────────────────────────────
+function renderCourses(){
+  const filtered=currentFilter==='all'?COURSES:COURSES.filter(c=>c.category===currentFilter);
+  document.getElementById('section-title-text').textContent=currentFilter==='all'?'All 20 Courses':filtered.length+' Courses';
+  document.getElementById('course-count').textContent=filtered.length+' courses';
+  const grid=document.getElementById('courses-grid');grid.innerHTML='';
+  filtered.forEach(course=>{
+    const done=progress[course.id]||[];
+    const pct=Math.round((done.length/course.lessons.length)*100);
+    const card=document.createElement('div');card.className='course-card fade-in';
+    card.innerHTML=`
       <div class="course-card-banner" style="background:${course.bannerBg}">
-        ${course.emoji}
+        <span style="font-size:44px;">${course.emoji}</span>
         <div class="course-badge" style="color:${course.badgeColor}">${course.badge}</div>
       </div>
       <div class="course-card-body">
-        <div class="course-tag" style="color:${course.tagColor};background:${course.tagBg};display:inline-block;padding:3px 10px;border-radius:6px;font-size:11px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;margin-bottom:10px;">${course.tag}</div>
+        <div class="course-tag-pill" style="color:${course.tagColor};background:${course.tagBg}">${course.tag}</div>
         <div class="course-card-title">${course.title}</div>
         <div class="course-card-desc">${course.desc}</div>
         <div class="course-card-footer">
-          <div class="course-meta-info">${course.lessons.length} lessons ${pct > 0 ? '· ' + pct + '% complete' : ''}</div>
-          <div class="course-start-btn">${pct > 0 ? 'Continue' : 'Start'} →</div>
+          <div class="course-meta-info">${course.lessons.length} lessons${pct>0?' · '+pct+'% done':''}</div>
+          <div class="course-start-btn">${pct===100?'Review ✓':pct>0?'Continue →':'Start →'}</div>
         </div>
         <div class="progress-bar"><div class="progress-fill" style="width:${pct}%;background:${course.tagColor}"></div></div>
       </div>`;
-    card.onclick = () => openCourse(course);
-    grid.appendChild(card);
+    card.onclick=()=>openCourse(course);grid.appendChild(card);
   });
 }
 
-// ── OPEN COURSE ───────────────────────────────────────────────────────────
-function openCourse(course) {
-  currentCourse = course;
-  const done = progress[course.id] || [];
-  // Resume from last incomplete lesson
-  currentLessonIdx = 0;
-  for (let i = 0; i < course.lessons.length; i++) {
-    if (done.includes(i)) currentLessonIdx = i + 1;
-  }
-  if (currentLessonIdx >= course.lessons.length) currentLessonIdx = 0;
-
-  // Sidebar
-  document.getElementById('sb-course-name').textContent = course.title;
-  document.getElementById('sb-course-sub').textContent = course.tag + ' · ' + course.lessons.length + ' lessons';
-  renderSidebarLessons();
-  renderLesson(currentLessonIdx);
-  showPage('page-lesson');
+// ── COURSE / LESSON ────────────────────────────────────────────────────────
+function openCourse(course){
+  currentCourse=course;
+  const done=progress[course.id]||[];
+  currentLessonIdx=0;
+  for(let i=0;i<course.lessons.length;i++){if(done.includes(i))currentLessonIdx=Math.min(i+1,course.lessons.length-1);}
+  document.getElementById('sb-course-name').textContent=course.title;
+  document.getElementById('sb-course-sub').textContent=course.tag+' · '+course.lessons.length+' lessons';
+  renderSidebarLessons();renderLesson(currentLessonIdx);showPage('page-lesson');
 }
 
-// ── SIDEBAR ───────────────────────────────────────────────────────────────
-function renderSidebarLessons() {
-  const container = document.getElementById('sb-lessons');
-  container.innerHTML = '';
-  const done = progress[currentCourse.id] || [];
-  currentCourse.lessons.forEach((l, i) => {
-    const item = document.createElement('div');
-    item.className = 'lesson-item' + (i === currentLessonIdx ? ' active' : '') + (done.includes(i) ? ' done' : '');
-    item.innerHTML = `
-      <div class="lesson-dot">${done.includes(i) ? '✓' : (i + 1)}</div>
-      <div class="lesson-item-name">${l.title}</div>`;
-    item.onclick = () => { currentLessonIdx = i; renderSidebarLessons(); renderLesson(i); };
+function renderSidebarLessons(){
+  const done=progress[currentCourse.id]||[];
+  const pct=Math.round((done.length/currentCourse.lessons.length)*100);
+  document.getElementById('sb-progress-fill').style.width=pct+'%';
+  const container=document.getElementById('sb-lessons');container.innerHTML='';
+  currentCourse.lessons.forEach((l,i)=>{
+    const item=document.createElement('div');
+    item.className='lesson-item'+(i===currentLessonIdx?' active':'')+(done.includes(i)?' done':'');
+    item.innerHTML=`<div class="lesson-dot">${done.includes(i)?'✓':(i+1)}</div><div class="lesson-item-name">${l.title}</div>`;
+    item.onclick=()=>{currentLessonIdx=i;renderSidebarLessons();renderLesson(i);};
     container.appendChild(item);
   });
 }
 
-// ── RENDER LESSON ─────────────────────────────────────────────────────────
-function renderLesson(idx) {
-  selectedOpt = -1;
-  const lesson = currentCourse.lessons[idx];
-  const done = progress[currentCourse.id] || [];
-  const isLast = idx === currentCourse.lessons.length - 1;
-  const alreadyDone = done.includes(idx);
-  const content = document.getElementById('lesson-content');
-
-  const prevBtn = idx > 0
-    ? `<button class="foot-btn foot-btn-prev" onclick="navLesson(${idx - 1})">← Previous</button>` : '<div></div>';
-  const nextBtn = isLast
-    ? `<button class="foot-btn foot-btn-finish" onclick="finishCourse()">Complete Course 🎉</button>`
-    : `<button class="foot-btn foot-btn-next" onclick="navLesson(${idx + 1})">Next Lesson →</button>`;
-
-  content.innerHTML = `
+function renderLesson(idx){
+  selectedOpt=-1;
+  const lesson=currentCourse.lessons[idx];
+  const done=progress[currentCourse.id]||[];
+  const isLast=idx===currentCourse.lessons.length-1;
+  const alreadyDone=done.includes(idx);
+  document.getElementById('lesson-content').innerHTML=`
     <div class="lesson-top-meta fade-in">
       <span class="lesson-tag accent">${currentCourse.tag}</span>
-      <span class="lesson-num-badge">Lesson ${idx + 1} of ${currentCourse.lessons.length}</span>
-      ${alreadyDone ? '<span class="lesson-tag" style="background:#ECFDF5;color:#059669;">✓ Completed</span>' : ''}
+      <span class="lesson-num-badge">Lesson ${idx+1} of ${currentCourse.lessons.length}</span>
+      ${alreadyDone?'<span class="lesson-tag green">✓ Completed</span>':''}
     </div>
-    <h1 class="lesson-heading fade-in delay-1">${lesson.title}</h1>
-    <p class="lesson-intro-text fade-in delay-2">${lesson.intro}</p>
-    <div class="lesson-body fade-in delay-3">${lesson.body}</div>
-
-    <div class="quiz-box fade-in delay-4">
-      <div class="quiz-header">
-        <div class="quiz-icon">❓</div>
-        <div><div class="quiz-title">Knowledge Check</div><div class="quiz-sub">Choose the best answer</div></div>
-      </div>
+    <h1 class="lesson-heading fade-in d1">${lesson.title}</h1>
+    <p class="lesson-intro-text fade-in d2">${lesson.intro}</p>
+    <div class="lesson-body fade-in d3">${lesson.body}</div>
+    <div class="quiz-box fade-in d4">
+      <div class="quiz-header"><div class="quiz-icon">❓</div><div><div class="quiz-title">Knowledge Check</div><div class="quiz-sub">Choose the best answer</div></div></div>
       <div class="quiz-q">${lesson.quiz.q}</div>
       <div class="quiz-opts" id="quiz-opts">
-        ${lesson.quiz.opts.map((o, i) => `
-          <div class="quiz-opt${alreadyDone && i === lesson.quiz.ans ? ' correct' : ''}" 
-               data-i="${i}" onclick="${alreadyDone ? '' : `selectOpt(this,${i})`}">
-            <span class="opt-letter">${'ABCD'[i]}</span>${o}
-          </div>`).join('')}
+        ${lesson.quiz.opts.map((o,i)=>`<div class="quiz-opt${alreadyDone&&i===lesson.quiz.ans?' correct':''}" data-i="${i}" onclick="${alreadyDone?'':'selectOpt(this,'+i+')'}"><span class="opt-letter">${'ABCD'[i]}</span>${o}</div>`).join('')}
       </div>
-      <button class="quiz-check-btn" id="quiz-btn" onclick="submitQuiz(${idx})" ${alreadyDone ? 'disabled' : 'disabled'}>
-        ${alreadyDone ? 'Already completed ✓' : 'Check Answer'}
+      <button class="quiz-check-btn" id="quiz-btn" onclick="submitQuiz(${idx})" ${alreadyDone||true?'disabled':''}>
+        ${alreadyDone?'Already completed ✓':'Check Answer'}
       </button>
-      <div class="quiz-result${alreadyDone ? ' pass show' : ''}" id="quiz-result">
-        ${alreadyDone ? '✓ You completed this lesson!' : ''}
-      </div>
+      <div class="quiz-result${alreadyDone?' pass show':''}" id="quiz-result">${alreadyDone?'✓ You completed this lesson!':''}</div>
     </div>
-
     <div class="lesson-footer fade-in">
-      ${prevBtn}
-      ${nextBtn}
+      ${idx>0?`<button class="foot-btn foot-btn-prev" onclick="navLesson(${idx-1})">← Previous</button>`:'<div></div>'}
+      ${isLast?`<button class="foot-btn foot-btn-finish" onclick="finishCourse()">Complete Course 🎉</button>`:`<button class="foot-btn foot-btn-next" onclick="navLesson(${idx+1})">Next Lesson →</button>`}
     </div>`;
+  // Re-enable quiz if not done
+  if(!alreadyDone){document.getElementById('quiz-btn').disabled=true;}
 }
 
-function selectOpt(el, i) {
-  document.querySelectorAll('.quiz-opt').forEach(o => o.classList.remove('selected'));
-  el.classList.add('selected');
-  selectedOpt = i;
-  document.getElementById('quiz-btn').disabled = false;
+function selectOpt(el,i){
+  document.querySelectorAll('.quiz-opt').forEach(o=>o.classList.remove('selected'));
+  el.classList.add('selected');selectedOpt=i;
+  document.getElementById('quiz-btn').disabled=false;
 }
 
-function submitQuiz(lessonIdx) {
-  const lesson = currentCourse.lessons[lessonIdx];
-  const opts = document.querySelectorAll('.quiz-opt');
-  const result = document.getElementById('quiz-result');
-  const btn = document.getElementById('quiz-btn');
-  opts.forEach(o => { o.style.pointerEvents = 'none'; o.onclick = null; });
-  btn.disabled = true;
-
-  if (selectedOpt === lesson.quiz.ans) {
-    opts[selectedOpt].classList.remove('selected');
-    opts[selectedOpt].classList.add('correct');
-    result.textContent = '✓ Correct! Great work — you nailed it.';
-    result.className = 'quiz-result pass show';
-    markDone(lessonIdx);
-    toast('Lesson complete!', '🎉');
-  } else {
-    opts[selectedOpt].classList.remove('selected');
-    opts[selectedOpt].classList.add('wrong');
+function submitQuiz(lessonIdx){
+  const lesson=currentCourse.lessons[lessonIdx];
+  const opts=document.querySelectorAll('.quiz-opt');
+  const result=document.getElementById('quiz-result');
+  const btn=document.getElementById('quiz-btn');
+  opts.forEach(o=>{o.style.pointerEvents='none';o.onclick=null;});btn.disabled=true;
+  if(selectedOpt===lesson.quiz.ans){
+    opts[selectedOpt].classList.remove('selected');opts[selectedOpt].classList.add('correct');
+    result.textContent='✓ Correct! Great work.';result.className='quiz-result pass show';
+    markDone(lessonIdx);toast('Lesson complete!','🎉');
+  }else{
+    opts[selectedOpt].classList.remove('selected');opts[selectedOpt].classList.add('wrong');
     opts[lesson.quiz.ans].classList.add('correct');
-    result.textContent = 'Not quite — the correct answer is highlighted. Review the lesson and keep going!';
-    result.className = 'quiz-result fail show';
+    result.textContent='Not quite — correct answer highlighted. Keep going!';result.className='quiz-result fail show';
   }
   renderSidebarLessons();
 }
 
-function markDone(idx) {
-  if (!progress[currentCourse.id]) progress[currentCourse.id] = [];
-  if (!progress[currentCourse.id].includes(idx)) progress[currentCourse.id].push(idx);
+function markDone(idx){
+  if(!progress[currentCourse.id])progress[currentCourse.id]=[];
+  if(!progress[currentCourse.id].includes(idx))progress[currentCourse.id].push(idx);
   saveProgress();
 }
 
-function navLesson(idx) {
-  currentLessonIdx = idx;
-  renderSidebarLessons();
-  renderLesson(idx);
-  window.scrollTo(0, 0);
-}
+function navLesson(idx){currentLessonIdx=idx;renderSidebarLessons();renderLesson(idx);window.scrollTo(0,0);}
 
-function finishCourse() {
+function finishCourse(){
   markDone(currentLessonIdx);
-  toast(currentCourse.title + ' complete! 🎓', '🏆');
-  setTimeout(() => { goHome(); }, 1400);
+  toast(currentCourse.title+' complete! 🎓','🏆');
+  setTimeout(()=>goHome(),1200);
 }
 
-// ── INIT ──────────────────────────────────────────────────────────────────
+// ── INIT ───────────────────────────────────────────────────────────────────
+showSigninBanner();
 renderCourses();
 </script>
 </body>

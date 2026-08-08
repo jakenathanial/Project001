@@ -291,6 +291,15 @@ const liveCountEl = document.getElementById('live-count');
 document.getElementById('brand-home').addEventListener('click', () => location.hash = '#/');
 document.getElementById('btn-post-top').addEventListener('click', () => location.hash = '#/post');
 
+/* ============================================================
+   STATE — must be declared before bootFirebase() is called below
+   ============================================================ */
+let db, auth, uid = null;
+let unsubFeed = null, unsubDetail = null, unsubOffers = null;
+let feedRarityFilter = 'All';
+let feedSearch = '';
+let latestTrades = [];
+
 if (CONFIG_IS_PLACEHOLDER) {
   renderSetupNotice();
 } else {
@@ -336,15 +345,6 @@ const FRUITS = [
   {name:"Yeti",rarity:"Mythical"},{name:"Kitsune",rarity:"Mythical"},{name:"Control",rarity:"Mythical"},
   {name:"Dragon",rarity:"Mythical"}
 ];
-
-/* ============================================================
-   STATE
-   ============================================================ */
-let db, auth, uid = null;
-let unsubFeed = null, unsubDetail = null, unsubOffers = null;
-let feedRarityFilter = 'All';
-let feedSearch = '';
-let latestTrades = [];
 
 function bootFirebase(){
   const app = initializeApp(firebaseConfig);
